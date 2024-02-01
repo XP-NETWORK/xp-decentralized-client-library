@@ -1,4 +1,4 @@
-export type LockNFT<Signer, ExtraArgs> = {
+export type LockNFT<Signer, ExtraArgs, RetTx> = {
   lockNft: (
     signer: Signer,
     sourceNft: string,
@@ -6,7 +6,7 @@ export type LockNFT<Signer, ExtraArgs> = {
     to: string,
     tokenId: bigint,
     ex: ExtraArgs,
-  ) => Promise<void>;
+  ) => Promise<RetTx>;
 };
 
 export type SignerAndSignature = {
@@ -14,13 +14,13 @@ export type SignerAndSignature = {
   signature: string;
 };
 
-export type ClaimNFT<Signer, ClaimData, ExtraArgs> = {
+export type ClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
   claimNft: (
     signer: Signer,
     claimData: ClaimData,
     ex: ExtraArgs,
-    sig: SignerAndSignature,
-  ) => Promise<void>;
+    sig: SignerAndSignature[],
+  ) => Promise<Ret>;
 };
 
 export type GetBalance<Signer, ExtraArgs> = {
@@ -30,20 +30,19 @@ export type GetBalance<Signer, ExtraArgs> = {
 export type NFTData = {
   name: string | undefined;
   symbol: string | undefined;
-  royalty: number | undefined;
+  royalty: bigint | undefined;
   metadata: string | undefined;
 };
 
-export type GetNFTData<Signer, ExtraArgs> = {
+export type GetNFTData<Signer, ExtraArgs, GetNftArgs extends unknown[]> = {
   nftData: (
     signer: Signer,
-    contract: string | undefined,
-    tokenId: string | undefined,
-    extraArgs: ExtraArgs | undefined,
+    extraArgs: ExtraArgs,
+    ...args: GetNftArgs
   ) => Promise<NFTData>;
 };
 
-export type LockSFT<Signer, ExtraArgs> = {
+export type LockSFT<Signer, ExtraArgs, RetTx> = {
   lockSft: (
     signer: Signer,
     sourceNft: string,
@@ -52,31 +51,34 @@ export type LockSFT<Signer, ExtraArgs> = {
     tokenId: bigint,
     amt: bigint,
     ex: ExtraArgs,
-  ) => Promise<void>;
+  ) => Promise<RetTx>;
 };
 
-export type ClaimSFT<Signer, ClaimData, ExtraArgs> = {
+export type ClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
   claimSft: (
     signer: Signer,
     claimData: ClaimData,
+    sigs: SignerAndSignature[],
     ex: ExtraArgs,
-  ) => Promise<void>;
+  ) => Promise<Ret>;
 };
 
-export type SingularNftChain<Signer, ClaimData, ExtraArgs> = LockNFT<
+export type SingularNftChain<Signer, ClaimData, ExtraArgs, RetTx> = LockNFT<
   Signer,
-  ExtraArgs
+  ExtraArgs,
+  RetTx
 > &
-  GetNFTData<Signer, ExtraArgs> &
-  ClaimNFT<Signer, ClaimData, ExtraArgs> &
+  GetNFTData<Signer, ExtraArgs, [tokenId: bigint, contract: string]> &
+  ClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
   GetBalance<Signer, ExtraArgs>;
 
-export type MultipleNftChain<Signer, ClaimData, ExtraArgs> = LockSFT<
+export type MultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx> = LockSFT<
   Signer,
-  ExtraArgs
+  ExtraArgs,
+  RetTx
 > &
-  ClaimSFT<Signer, ClaimData, ExtraArgs>;
+  ClaimSFT<Signer, ClaimData, ExtraArgs, RetTx>;
 
-export type NftChain<Signer, ClaimData, ExtraArgs> =
-  | SingularNftChain<Signer, ClaimData, ExtraArgs>
-  | MultipleNftChain<Signer, ClaimData, ExtraArgs>;
+export type NftChain<Signer, ClaimData, ExtraArgs, RetTx> =
+  | SingularNftChain<Signer, ClaimData, ExtraArgs, RetTx>
+  | MultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx>;
