@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { JsonRpcProvider, ethers } from "ethers";
 import { EvmParams } from "../handlers/evm";
 
 export interface ChainParams {
@@ -6,14 +6,14 @@ export interface ChainParams {
 }
 
 export namespace ChainFactoryConfigs {
-  export function TestNet(): Partial<ChainParams> {
+  export function TestNet() {
     return {
       bscParams: {
         identifier: "BSC",
-        rpc: "https://bsc-testnet.publicnode.com",
+        provider: new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
         bridge: ethers.getAddress("0x3EC2839EcEAfa2Ce9e419718364B070563Db516e"),
         royaltySalePrice: 0,
       },
-    };
+    } satisfies Partial<ChainParams>;
   }
 }

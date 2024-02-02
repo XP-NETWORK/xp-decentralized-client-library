@@ -9,29 +9,28 @@ import {
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../contractsTypes";
-import { NftChain } from "./chain";
+import type { TNftChain } from "./chain";
 
-export type EvmHandler = NftChain<
+export type EvmHandler = TNftChain<
   Signer,
   Bridge.ClaimDataStruct,
+  [tokenId: string, contract: string],
   Overrides,
   ContractTransactionResponse
 >;
 
 export type EvmParams = {
   identifier: string;
-  rpc: string;
+  provider: JsonRpcProvider;
   bridge: string;
   royaltySalePrice: number;
 };
 
 export function evmHandler({
-  rpc,
+  provider,
   bridge,
   royaltySalePrice,
 }: EvmParams): EvmHandler {
-  const provider = new JsonRpcProvider(rpc);
-
   return {
     claimNft(wallet, claimData, ex, sigs) {
       const contract = Bridge__factory.connect(bridge, wallet);
