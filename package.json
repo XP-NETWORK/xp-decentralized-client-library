@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "format": "npx @biomejs/biome format src/ --write",
-    "lint": "npx @biomejs/biome lint src/  --write",
+    "lint": "npx @biomejs/biome lint src/  ",
     "postinstall": "lefthook install"
   },
   "devDependencies": {
@@ -18,6 +18,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@taquito/taquito": "^19.0.0",
+    "@taquito/tzip16": "^19.0.0",
+    "@taquito/utils": "^19.0.0",
     "ethers": "^6.10.0",
     "secretjs": "^1.12.4"
   }
