@@ -18,6 +18,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@multiversx/sdk-core": "^12.18.0",
+    "@multiversx/sdk-network-providers": "^2.2.1",
+    "@multiversx/sdk-wallet": "^4.3.0",
     "@taquito/taquito": "^19.0.0",
     "@taquito/tzip16": "^19.0.0",
     "@taquito/utils": "^19.0.0",
