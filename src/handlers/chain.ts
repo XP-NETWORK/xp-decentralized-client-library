@@ -132,6 +132,27 @@ export type TGetNFTData<Signer, ExtraArgs, GetNftArgs extends unknown[]> = {
   ) => Promise<TNFTData>;
 };
 
+type INftTransferDetailsObject = {
+  tokenId: string;
+  sourceChain: string;
+  destinationChain: string;
+  destinationUserAddress: string;
+  sourceNftContractAddress: string;
+  name: string;
+  symbol: string;
+  royalty: string;
+  royaltyReceiver: string;
+  metadata: string;
+  transactionHash: string;
+  tokenAmount: string;
+  nftType: string;
+  fee: string;
+};
+
+export type TGetClaimData = {
+  getClaimData: (txHash: string) => Promise<INftTransferDetailsObject>;
+};
+
 /**
  * Represents a type for locking SFT (Semi Fungible Token) on a specific chain.
  * @template Signer - The type of the signer.
@@ -203,7 +224,8 @@ export type TSingularNftChain<
   TLockNFT<Signer, ExtraArgs, RetTx> &
   TGetNFTData<Signer, ExtraArgs, GetNFTArgs> &
   TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
-  TGetBalance<Signer, ExtraArgs>;
+  TGetBalance<Signer, ExtraArgs> &
+  TGetClaimData;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.

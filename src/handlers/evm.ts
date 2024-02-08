@@ -6,6 +6,7 @@ import {
 } from "ethers";
 import {
   Bridge,
+  BridgeStorage,
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../contractsTypes";
@@ -24,12 +25,14 @@ export type EvmParams = {
   provider: JsonRpcProvider;
   bridge: string;
   royaltySalePrice: number;
+  storage: BridgeStorage;
 };
 
 export function evmHandler({
   provider,
   bridge,
   royaltySalePrice,
+  storage,
 }: EvmParams): EvmHandler {
   return {
     claimNft(wallet, claimData, extraArgs, sigs) {
@@ -39,6 +42,53 @@ export function evmHandler({
         sigs.map((e) => e.signature),
         extraArgs,
       );
+    },
+    async getClaimData(txHash) {
+      const receipt = await provider.getTransactionReceipt(txHash);
+      if (!receipt) {
+        throw new Error("Transaction not found");
+      }
+      const log = receipt.logs.find((e) =>
+        e.topics.includes(
+          Bridge__factory.createInterface().getEvent("Locked").topicHash,
+        ),
+      );
+      if (!log) {
+        throw new Error("Lock event not found");
+      }
+      const locked = Bridge__factory.createInterface().parseLog({
+        data: log.data,
+        topics: log.topics as string[],
+      });
+      if (!locked) {
+        throw new Error("Failed to parse log");
+      }
+      const nftDetails = await this.nftData(
+        provider as unknown as Signer,
+        {},
+        locked.args.tokenId,
+        locked.args.sourceNftContractAddress,
+      );
+      const fee = await storage.chainFee(locked.args.destinationChain);
+      const royaltyReceiver = await storage.chainRoyalty(
+        locked.args.destinationChain,
+      );
+      return {
+        destinationChain: locked.args.destinationChain,
+        destinationUserAddress: locked.args.destinationUserAddress,
+        sourceNftContractAddress: locked.args.sourceNftContractAddress,
+        tokenId: locked.args.tokenId,
+        tokenAmount: locked.args.tokenAmount,
+        nftType: locked.args.nftType,
+        sourceChain: locked.args.sourceChain,
+        fee: fee.toString(),
+        metadata: nftDetails.metadata,
+        name: nftDetails.name,
+        symbol: nftDetails.symbol,
+        royalty: nftDetails.royalty.toString(),
+        royaltyReceiver: royaltyReceiver,
+        transactionHash: txHash,
+      };
     },
     getBalance(signer) {
       return provider.getBalance(signer);

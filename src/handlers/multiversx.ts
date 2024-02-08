@@ -22,6 +22,8 @@ import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
 import { TSingularNftChain } from "./chain";
 
 import { UserAddress } from "@multiversx/sdk-wallet/out/userAddress";
+import axios from "axios";
+import { BridgeStorage } from "../contractsTypes";
 import { multiversXBridgeABI } from "../contractsTypes/abi";
 
 export type MultiversXSigner = {
@@ -59,18 +61,29 @@ export type MultiversXParams = {
   provider: INetworkProvider;
   gatewayURL: string;
   bridge: string;
+  storage: BridgeStorage;
 };
 
 export function multiversxHandler({
   provider,
   gatewayURL,
   bridge,
+  storage,
 }: MultiversXParams): MultiversXHandler {
   const abiRegistry = AbiRegistry.create(multiversXBridgeABI);
   const multiversXBridgeContract = new SmartContract({
     address: Address.fromString(bridge),
     abi: abiRegistry,
   });
+
+  const waitForTransaction = async (hash: string) => {
+    let status = await provider.getTransactionStatus(hash);
+    while (status.isPending()) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      status = await provider.getTransactionStatus(hash);
+    }
+    return status;
+  };
 
   const getNonFungibleToken = async (
     collection: string,
@@ -109,6 +122,60 @@ export function multiversxHandler({
     },
     async approveNft(_signer, _tokenId, _contract) {
       return Promise.resolve("Not Required for MultiversX");
+    },
+    async getClaimData(txHash) {
+      await waitForTransaction(txHash);
+      const response = (
+        await axios.get(
+          `${gatewayURL.replace("gateway", "api")}/transactions/${txHash}`,
+        )
+      ).data;
+
+      const lockEvent = response.results.logs.find(
+        (e: { identifier: string }) =>
+          e.identifier === "lock721" || e.identifier === "lock1155",
+      );
+      const completed = response.results.logs.find(
+        (e: { identifier: string }) => e.identifier === "completedTxEvent",
+      );
+
+      if (!lockEvent || !completed) {
+        throw new Error("Invalid Lock Transaction");
+      }
+
+      const decodedLogs = decodeBase64Array(lockEvent.topics);
+      const tokenId = String(decodedLogs[1].charCodeAt(0));
+      const destinationChain = decodedLogs[2];
+      const destinationUserAddress = decodedLogs[3];
+      const sourceNftContractAddress = decodedLogs[4];
+      const tokenAmount = String(decodedLogs[5].charCodeAt(0));
+      const nftType = decodedLogs[6];
+      const sourceChain = decodedLogs[7];
+
+      const fee = await storage.chainFee(destinationChain);
+      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+      const metadata = await this.nftData(
+        provider as unknown as MultiversXSigner,
+        {},
+        parseInt(tokenId),
+        sourceNftContractAddress,
+      );
+      return {
+        destinationChain,
+        destinationUserAddress,
+        tokenAmount,
+        tokenId,
+        nftType,
+        sourceNftContractAddress,
+        sourceChain,
+        transactionHash: txHash,
+        fee: fee.toString(),
+        royaltyReceiver,
+        metadata: metadata.metadata,
+        name: metadata.name,
+        symbol: metadata.symbol,
+        royalty: metadata.royalty.toString(),
+      };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
       const ba = new Address(bridge);
@@ -295,3 +362,9 @@ export function multiversxHandler({
     },
   };
 }
+
+const decodeBase64Array = (encodedArray: string[]): string[] => {
+  return encodedArray.map((encodedString) => {
+    return Buffer.from(encodedString, "base64").toString("utf-8");
+  });
+};

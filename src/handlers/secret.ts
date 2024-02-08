@@ -3,7 +3,9 @@ import {
   encodeSecp256k1Pubkey,
   encodeSecp256k1Signature,
 } from "secretjs/dist/wallet_amino";
+import { BridgeStorage } from "../contractsTypes";
 import { TNftChain } from "./chain";
+import { raise } from "./ton";
 
 export type SecretClaimData = {
   token_id: string;
@@ -36,11 +38,13 @@ export type SecretParams = {
   bridge: string;
   chainId: string;
   bridgeCodeHash: string;
+  storage: BridgeStorage;
 };
 
 export function secretHandler({
   bridge,
-
+  provider,
+  storage,
   bridgeCodeHash,
 }: SecretParams): SecretHandler {
   return {
@@ -78,6 +82,57 @@ export function secretHandler({
         },
       );
       return tx;
+    },
+
+    async getClaimData(txHash) {
+      const eventId = "LockedEventInfo";
+      const tx = await provider.query.getTx(txHash);
+      if (!tx) {
+        throw new Error("Tx not found");
+      }
+      const log =
+        tx.jsonLog
+          ?.at(0)
+          ?.events.find((item) => item.type === "wasm")
+          ?.attributes.find((item) => item.key === eventId) ??
+        raise("Log not found");
+
+      const {
+        token_id: tokenId, // Unique ID for the NFT transfer
+        destination_chain: destinationChain, // Chain to where the NFT is being transferred
+        destination_user_address: destinationUserAddress, // User's address in the destination chain
+        source_nft_contract_address: sourceNftContractAddress, // Address of the NFT contract in the source chain
+        token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
+        nft_type: nftType, // Sigular or multiple ( 721 / 1155)
+        source_chain: sourceChain, // Source chain of NFT
+      } = JSON.parse(log.value);
+
+      const fee = await storage.chainFee(destinationChain);
+      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+
+      const nft = await this.nftData(
+        provider,
+        {},
+        sourceNftContractAddress,
+        tokenId,
+      );
+
+      return {
+        destinationChain,
+        destinationUserAddress,
+        sourceNftContractAddress,
+        tokenId,
+        tokenAmount,
+        nftType,
+        sourceChain,
+        fee: fee.toString(),
+        royaltyReceiver: royaltyReceiver,
+        metadata: nft.metadata,
+        name: nft.name,
+        symbol: nft.symbol,
+        royalty: nft.royalty.toString(),
+        transactionHash: txHash,
+      };
     },
     async claimSft(signer, claimData, sigs, extraArgs) {
       const claim1155 = {

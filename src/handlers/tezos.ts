@@ -6,6 +6,7 @@ import {
   TransactionOperation,
 } from "@taquito/taquito";
 import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
+import { eventsGetContractEvents } from "@tzkt/sdk-api";
 
 import {
   b58cdecode,
@@ -13,6 +14,7 @@ import {
   prefix,
   validateAddress,
 } from "@taquito/utils";
+import { BridgeStorage } from "../contractsTypes";
 import { NFTContractType } from "../contractsTypes/tezosContractTypes/NFT.types";
 import {
   address,
@@ -21,6 +23,7 @@ import {
   tas,
 } from "../contractsTypes/tezosContractTypes/type-aliases";
 import { TSingularNftChain } from "./chain";
+import { raise } from "./ton";
 
 export type TezosClaimArgs = {
   token_id: nat;
@@ -50,9 +53,14 @@ export type TezosHandler = TSingularNftChain<
 export type TezosParams = {
   Tezos: TezosToolkit;
   bridge: string;
+  storage: BridgeStorage;
 };
 
-export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
+export function tezosHandler({
+  Tezos,
+  bridge,
+  storage,
+}: TezosParams): TezosHandler {
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
 
@@ -78,6 +86,52 @@ export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
         )
         .send({ ...extraArgs });
       return tx;
+    },
+    async getClaimData(txHash) {
+      const op = await eventsGetContractEvents({
+        contract: {
+          eq: bridge,
+        },
+      });
+      const claimData = op.find((e) => e.timestamp === txHash);
+
+      const data = claimData?.payload ?? raise("No claim data found");
+      const sourceNftContractAddress = extractStrOrAddr(
+        data.source_nft_address,
+      );
+      const {
+        token_id: tokenId, // Unique ID for the NFT transfer
+        dest_chain: destinationChain, // Chain to where the NFT is being transferred
+        dest_address: destinationUserAddress, // User's address in the destination chain
+        token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
+        nft_type: nftType, // Sigular or multiple ( 721 / 1155)
+        source_chain: sourceChain, // Source chain of NFT
+        transaction_hash: transactionHash,
+      } = data;
+      const fee = await storage.chainFee(destinationChain);
+      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+      const nft = await this.nftData(
+        Tezos as unknown as Signer,
+        {},
+        tokenId,
+        sourceNftContractAddress,
+      );
+      return {
+        tokenId,
+        destinationChain,
+        destinationUserAddress,
+        tokenAmount,
+        nftType,
+        sourceChain,
+        transactionHash,
+        sourceNftContractAddress,
+        fee: fee.toString(),
+        royaltyReceiver,
+        name: nft.name,
+        symbol: nft.symbol,
+        royalty: nft.royalty.toString(),
+        metadata: nft.metadata,
+      };
     },
     async claimNft(signer, data, extraArgs, sigs) {
       const isTezosAddr =
@@ -216,4 +270,11 @@ const URLCanParse = (url: string): boolean => {
   } catch (_) {
     return false;
   }
+};
+
+export const extractStrOrAddr = (
+  addr: { str: string } | { addr: string },
+): string => {
+  if ("str" in addr) return addr.str;
+  return addr.addr;
 };
