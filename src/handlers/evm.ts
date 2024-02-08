@@ -32,12 +32,12 @@ export function evmHandler({
   royaltySalePrice,
 }: EvmParams): EvmHandler {
   return {
-    claimNft(wallet, claimData, ex, sigs) {
+    claimNft(wallet, claimData, extraArgs, sigs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       return contract.claimNFT1155(
         claimData,
         sigs.map((e) => e.signature),
-        ex,
+        extraArgs,
       );
     },
     getBalance(signer) {
@@ -54,7 +54,15 @@ export function evmHandler({
         metadata: await nft.tokenURI(tokenId),
       };
     },
-    lockSft(signer, sourceNftAddress, destinationChain, to, tokenId, amt, ex) {
+    lockSft(
+      signer,
+      sourceNftAddress,
+      destinationChain,
+      to,
+      tokenId,
+      amt,
+      extraArgs,
+    ) {
       const contract = Bridge__factory.connect(bridge, signer);
       return contract.lock1155(
         tokenId.toString(),
@@ -62,34 +70,41 @@ export function evmHandler({
         to,
         sourceNftAddress,
         amt,
-        ex,
+        extraArgs,
       );
     },
-    async approveNft(signer, tokenId, contract, ex) {
+    async approveNft(signer, tokenId, contract, extraArgs) {
       return ERC721Royalty__factory.connect(contract, signer).approve(
         bridge,
         tokenId,
         {
-          ...ex,
+          ...extraArgs,
         },
       );
     },
-    claimSft(wallet, claimData, sigs, ex) {
+    claimSft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       return contract.claimNFT1155(
         claimData,
         sigs.map((e) => e.signature),
-        ex,
+        extraArgs,
       );
     },
-    lockNft(signer, sourceNftAddress, destinationChain, to, tokenId, ex) {
+    lockNft(
+      signer,
+      sourceNftAddress,
+      destinationChain,
+      to,
+      tokenId,
+      extraArgs,
+    ) {
       const contract = Bridge__factory.connect(bridge, signer);
       return contract.lock721(
         tokenId.toString(),
         destinationChain,
         to,
         sourceNftAddress,
-        ex,
+        extraArgs,
       );
     },
   };

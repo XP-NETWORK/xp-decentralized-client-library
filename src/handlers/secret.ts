@@ -44,7 +44,7 @@ export function secretHandler({
   bridgeCodeHash,
 }: SecretParams): SecretHandler {
   return {
-    async claimNft(signer, claimData, ex, sigs) {
+    async claimNft(signer, claimData, extraArgs, sigs) {
       const claim721 = {
         claim721: {
           data: {
@@ -74,12 +74,12 @@ export function secretHandler({
         },
         {
           gasLimit: 300_000,
-          ...ex,
+          ...extraArgs,
         },
       );
       return tx;
     },
-    async claimSft(signer, claimData, sigs, ex) {
+    async claimSft(signer, claimData, sigs, extraArgs) {
       const claim1155 = {
         claim1155: {
           data: {
@@ -109,13 +109,13 @@ export function secretHandler({
         },
         {
           gasLimit: 300_000,
-          ...ex,
+          ...extraArgs,
         },
       );
 
       return tx;
     },
-    async nftData(signer, _extraArgs, contract, tokenId) {
+    async nftData(signer, _, contract, tokenId) {
       const data = (
         (await signer.query.compute.queryContract({
           contract_address: contract,
@@ -162,7 +162,7 @@ export function secretHandler({
         royalty: BigInt(royalty),
       };
     },
-    async approveNft(signer, tokenId, contract, ex) {
+    async approveNft(signer, tokenId, contract, extraArgs) {
       const res = await signer.tx.compute.executeContract(
         {
           sender: signer.address,
@@ -175,7 +175,7 @@ export function secretHandler({
           },
         },
         {
-          ...ex,
+          ...extraArgs,
         },
       );
       return res;
@@ -206,7 +206,15 @@ export function secretHandler({
       );
       return tx;
     },
-    async lockSft(signer, sourceNft, destinationChain, to, tokenId, amt, _) {
+    async lockSft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      amt,
+      extraArgs,
+    ) {
       const tx = await signer.tx.compute.executeContract(
         {
           contract_address: bridge,
@@ -223,6 +231,7 @@ export function secretHandler({
         },
         {
           gasLimit: 200_000,
+          ...extraArgs,
         },
       );
       return tx;

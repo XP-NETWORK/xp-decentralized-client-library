@@ -12,7 +12,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
    * @param destinationChain The destination chain where the NFT will transferred to on claim.
    * @param to The address of the recipient on the destination chain.
    * @param tokenId The id of the NFT to be locked.
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of type {RetTx}.
    */
   lockNft: (
@@ -21,7 +21,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
     destinationChain: string,
     to: string,
     tokenId: bigint,
-    ex: ExtraArgs,
+    extraArgs: ExtraArgs,
   ) => Promise<RetTx>;
 };
 
@@ -37,14 +37,14 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
    * @param signer The signer who is going to send the approve transaction.
    * @param tokenId The id of the NFT to be approved.
    * @param contract The address of the NFT contract on the source chain.
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of type {RetTx}.
    */
   approveNft(
     signer: Signer,
     tokenId: string,
     contract: string,
-    ex: ExtraArgs,
+    extraArgs: ExtraArgs,
   ): Promise<RetTx>;
 };
 
@@ -71,13 +71,13 @@ export type TClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
    * @param signer The signer who is going to send the claim transaction.
    * @param claimData The claim data required to claim the SFT.
    * @param sigs Signatures Fetched from the Storage Smart Contract That are required to validate the transaction
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of type {Ret}.
    */
   claimNft: (
     signer: Signer,
     claimData: ClaimData,
-    ex: ExtraArgs,
+    extraArgs: ExtraArgs,
     sig: TSignerAndSignature[],
   ) => Promise<Ret>;
 };
@@ -91,10 +91,10 @@ export type TGetBalance<Signer, ExtraArgs> = {
   /**
    * Retrieves the balance of a signer.
    * @param signer The signer.
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the balance as a bigint.
    */
-  getBalance: (signer: Signer, ex: ExtraArgs) => Promise<bigint>;
+  getBalance: (signer: Signer, extraArgs: ExtraArgs) => Promise<bigint>;
 };
 
 /**
@@ -147,7 +147,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
    * @param to The address of the recipient on the destination chain.
    * @param tokenId The id of the SFT to be locked.
    * @param amt The amount of the SFT to be locked.
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of type {RetTx}.
    */
   lockSft: (
@@ -157,7 +157,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
     to: string,
     tokenId: bigint,
     amt: bigint,
-    ex: ExtraArgs,
+    extraArgs: ExtraArgs,
   ) => Promise<RetTx>;
 };
 
@@ -174,14 +174,14 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
    * @param signer The signer who is going to send the claim transaction.
    * @param claimData The claim data required to claim the SFT.
    * @param sigs Signatures Fetched from the Storage Smart Contract That are required to validate the transaction
-   * @param ex The extra arguments required for a chain.
+   * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of generic type Ret.
    */
   claimSft: (
     signer: Signer,
     claimData: ClaimData,
     sigs: TSignerAndSignature[],
-    ex: ExtraArgs,
+    extraArgs: ExtraArgs,
   ) => Promise<Ret>;
 };
 

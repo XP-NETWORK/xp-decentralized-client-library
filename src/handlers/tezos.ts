@@ -68,7 +68,7 @@ export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
         (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),
       );
     },
-    async approveNft(signer, tokenId, contract, ex) {
+    async approveNft(signer, tokenId, contract, extraArgs) {
       const nftContract = await Tezos.contract.at<NFTContractType>(contract);
       const tx = await nftContract.methods
         .add_operator(
@@ -76,10 +76,10 @@ export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
           bridge as address,
           tas.nat(tokenId.toString()),
         )
-        .send({ ...ex });
+        .send({ ...extraArgs });
       return tx;
     },
-    async claimNft(signer, data, ex, sigs) {
+    async claimNft(signer, data, extraArgs, sigs) {
       const isTezosAddr =
         validateAddress(data.source_nft_contract_address) === 3;
 
@@ -130,21 +130,21 @@ export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
           }),
         })
         .send({
-          ...ex,
+          ...extraArgs,
           amount: data.fee.toNumber(),
           mutez: true,
           fee: data.fee.toNumber(),
         });
       return tx;
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, ex) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
       Tezos.setSignerProvider(signer);
       const bridgeInstance = await Tezos.contract.at(bridge);
       const tx = await bridgeInstance.methods
         .lock_nft(tas.nat(tokenId.toString()), destinationChain, to, {
           addr: tas.address(sourceNft),
         })
-        .send({ ...ex });
+        .send({ ...extraArgs });
 
       return tx;
     },
