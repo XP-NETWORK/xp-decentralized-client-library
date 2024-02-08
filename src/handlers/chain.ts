@@ -26,6 +26,29 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
 };
 
 /**
+ * Represents a type definition for the `approveNft` function.
+ * @template Signer The type of the signer.
+ * @template ExtraArgs The type of the extra arguments.
+ * @template RetTx The type of the return transaction.
+ */
+export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
+  /**
+   * Approves the NFT to be locked on the source chain using the bridge smart contract.
+   * @param signer The signer who is going to send the approve transaction.
+   * @param tokenId The id of the NFT to be approved.
+   * @param contract The address of the NFT contract on the source chain.
+   * @param ex The extra arguments required for a chain.
+   * @returns A promise that resolves to the transaction which is of type {RetTx}.
+   */
+  approveNft(
+    signer: Signer,
+    tokenId: string,
+    contract: string,
+    ex: ExtraArgs,
+  ): Promise<RetTx>;
+};
+
+/**
  * Represents a signer and its corresponding signature.
  * @field signer The signer's address as a string (should be HEX Encoded)
  * @field signature The generated signature as a string (should be HEX Encoded)
@@ -176,7 +199,8 @@ export type TSingularNftChain<
   GetNFTArgs extends unknown[],
   ExtraArgs,
   RetTx,
-> = TLockNFT<Signer, ExtraArgs, RetTx> &
+> = TApproveNFT<Signer, ExtraArgs, RetTx> &
+  TLockNFT<Signer, ExtraArgs, RetTx> &
   TGetNFTData<Signer, ExtraArgs, GetNFTArgs> &
   TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
   TGetBalance<Signer, ExtraArgs>;

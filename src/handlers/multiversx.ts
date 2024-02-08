@@ -107,6 +107,9 @@ export function multiversxHandler({
         royalty: BigInt(royalties),
       };
     },
+    async approveNft(_signer, _tokenId, _contract, _ex) {
+      return Promise.resolve("Not Required for MultiversX");
+    },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
       const ba = new Address(bridge);
 

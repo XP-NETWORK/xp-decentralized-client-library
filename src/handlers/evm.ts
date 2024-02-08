@@ -65,6 +65,15 @@ export function evmHandler({
         ex,
       );
     },
+    async approveNft(signer, tokenId, contract, ex) {
+      return ERC721Royalty__factory.connect(contract, signer).approve(
+        bridge,
+        tokenId,
+        {
+          ...ex,
+        },
+      );
+    },
     claimSft(wallet, claimData, sigs, ex) {
       const contract = Bridge__factory.connect(bridge, wallet);
       return contract.claimNFT1155(

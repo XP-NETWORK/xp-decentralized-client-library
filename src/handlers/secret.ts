@@ -162,6 +162,24 @@ export function secretHandler({
         royalty: BigInt(royalty),
       };
     },
+    async approveNft(signer, tokenId, contract, ex) {
+      const res = await signer.tx.compute.executeContract(
+        {
+          sender: signer.address,
+          contract_address: contract,
+          msg: {
+            approve: {
+              spender: bridge,
+              token_id: tokenId,
+            },
+          },
+        },
+        {
+          ...ex,
+        },
+      );
+      return res;
+    },
     async getBalance(signer, _) {
       const result = await signer.query.bank.balance({
         address: signer.address,

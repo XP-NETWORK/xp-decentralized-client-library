@@ -68,6 +68,17 @@ export function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler {
         (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),
       );
     },
+    async approveNft(signer, tokenId, contract, ex) {
+      const nftContract = await Tezos.contract.at<NFTContractType>(contract);
+      const tx = await nftContract.methods
+        .add_operator(
+          (await signer.publicKeyHash()) as address,
+          bridge as address,
+          tas.nat(tokenId.toString()),
+        )
+        .send({ ...ex });
+      return tx;
+    },
     async claimNft(signer, data, ex, sigs) {
       const isTezosAddr =
         validateAddress(data.source_nft_contract_address) === 3;

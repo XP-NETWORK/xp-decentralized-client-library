@@ -77,6 +77,7 @@ export function tonHandler({ client, bridgeAddress }: TonParams): TonHandler {
         },
       );
     },
+    async approveNft(_signer, _tokenId, _contract, _ex) {},
     async nftData(_signer, _, _tokenId, contract) {
       const nftItem = client.open(
         NftItem.fromAddress(Address.parseFriendly(contract).address),
