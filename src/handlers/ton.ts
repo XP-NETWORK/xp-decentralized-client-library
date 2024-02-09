@@ -1,9 +1,11 @@
 import { Address, Dictionary, Sender, beginCell, toNano } from "@ton/core";
 import { TonClient } from "@ton/ton";
+import { BridgeStorage } from "../contractsTypes";
 import {
   Bridge,
   ClaimData,
   SignerAndSignature,
+  loadLockedEvent,
 } from "../contractsTypes/contracts/tonBridge";
 import { NftCollection } from "../contractsTypes/contracts/tonNftCollection";
 import { NftItem } from "../contractsTypes/contracts/tonNftContract";
@@ -19,13 +21,18 @@ export type TonHandler = TSingularNftChain<
 export type TonParams = {
   client: TonClient;
   bridgeAddress: string;
+  storage: BridgeStorage;
 };
 
 export function raise(message: string): never {
   throw new Error(message);
 }
 
-export function tonHandler({ client, bridgeAddress }: TonParams): TonHandler {
+export function tonHandler({
+  client,
+  bridgeAddress,
+  storage,
+}: TonParams): TonHandler {
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
@@ -61,6 +68,67 @@ export function tonHandler({ client, bridgeAddress }: TonParams): TonHandler {
           len: BigInt(sigs.length),
         },
       );
+    },
+    async getClaimData(txHash) {
+      const tx = await client.getTransaction(bridge.address, "", txHash);
+      if (!tx) {
+        throw new Error("Transaction not found");
+      }
+      for (let i = 0; i < tx.outMessages.size; i++) {
+        const msg = tx.outMessages.get(i);
+        if (!msg) {
+          continue;
+        }
+        const hash = txHash;
+        if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+          continue;
+        }
+        const {
+          tokenId, // Unique ID for the NFT transfer
+          destinationChain, // Chain to where the NFT is being transferred
+          destinationUserAddress, // User's address in the destination chain
+          sourceNftContractAddress, // Address of the NFT contract in the source chain
+          tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
+          nftType, // Sigular or multiple ( 721 / 1155)
+          sourceChain, // Source chain of NFT
+        } = loadLockedEvent(msg.body.asSlice());
+
+        const fee = await storage.chainFee(destinationChain);
+        const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+
+        const getSourceNftContractAddress = () => {
+          try {
+            return sourceNftContractAddress.asSlice().loadAddress().toString();
+          } catch (e) {
+            return sourceNftContractAddress.asSlice().loadStringTail();
+          }
+        };
+
+        const { royalty, name, symbol, metadata } = await this.nftData(
+          client as unknown as Sender,
+          undefined,
+          tokenId.toString(),
+          getSourceNftContractAddress(),
+        );
+
+        return {
+          destinationChain,
+          destinationUserAddress: destinationUserAddress.toString(),
+          sourceNftContractAddress: getSourceNftContractAddress(),
+          tokenId: tokenId.toString(),
+          tokenAmount: tokenAmount.toString(),
+          nftType: nftType.toString(),
+          sourceChain: sourceChain.toString(),
+          fee: fee.toString(),
+          royaltyReceiver: royaltyReceiver.toString(),
+          metadata,
+          name,
+          symbol,
+          royalty: royalty.toString(),
+          transactionHash: hash,
+        };
+      }
+      throw new Error("No locked event found");
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
       await bridge.send(
