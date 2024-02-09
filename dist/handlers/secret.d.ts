@@ -1,4 +1,5 @@
 import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
+import { BridgeStorage } from "../contractsTypes";
 import { TNftChain } from "./chain";
 export type SecretClaimData = {
     token_id: string;
@@ -17,12 +18,13 @@ export type SecretClaimData = {
     fee: string;
 };
 export type GetNftArgs = [contract: string, tokenId: bigint];
-export type SecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, GetNftArgs, TxOptions, TxResponse>;
+export type SecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, TxOptions, TxResponse>;
 export type SecretParams = {
     provider: SecretNetworkClient;
     bridge: string;
     chainId: string;
     bridgeCodeHash: string;
+    storage: BridgeStorage;
 };
-export declare function secretHandler({ bridge, bridgeCodeHash, }: SecretParams): SecretHandler;
+export declare function secretHandler({ bridge, provider, storage, bridgeCodeHash, }: SecretParams): SecretHandler;
 //# sourceMappingURL=secret.d.ts.map

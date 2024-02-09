@@ -1,4 +1,5 @@
 import { SendParams, Signer, TezosToolkit, TransactionOperation } from "@taquito/taquito";
+import { BridgeStorage } from "../contractsTypes";
 import { address, mutez, nat } from "../contractsTypes/tezosContractTypes/type-aliases";
 import { TSingularNftChain } from "./chain";
 export type TezosClaimArgs = {
@@ -17,13 +18,16 @@ export type TezosClaimArgs = {
     nft_type: string;
     fee: mutez;
 };
-export type TezosHandler = TSingularNftChain<Signer, TezosClaimArgs, [
-    tokenId: bigint,
-    contract: string
-], Partial<SendParams>, TransactionOperation>;
+export type TezosHandler = TSingularNftChain<Signer, TezosClaimArgs, Partial<SendParams>, TransactionOperation>;
 export type TezosParams = {
     Tezos: TezosToolkit;
     bridge: string;
+    storage: BridgeStorage;
 };
-export declare function tezosHandler({ Tezos, bridge }: TezosParams): TezosHandler;
+export declare function tezosHandler({ Tezos, bridge, storage, }: TezosParams): TezosHandler;
+export declare const extractStrOrAddr: (addr: {
+    str: string;
+} | {
+    addr: string;
+}) => string;
 //# sourceMappingURL=tezos.d.ts.map

@@ -2,6 +2,7 @@
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { TSingularNftChain } from "./chain";
 import { UserAddress } from "@multiversx/sdk-wallet/out/userAddress";
+import { BridgeStorage } from "../contractsTypes";
 export type MultiversXSigner = {
     sign: (message: Buffer) => Promise<Buffer>;
     getAddress: () => UserAddress;
@@ -23,14 +24,12 @@ export type ClaimStruct = {
     fee: string;
     metadata: string;
 };
-export type MultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, [
-    nonce: number,
-    collection: string
-], unknown, string>;
+export type MultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, unknown, string>;
 export type MultiversXParams = {
     provider: INetworkProvider;
     gatewayURL: string;
     bridge: string;
+    storage: BridgeStorage;
 };
-export declare function multiversxHandler({ provider, gatewayURL, bridge, }: MultiversXParams): MultiversXHandler;
+export declare function multiversxHandler({ provider, gatewayURL, bridge, storage, }: MultiversXParams): MultiversXHandler;
 //# sourceMappingURL=multiversx.d.ts.map

@@ -25,43 +25,51 @@ export declare namespace ChainFactoryConfigs {
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         ethParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         polygonParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         hederaParams: {
             bridge: string;
             identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         tezosParams: {
             bridge: string;
             Tezos: TezosToolkit;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         secretParams: {
             bridge: string;
             bridgeCodeHash: string;
             chainId: string;
             provider: SecretNetworkClient;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         multiversxParams: {
             bridge: string;
             gatewayURL: string;
             provider: ProxyNetworkProvider;
+            storage: import("../contractsTypes").BridgeStorage;
         };
         tonParams: {
             bridgeAddress: string;
             client: TonClient;
+            storage: import("../contractsTypes").BridgeStorage;
         };
     };
 }
