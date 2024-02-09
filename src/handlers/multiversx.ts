@@ -52,7 +52,6 @@ export type ClaimStruct = {
 export type MultiversXHandler = TSingularNftChain<
   MultiversXSigner,
   ClaimStruct,
-  [nonce: number, collection: string],
   unknown,
   string
 >;
@@ -106,12 +105,12 @@ export function multiversxHandler({
     };
   };
   return {
-    async nftData(_, _a, nonce, collection) {
+    async nftData(nonce, collection) {
       const nftDetails =
         await provider.getDefinitionOfTokenCollection(collection);
       const { royalties, metaData } = await getNonFungibleToken(
         collection,
-        nonce,
+        parseInt(nonce),
       );
       return {
         name: nftDetails.name,
@@ -155,10 +154,9 @@ export function multiversxHandler({
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
       const metadata = await this.nftData(
-        provider as unknown as MultiversXSigner,
-        {},
-        parseInt(tokenId),
+        tokenId,
         sourceNftContractAddress,
+        undefined,
       );
       return {
         destinationChain,

@@ -13,7 +13,6 @@ import { TSingularNftChain } from "./chain";
 export type TonHandler = TSingularNftChain<
   Sender,
   ClaimData,
-  [tokenId: string, contract: string],
   unknown,
   undefined
 >;
@@ -105,10 +104,9 @@ export function tonHandler({
         };
 
         const { royalty, name, symbol, metadata } = await this.nftData(
-          client as unknown as Sender,
-          undefined,
           tokenId.toString(),
           getSourceNftContractAddress(),
+          undefined,
         );
 
         return {
@@ -146,7 +144,7 @@ export function tonHandler({
       );
     },
     async approveNft(_signer, _tokenId, _contract) {},
-    async nftData(_signer, _, _tokenId, contract) {
+    async nftData(_tokenId, contract, _overrides) {
       const nftItem = client.open(
         NftItem.fromAddress(Address.parseFriendly(contract).address),
       );

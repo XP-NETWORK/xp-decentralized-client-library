@@ -28,7 +28,6 @@ export type GetNftArgs = [contract: string, tokenId: bigint];
 export type SecretHandler = TNftChain<
   SecretNetworkClient,
   SecretClaimData,
-  GetNftArgs,
   TxOptions,
   TxResponse
 >;
@@ -110,12 +109,7 @@ export function secretHandler({
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
 
-      const nft = await this.nftData(
-        provider,
-        {},
-        sourceNftContractAddress,
-        tokenId,
-      );
+      const nft = await this.nftData(tokenId, sourceNftContractAddress, {});
 
       return {
         destinationChain,
@@ -170,16 +164,16 @@ export function secretHandler({
 
       return tx;
     },
-    async nftData(signer, _, contract, tokenId) {
+    async nftData(tokenId, contract) {
       const data = (
-        (await signer.query.compute.queryContract({
+        (await provider.query.compute.queryContract({
           contract_address: contract,
           query: { contract_info: {} },
         })) as { contract_info: { name: string; symbol: string } }
       ).contract_info;
 
       const royalty_info = (
-        (await signer.query.compute.queryContract({
+        (await provider.query.compute.queryContract({
           contract_address: contract,
           query: { royalty_info: { token_id: tokenId.toString() } },
         })) as {
@@ -197,7 +191,7 @@ export function secretHandler({
       const royalty = (rate / max_percentage) * 10000;
 
       const nft_info = (
-        (await signer.query.compute.queryContract({
+        (await provider.query.compute.queryContract({
           contract_address: contract,
           query: { nft_info: { token_id: tokenId.toString() } },
         })) as {

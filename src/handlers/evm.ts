@@ -15,7 +15,6 @@ import type { TNftChain } from "./chain";
 export type EvmHandler = TNftChain<
   Signer,
   Bridge.ClaimDataStruct,
-  [tokenId: string, contract: string],
   Overrides,
   ContractTransactionResponse
 >;
@@ -63,15 +62,14 @@ export function evmHandler({
       if (!locked) {
         throw new Error("Failed to parse log");
       }
-      const nftDetails = await this.nftData(
-        provider as unknown as Signer,
-        {},
-        locked.args.tokenId,
-        locked.args.sourceNftContractAddress,
-      );
       const fee = await storage.chainFee(locked.args.destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(
         locked.args.destinationChain,
+      );
+      const data = await this.nftData(
+        locked.args.tokenId,
+        locked.args.sourceNftContractAddress,
+        {},
       );
       return {
         destinationChain: locked.args.destinationChain,
@@ -82,22 +80,22 @@ export function evmHandler({
         nftType: locked.args.nftType,
         sourceChain: locked.args.sourceChain,
         fee: fee.toString(),
-        metadata: nftDetails.metadata,
-        name: nftDetails.name,
-        symbol: nftDetails.symbol,
-        royalty: nftDetails.royalty.toString(),
         royaltyReceiver: royaltyReceiver,
         transactionHash: txHash,
+        metadata: data.metadata,
+        name: data.name,
+        symbol: data.symbol,
+        royalty: data.royalty.toString(),
       };
     },
     getBalance(signer) {
       return provider.getBalance(signer);
     },
-    async nftData(signer, args, tokenId, contract) {
-      const nft = ERC721Royalty__factory.connect(contract, signer);
+    async nftData(tokenId, contract, overrides) {
+      const nft = ERC721Royalty__factory.connect(contract, provider);
       return {
         name: await nft.name({
-          ...args,
+          ...overrides,
         }),
         symbol: await nft.symbol(),
         royalty: (await nft.royaltyInfo("", royaltySalePrice))[1],

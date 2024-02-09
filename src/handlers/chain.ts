@@ -1,3 +1,5 @@
+import { SupportedChain, SupportedSftChain } from "../factory";
+
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
@@ -18,7 +20,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
   lockNft: (
     signer: Signer,
     sourceNft: string,
-    destinationChain: string,
+    destinationChain: SupportedChain,
     to: string,
     tokenId: bigint,
     extraArgs: ExtraArgs,
@@ -113,26 +115,28 @@ export type TNFTData = {
 
 /**
  * Represents a type that defines a function to retrieve NFT data.
- * @template Signer The type of the signer.
  * @template ExtraArgs The type of the extra arguments.
  * @template GetNftArgs The type of the arguments for retrieving NFT data.
  */
-export type TGetNFTData<Signer, ExtraArgs, GetNftArgs extends unknown[]> = {
+export type TGetNFTData<ExtraArgs> = {
   /**
    * The function that retrieves the NFT Data
+   * @param tokenId The id of the NFT
+   * @param contract The address of the NFT contract
    * @param signer Signer that will send the query transaction
-   * @param extraArgs ExtraArgs required to retrieve NFT data
-   * @param args Arguments required to retrieve NFT data. Must be a Tuple
    * @returns
    */
   nftData: (
-    signer: Signer,
+    tokenId: string,
+    contract: string,
     extraArgs: ExtraArgs,
-    ...args: GetNftArgs
   ) => Promise<TNFTData>;
 };
 
-type INftTransferDetailsObject = {
+/**
+ * Represents the details of a claim for an NFT/SFT.
+ */
+export type TNftTransferDetailsObject = {
   tokenId: string;
   sourceChain: string;
   destinationChain: string;
@@ -149,8 +153,16 @@ type INftTransferDetailsObject = {
   fee: string;
 };
 
+/**
+ * Represents a type that defines a function to get claim data.
+ */
 export type TGetClaimData = {
-  getClaimData: (txHash: string) => Promise<INftTransferDetailsObject>;
+  /**
+   * Retrieves claim data for a given transaction hash.
+   * @param txHash - The transaction hash.
+   * @returns A promise that resolves to an object containing claim data @type {TNftTransferDetailsObject}.
+   */
+  getClaimData: (txHash: string) => Promise<TNftTransferDetailsObject>;
 };
 
 /**
@@ -174,7 +186,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
   lockSft: (
     signer: Signer,
     sourceNft: string,
-    destinationChain: string,
+    destinationChain: SupportedSftChain,
     to: string,
     tokenId: bigint,
     amt: bigint,
@@ -210,55 +222,44 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Non Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
  * @template ClaimData The type of the claim data. It could be anything that might be required to claim an NFT depending on the chain.
- * @template GetNFTArgs The type of the arguments for retrieving NFT data. It has to be a named tuple
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TSingularNftChain<
-  Signer,
-  ClaimData,
-  GetNFTArgs extends unknown[],
-  ExtraArgs,
-  RetTx,
-> = TApproveNFT<Signer, ExtraArgs, RetTx> &
-  TLockNFT<Signer, ExtraArgs, RetTx> &
-  TGetNFTData<Signer, ExtraArgs, GetNFTArgs> &
-  TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
-  TGetBalance<Signer, ExtraArgs> &
-  TGetClaimData;
+export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx> =
+  TApproveNFT<Signer, ExtraArgs, RetTx> &
+    TLockNFT<Signer, ExtraArgs, RetTx> &
+    TGetNFTData<ExtraArgs> &
+    TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
+    TGetBalance<Signer, ExtraArgs> &
+    TGetClaimData;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
  * @template ClaimData The type of the claim data. It could be anything that might be required to claim an NFT depending on the chain.
- * @template GetNFTArgs The type of the arguments for retrieving NFT data. It has to be a named tuple
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TMultipleNftChain<
+export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx> = TLockSFT<
   Signer,
-  ClaimData,
-  GetNFTArgs extends unknown[],
   ExtraArgs,
-  RetTx,
-> = TLockSFT<Signer, ExtraArgs, RetTx> &
+  RetTx
+> &
   TClaimSFT<Signer, ClaimData, ExtraArgs, RetTx> &
-  TGetNFTData<Signer, ExtraArgs, GetNFTArgs> &
+  TGetNFTData<ExtraArgs> &
   TGetBalance<Signer, ExtraArgs>;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens or Non Fungible Tokens. It is a combination of all the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
  * @template ClaimData The type of the claim data. It could be anything that might be required to claim an NFT depending on the chain.
- * @template GetNFTArgs The type of the arguments for retrieving NFT data. It has to be a named tuple
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TNftChain<
+export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx> = TSingularNftChain<
   Signer,
   ClaimData,
-  GetNFTArgs extends unknown[],
   ExtraArgs,
-  RetTx,
-> = TSingularNftChain<Signer, ClaimData, GetNFTArgs, ExtraArgs, RetTx> &
-  TMultipleNftChain<Signer, ClaimData, GetNFTArgs, ExtraArgs, RetTx>;
+  RetTx
+> &
+  TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx>;

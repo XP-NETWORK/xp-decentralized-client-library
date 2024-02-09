@@ -45,7 +45,6 @@ export type TezosClaimArgs = {
 export type TezosHandler = TSingularNftChain<
   Signer,
   TezosClaimArgs,
-  [tokenId: bigint, contract: string],
   Partial<SendParams>,
   TransactionOperation
 >;
@@ -110,12 +109,7 @@ export function tezosHandler({
       } = data;
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      const nft = await this.nftData(
-        Tezos as unknown as Signer,
-        {},
-        tokenId,
-        sourceNftContractAddress,
-      );
+      const nft = await this.nftData(tokenId, sourceNftContractAddress, {});
       return {
         tokenId,
         destinationChain,
@@ -202,8 +196,8 @@ export function tezosHandler({
 
       return tx;
     },
-    async nftData(_, _a, tokenId, contract) {
-      const tokenMd = await getNftTokenMetaData(contract, tokenId);
+    async nftData(tokenId, contract) {
+      const tokenMd = await getNftTokenMetaData(contract, BigInt(tokenId));
       let name = "NTEZOS";
       try {
         Tezos.addExtension(new Tzip16Module());
@@ -228,7 +222,10 @@ export function tezosHandler({
       }
       let royalty = 0n;
       try {
-        const metaDataOrURL = await getNftTokenMetaData(contract, tokenId);
+        const metaDataOrURL = await getNftTokenMetaData(
+          contract,
+          BigInt(tokenId),
+        );
         const isUrl = URLCanParse(metaDataOrURL);
         let metaData: {
           royalties: {
