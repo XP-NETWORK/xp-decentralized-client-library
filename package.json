@@ -1,8 +1,9 @@
 {
   "name": "fp",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "imsk17",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
