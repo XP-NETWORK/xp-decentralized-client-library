@@ -194,7 +194,12 @@ export function tezosHandler({
         })
         .send({ ...extraArgs });
 
-      return tx;
+      return {
+        ...tx,
+        hash() {
+          return tx.hash;
+        },
+      };
     },
     async nftData(tokenId, contract) {
       const tokenMd = await getNftTokenMetaData(contract, BigInt(tokenId));

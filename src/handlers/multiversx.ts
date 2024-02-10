@@ -214,7 +214,12 @@ export function multiversxHandler({
       tx3.applySignature(transactionSignature);
 
       const txHash = await provider.sendTransaction(tx3);
-      return txHash;
+      return {
+        txHash,
+        hash() {
+          return txHash;
+        },
+      };
     },
     async claimNft(signer, claimData, _, sig) {
       const userAddress = new Address(signer.getAddress().bech32());

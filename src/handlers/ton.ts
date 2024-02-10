@@ -142,6 +142,11 @@ export function tonHandler({
           tokenId: BigInt(tokenId),
         },
       );
+      return {
+        hash() {
+          return "";
+        },
+      };
     },
     async approveNft(_signer, _tokenId, _contract) {},
     async nftData(_tokenId, contract, _overrides) {

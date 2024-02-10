@@ -138,7 +138,7 @@ export function evmHandler({
         extraArgs,
       );
     },
-    lockNft(
+    async lockNft(
       signer,
       sourceNftAddress,
       destinationChain,
@@ -147,13 +147,19 @@ export function evmHandler({
       extraArgs,
     ) {
       const contract = Bridge__factory.connect(bridge, signer);
-      return contract.lock721(
+      const result = await contract.lock721(
         tokenId.toString(),
         destinationChain,
         to,
         sourceNftAddress,
         extraArgs,
       );
+      return {
+        ...result,
+        hash() {
+          return result.hash;
+        },
+      };
     },
   };
 }

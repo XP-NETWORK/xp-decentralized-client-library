@@ -283,7 +283,12 @@ export function secretHandler({
           ...extraArgs,
         },
       );
-      return tx;
+      return {
+        ...tx,
+        hash() {
+          return tx.transactionHash;
+        },
+      };
     },
   };
 }
