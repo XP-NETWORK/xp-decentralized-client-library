@@ -129,6 +129,9 @@ export function tonHandler({
       throw new Error("No locked event found");
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
+      if (!signer.address) {
+        throw new Error("No Address present in signer");
+      }
       await bridge.send(
         signer,
         {
@@ -142,9 +145,38 @@ export function tonHandler({
           tokenId: BigInt(tokenId),
         },
       );
+
+      let foundTx = false;
+      let hash = "";
+      let retries = 0;
+      while (!foundTx && retries < 5) {
+        await new Promise<undefined>((e) => setTimeout(e, 2000));
+        const tx = (
+          await client.getTransactions(signer.address, { limit: 1 })
+        )[0];
+        for (let i = 0; i < tx.outMessages.size; i++) {
+          const msg = tx.outMessages.get(i);
+          if (!msg) {
+            continue;
+          }
+          if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+            continue;
+          }
+          const log = loadLockedEvent(msg.body.asSlice());
+          if (
+            destinationChain === log.destinationChain &&
+            to === log.destinationUserAddress
+          ) {
+            foundTx = true;
+            hash = tx.hash().toString("hex");
+          }
+        }
+        retries++;
+      }
+
       return {
         hash() {
-          return "";
+          return hash;
         },
       };
     },
