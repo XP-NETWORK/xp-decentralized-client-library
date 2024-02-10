@@ -16,7 +16,9 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockNft: (signer: Signer, sourceNft: string, destinationChain: SupportedChain, to: string, tokenId: bigint, extraArgs: ExtraArgs) => Promise<RetTx>;
+    lockNft: (signer: Signer, sourceNft: string, destinationChain: SupportedChain, to: string, tokenId: bigint, extraArgs: ExtraArgs) => Promise<RetTx | {
+        hash: () => string;
+    }>;
 };
 /**
  * Represents a type definition for the `approveNft` function.
@@ -152,7 +154,9 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockSft: (signer: Signer, sourceNft: string, destinationChain: SupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs: ExtraArgs) => Promise<RetTx>;
+    lockSft: (signer: Signer, sourceNft: string, destinationChain: SupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs: ExtraArgs) => Promise<RetTx | {
+        hash: () => string;
+    }>;
 };
 /**
  * Represents a function that claims an SFT (locked on a source chain) on the chain using the claim data.
