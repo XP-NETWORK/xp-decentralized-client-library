@@ -195,7 +195,7 @@ export function tezosHandler({
         .send({ ...extraArgs });
 
       return {
-        ...tx,
+        tx,
         hash() {
           return tx.hash;
         },

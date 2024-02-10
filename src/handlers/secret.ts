@@ -253,7 +253,7 @@ export function secretHandler({
           gasLimit: 200_000,
         },
       );
-      return tx;
+      return { tx, hash: () => tx.transactionHash };
     },
     async lockSft(
       signer,
@@ -284,7 +284,7 @@ export function secretHandler({
         },
       );
       return {
-        ...tx,
+        tx,
         hash() {
           return tx.transactionHash;
         },

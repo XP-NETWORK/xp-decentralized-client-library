@@ -175,6 +175,7 @@ export function tonHandler({
       }
 
       return {
+        tx: undefined,
         hash() {
           return hash;
         },

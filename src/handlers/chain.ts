@@ -24,7 +24,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
     to: string,
     tokenId: bigint,
     extraArgs: ExtraArgs,
-  ) => Promise<RetTx | { hash: () => string }>;
+  ) => Promise<{ tx: RetTx; hash: () => string }>;
 };
 
 /**
@@ -191,7 +191,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
     tokenId: bigint,
     amt: bigint,
     extraArgs: ExtraArgs,
-  ) => Promise<RetTx | { hash: () => string }>;
+  ) => Promise<{ tx: RetTx; hash: () => string }>;
 };
 
 /**

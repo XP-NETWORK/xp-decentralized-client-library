@@ -215,7 +215,7 @@ export function multiversxHandler({
 
       const txHash = await provider.sendTransaction(tx3);
       return {
-        txHash,
+        tx: txHash,
         hash() {
           return txHash;
         },

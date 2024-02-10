@@ -102,7 +102,7 @@ export function evmHandler({
         metadata: await nft.tokenURI(tokenId),
       };
     },
-    lockSft(
+    async lockSft(
       signer,
       sourceNftAddress,
       destinationChain,
@@ -112,7 +112,7 @@ export function evmHandler({
       extraArgs,
     ) {
       const contract = Bridge__factory.connect(bridge, signer);
-      return contract.lock1155(
+      const tx = await contract.lock1155(
         tokenId.toString(),
         destinationChain,
         to,
@@ -120,6 +120,12 @@ export function evmHandler({
         amt,
         extraArgs,
       );
+      return {
+        tx,
+        hash() {
+          return tx.hash;
+        },
+      };
     },
     async approveNft(signer, tokenId, contract, extraArgs) {
       return ERC721Royalty__factory.connect(contract, signer).approve(
@@ -147,7 +153,7 @@ export function evmHandler({
       extraArgs,
     ) {
       const contract = Bridge__factory.connect(bridge, signer);
-      const result = await contract.lock721(
+      const tx = await contract.lock721(
         tokenId.toString(),
         destinationChain,
         to,
@@ -155,9 +161,9 @@ export function evmHandler({
         extraArgs,
       );
       return {
-        ...result,
+        tx,
         hash() {
-          return result.hash;
+          return tx.hash;
         },
       };
     },
