@@ -181,6 +181,9 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
 export type TGetProvider<T> = {
     getProvider: () => T;
 };
+export type TMapTransferDetailsToChainClaimData<To> = {
+    transform: (input: TNftTransferDetailsObject) => To;
+};
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Non Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
@@ -188,7 +191,7 @@ export type TGetProvider<T> = {
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider>;
+export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider> & TMapTransferDetailsToChainClaimData<ClaimData>;
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
