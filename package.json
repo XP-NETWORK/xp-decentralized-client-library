@@ -26,10 +26,11 @@
     "@taquito/tzip16": "^19.0.0",
     "@taquito/utils": "^19.0.0",
     "@ton/core": "^0.54.0",
+    "@ton/crypto": "^3.2.0",
     "@ton/ton": "^13.9.0",
     "@tzkt/sdk-api": "^2.2.1",
     "axios": "^1.6.7",
     "ethers": "^6.10.0",
-    "secretjs": "^1.12.4"
+    "secretjs": "=1.12.3"
   }
 }

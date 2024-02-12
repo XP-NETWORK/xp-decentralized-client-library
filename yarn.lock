@@ -425,6 +425,22 @@
   dependencies:
     symbol.inspect "1.0.1"
 
+"@ton/crypto-primitives@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ton/crypto-primitives/-/crypto-primitives-2.0.0.tgz#446256146d64fcec6e3f21d9f40b5148640329cc"
+  integrity sha512-wttiNClmGbI6Dfy/8oyNnsIV0b/qYkCJz4Gn4eP62lJZzMtVQ94Ko7nikDX1EfYHkLI1xpOitWpW+8ZuG6XtDg==
+  dependencies:
+    jssha "3.2.0"
+
+"@ton/crypto@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ton/crypto/-/crypto-3.2.0.tgz#8fcb36cc93eafd05249c847d1f4ad39cf2565e46"
+  integrity sha512-50RkwReEuV2FkxSZ8ht/x9+n0ZGtwRKGsJ0ay4I/HFhkYVG/awIIBQeH0W4j8d5lADdO5h01UtX8PJ8AjiejjA==
+  dependencies:
+    "@ton/crypto-primitives" "2.0.0"
+    jssha "3.2.0"
+    tweetnacl "1.0.3"
+
 "@ton/ton@^13.9.0":
   version "13.9.0"
   resolved "https://registry.yarnpkg.com/@ton/ton/-/ton-13.9.0.tgz#18b0a447d49c84b30997bda385af30278bac8033"
@@ -1022,6 +1038,11 @@ jsonc-parser@^3.2.0:
   resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-3.2.1.tgz#031904571ccf929d7670ee8c547545081cb37f1a"
   integrity sha512-AilxAyFOAcK5wA1+LeaySVBrHsGQvUFCDWXKpZjzaL0PqW+xfBOttn8GNtWKFWqneyMZj41MWF9Kl6iPWLwgOA==
 
+jssha@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/jssha/-/jssha-3.2.0.tgz#88ec50b866dd1411deaddbe6b3e3692e4c710f16"
+  integrity sha512-QuruyBENDWdN4tZwJbQq7/eAK85FqrI4oDbXjy5IBhYD+2pTJyBUWZe8ctWaCkrV0gy6AaelgOZZBMeswEa/6Q==
+
 keccak@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.1.tgz#ae30a0e94dbe43414f741375cff6d64c8bea0bff"
@@ -1378,10 +1399,10 @@ scryptsy@2.1.0:
   resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.1.0.tgz#8d1e8d0c025b58fdd25b6fa9a0dc905ee8faa790"
   integrity sha512-1CdSqHQowJBnMAFyPEBRfqag/YP9OF394FV+4YREIJX4ljD7OxvQRDayyoyyCk+senRjSkP6VnUNQmVQqB6g7w==
 
-secretjs@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.12.4.tgz#0bc1930137a936246e976481808b129d12d7af9d"
-  integrity sha512-DH16hYTPa4NNxo1T/tY2GyJRte7rgp5kRy8k1pwaPK59WtbQdTBdPQQsEI2L5T7NDVEUXbdbTqyQkt5usN4KcQ==
+secretjs@=1.12.3:
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.12.3.tgz#45bdbfe7c37f59e02aba4d9c88b9bcb5a212d34d"
+  integrity sha512-zvvllDGU4f/nrgYCqDFahZHlzPqwaNW1GWkvSaedidWDvOI9TB4/WEbz6ODLIM/OQnqD4K8sp5HVgDxP7Cl+nQ==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
