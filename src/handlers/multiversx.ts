@@ -53,7 +53,8 @@ export type TMultiversXHandler = TSingularNftChain<
   MultiversXSigner,
   ClaimStruct,
   unknown,
-  string
+  string,
+  INetworkProvider
 >;
 
 export type TMultiversXParams = {
@@ -118,6 +119,9 @@ export function multiversxHandler({
         metadata: metaData,
         royalty: BigInt(royalties),
       };
+    },
+    getProvider() {
+      return provider;
     },
     async approveNft(_signer, _tokenId, _contract) {
       return Promise.resolve("Not Required for MultiversX");

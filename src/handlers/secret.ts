@@ -28,7 +28,8 @@ export type TSecretHandler = TNftChain<
   SecretNetworkClient,
   SecretClaimData,
   TxOptions,
-  TxResponse
+  TxResponse,
+  SecretNetworkClient
 >;
 
 export type TSecretParams = {
@@ -46,6 +47,9 @@ export function secretHandler({
   bridgeCodeHash,
 }: TSecretParams): TSecretHandler {
   return {
+    getProvider() {
+      return provider;
+    },
     async claimNft(signer, claimData, extraArgs, sigs) {
       const claim721 = {
         claim721: {

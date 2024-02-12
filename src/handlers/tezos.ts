@@ -46,7 +46,8 @@ export type TTezosHandler = TSingularNftChain<
   Signer,
   TezosClaimArgs,
   Partial<SendParams>,
-  TransactionOperation
+  TransactionOperation,
+  TezosToolkit
 >;
 
 export type TTezosParams = {
@@ -70,6 +71,9 @@ export function tezosHandler({
     return bytes2Char(metaDataInHex);
   };
   return {
+    getProvider() {
+      return Tezos;
+    },
     async getBalance(signer, _) {
       return BigInt(
         (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),

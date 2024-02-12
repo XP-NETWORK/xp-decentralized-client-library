@@ -2,6 +2,7 @@ import {
   ContractTransactionResponse,
   JsonRpcProvider,
   Overrides,
+  Provider,
   Signer,
 } from "ethers";
 import {
@@ -16,7 +17,8 @@ export type TEvmHandler = TNftChain<
   Signer,
   Bridge.ClaimDataStruct,
   Overrides,
-  ContractTransactionResponse
+  ContractTransactionResponse,
+  Provider
 >;
 
 export type TEvmParams = {
@@ -41,6 +43,9 @@ export function evmHandler({
         sigs.map((e) => e.signature),
         extraArgs,
       );
+    },
+    getProvider() {
+      return provider;
     },
     async getClaimData(txHash) {
       const receipt = await provider.getTransactionReceipt(txHash);
@@ -98,7 +103,7 @@ export function evmHandler({
           ...overrides,
         }),
         symbol: await nft.symbol(),
-        royalty: (await nft.royaltyInfo("", royaltySalePrice))[1],
+        royalty: (await nft.royaltyInfo(tokenId, royaltySalePrice))[1],
         metadata: await nft.tokenURI(tokenId),
       };
     },

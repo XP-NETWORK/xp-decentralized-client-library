@@ -218,6 +218,10 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
   ) => Promise<Ret>;
 };
 
+export type TGetProvider<T> = {
+  getProvider: () => T;
+};
+
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Non Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
@@ -225,13 +229,14 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx> =
+export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
   TApproveNFT<Signer, ExtraArgs, RetTx> &
     TLockNFT<Signer, ExtraArgs, RetTx> &
     TGetNFTData<ExtraArgs> &
     TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> &
     TGetBalance<Signer, ExtraArgs> &
-    TGetClaimData;
+    TGetClaimData &
+    TGetProvider<Provider>;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
@@ -240,14 +245,12 @@ export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx> =
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx> = TLockSFT<
-  Signer,
-  ExtraArgs,
-  RetTx
-> &
-  TClaimSFT<Signer, ClaimData, ExtraArgs, RetTx> &
-  TGetNFTData<ExtraArgs> &
-  TGetBalance<Signer, ExtraArgs>;
+export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
+  TLockSFT<Signer, ExtraArgs, RetTx> &
+    TClaimSFT<Signer, ClaimData, ExtraArgs, RetTx> &
+    TGetNFTData<ExtraArgs> &
+    TGetBalance<Signer, ExtraArgs> &
+    TGetProvider<Provider>;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens or Non Fungible Tokens. It is a combination of all the types defined above.
@@ -256,10 +259,6 @@ export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx> = TLockSFT<
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx> = TSingularNftChain<
-  Signer,
-  ClaimData,
-  ExtraArgs,
-  RetTx
-> &
-  TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx>;
+export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
+  TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> &
+    TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider>;

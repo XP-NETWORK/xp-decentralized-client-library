@@ -14,7 +14,8 @@ export type TTonHandler = TSingularNftChain<
   Sender,
   ClaimData,
   unknown,
-  undefined
+  undefined,
+  TonClient
 >;
 
 export type TTonParams = {
@@ -36,6 +37,9 @@ export function tonHandler({
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
   return {
+    getProvider() {
+      return client;
+    },
     getBalance(signer) {
       return client.getBalance(
         signer.address ?? raise("No Address present in signer"),
