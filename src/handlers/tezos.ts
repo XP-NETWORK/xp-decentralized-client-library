@@ -74,6 +74,24 @@ export function tezosHandler({
     getProvider() {
       return Tezos;
     },
+    transform(input) {
+      return {
+        dest_address: tas.address(input.destinationUserAddress),
+        dest_chain: input.destinationChain,
+        fee: tas.mutez(input.fee),
+        metadata: input.metadata,
+        name: input.name,
+        nft_type: input.nftType,
+        royalty: tas.nat(input.royalty),
+        royalty_receiver: tas.address(input.royaltyReceiver),
+        source_chain: input.sourceChain,
+        source_nft_contract_address: input.sourceNftContractAddress,
+        symbol: input.symbol,
+        token_amount: tas.nat(input.tokenAmount),
+        token_id: tas.nat(input.tokenId),
+        transaction_hash: input.transactionHash,
+      };
+    },
     async getBalance(signer, _) {
       return BigInt(
         (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),

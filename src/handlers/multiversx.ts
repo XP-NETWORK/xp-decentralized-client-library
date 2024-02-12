@@ -123,6 +123,25 @@ export function multiversxHandler({
     getProvider() {
       return provider;
     },
+    transform(input) {
+      return {
+        attrs: input.metadata,
+        destinationChain: input.destinationChain,
+        destinationUserAddress: input.destinationUserAddress,
+        fee: input.fee,
+        metadata: input.metadata,
+        name: input.name,
+        nftType: input.nftType,
+        royalty: input.royalty,
+        royaltyReceiver: input.royaltyReceiver,
+        sourceChain: input.sourceChain,
+        sourceNftContractAddress: input.sourceNftContractAddress,
+        symbol: input.symbol,
+        tokenAmount: input.tokenAmount,
+        tokenId: input.tokenId,
+        transactionHash: input.transactionHash,
+      };
+    },
     async approveNft(_signer, _tokenId, _contract) {
       return Promise.resolve("Not Required for MultiversX");
     },

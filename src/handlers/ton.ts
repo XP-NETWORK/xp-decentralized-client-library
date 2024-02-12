@@ -132,6 +132,78 @@ export function tonHandler({
       }
       throw new Error("No locked event found");
     },
+    transform(input) {
+      let destinationAddress: Address;
+      try {
+        destinationAddress = Address.parseFriendly(
+          input.destinationUserAddress,
+        ).address;
+      } catch (e) {
+        destinationAddress = Address.parseFriendly(
+          input.royaltyReceiver,
+        ).address;
+      }
+      let sourceNftContractAddress_ = beginCell()
+        .storeSlice(
+          beginCell()
+            .storeStringTail(input.sourceNftContractAddress)
+            .endCell()
+            .asSlice(),
+        )
+        .endCell();
+      try {
+        sourceNftContractAddress_ = beginCell()
+          .storeSlice(
+            beginCell()
+              .storeAddress(
+                Address.parseFriendly(input.sourceNftContractAddress).address,
+              )
+              .endCell()
+              .asSlice(),
+          )
+          .endCell();
+      } catch (e) {
+        console.log("Not Native TON Address");
+      }
+      return {
+        $$type: "ClaimData",
+        data1: {
+          $$type: "ClaimData1",
+          destinationChain: input.destinationChain,
+          destinationUserAddress: destinationAddress,
+          sourceChain: input.sourceChain,
+          tokenAmount: BigInt(input.tokenAmount),
+          tokenId: BigInt(input.tokenId),
+        },
+        data2: {
+          $$type: "ClaimData2",
+          name: input.name,
+          nftType: input.nftType,
+          symbol: input.symbol,
+        },
+        data3: {
+          $$type: "ClaimData3",
+          fee: BigInt(input.fee),
+          metadata: input.metadata,
+          royaltyReceiver: Address.parseFriendly(input.royaltyReceiver).address,
+          sourceNftContractAddress: sourceNftContractAddress_,
+        },
+        data4: {
+          $$type: "ClaimData4",
+          newContent: beginCell()
+            .storeInt(0x01, 8)
+            .storeStringRefTail(input.metadata)
+            .endCell(),
+          royalty: {
+            $$type: "RoyaltyParams",
+            denominator: 10000n,
+            destination: Address.parseFriendly(input.royaltyReceiver).address,
+            numerator: BigInt(input.royalty),
+          },
+          transactionHash: input.transactionHash,
+        },
+      };
+    },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
       if (!signer.address) {
         throw new Error("No Address present in signer");

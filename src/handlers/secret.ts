@@ -85,7 +85,24 @@ export function secretHandler({
       );
       return tx;
     },
-
+    transform(input) {
+      return {
+        destination_chain: input.destinationChain,
+        destination_user_address: input.destinationUserAddress,
+        fee: input.fee,
+        name: input.name,
+        symbol: input.symbol,
+        metadata: input.metadata,
+        royalty: parseInt(input.royalty),
+        nft_type: input.nftType,
+        royalty_receiver: input.royaltyReceiver,
+        source_chain: input.sourceChain,
+        source_nft_contract_address: input.sourceNftContractAddress,
+        token_amount: input.tokenAmount,
+        token_id: input.tokenId,
+        transaction_hash: input.transactionHash,
+      };
+    },
     async getClaimData(txHash) {
       const eventId = "LockedEventInfo";
       const tx = await provider.query.getTx(txHash);

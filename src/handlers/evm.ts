@@ -96,6 +96,9 @@ export function evmHandler({
     getBalance(signer) {
       return provider.getBalance(signer);
     },
+    transform(input) {
+      return { ...input };
+    },
     async nftData(tokenId, contract, overrides) {
       const nft = ERC721Royalty__factory.connect(contract, provider);
       return {
