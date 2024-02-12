@@ -3,13 +3,13 @@ import { multiversxHandler } from "../handlers/multiversx";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
-import { ChainParams } from "./config";
+import { TChainParams } from "./config";
 import {
-  InferChainH,
-  InferChainParam,
-  ParamMap,
-  SupportedChain,
   TChainFactory,
+  TChainInfo,
+  TInferChainH,
+  TParamMap,
+  TSupportedChain,
 } from "./type-utils";
 
 export namespace Chain {
@@ -21,8 +21,8 @@ export namespace Chain {
   export const TEZOS = "TEZOS";
 }
 
-function mapNonceToParams(chainParams: Partial<ChainParams>): ParamMap {
-  const cToP: ParamMap = new Map();
+function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
+  const cToP: TParamMap = new Map();
   cToP.set(Chain.MULTIVERSX, chainParams.multiversxParams);
   cToP.set(Chain.BSC, chainParams.bscParams);
   cToP.set(Chain.ETH, chainParams.ethParams);
@@ -32,9 +32,9 @@ function mapNonceToParams(chainParams: Partial<ChainParams>): ParamMap {
   return cToP;
 }
 
-export function ChainFactory(cp: Partial<ChainParams>): TChainFactory {
+export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
   const map = mapNonceToParams(cp);
-  const helpers = new Map<SupportedChain, InferChainH<SupportedChain>>();
+  const helpers = new Map<TSupportedChain, TInferChainH<TSupportedChain>>();
   return {
     async inner(chain) {
       const helper = helpers.get(chain);
@@ -50,7 +50,7 @@ export function ChainFactory(cp: Partial<ChainParams>): TChainFactory {
     async getClaimData(chain, txHash) {
       const data = await chain.getClaimData(txHash);
       const sc = await this.inner(
-        data.sourceChain as unknown as SupportedChain,
+        data.sourceChain as unknown as TSupportedChain,
       );
       const ogNftData = await sc.nftData(
         data.tokenId,
@@ -66,16 +66,7 @@ export function ChainFactory(cp: Partial<ChainParams>): TChainFactory {
   };
 }
 
-type ChainData<T extends SupportedChain> = {
-  constructor: (p: InferChainParam<T>) => InferChainH<T>;
-};
-
-type ChainInfo = {
-  set<T extends SupportedChain>(k: T, v: ChainData<T> | undefined): void;
-  get<T extends SupportedChain>(k: T): ChainData<T> | undefined;
-} & Map<SupportedChain, ChainData<SupportedChain>>;
-
-export const CHAIN_INFO: ChainInfo = new Map();
+export const CHAIN_INFO: TChainInfo = new Map();
 
 CHAIN_INFO.set(Chain.BSC, {
   constructor: evmHandler,

@@ -12,14 +12,14 @@ import {
 } from "../contractsTypes";
 import type { TNftChain } from "./chain";
 
-export type EvmHandler = TNftChain<
+export type TEvmHandler = TNftChain<
   Signer,
   Bridge.ClaimDataStruct,
   Overrides,
   ContractTransactionResponse
 >;
 
-export type EvmParams = {
+export type TEvmParams = {
   identifier: string;
   provider: JsonRpcProvider;
   bridge: string;
@@ -32,7 +32,7 @@ export function evmHandler({
   bridge,
   royaltySalePrice,
   storage,
-}: EvmParams): EvmHandler {
+}: TEvmParams): TEvmHandler {
   return {
     claimNft(wallet, claimData, extraArgs, sigs) {
       const contract = Bridge__factory.connect(bridge, wallet);

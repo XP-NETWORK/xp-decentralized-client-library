@@ -1,49 +1,64 @@
-import {
+import type {
   TClaimSFT,
   TGetClaimData,
   TNftTransferDetailsObject,
 } from "../handlers";
-import { EvmHandler, EvmParams } from "../handlers/evm";
-import { MultiversXHandler, MultiversXParams } from "../handlers/multiversx";
-import { SecretHandler, SecretParams } from "../handlers/secret";
-import { TezosHandler, TezosParams } from "../handlers/tezos";
-import { TonHandler, TonParams } from "../handlers/ton";
+import type { TEvmHandler, TEvmParams } from "../handlers/evm";
+import type {
+  TMultiversXHandler,
+  TMultiversXParams,
+} from "../handlers/multiversx";
+import type { TSecretHandler, TSecretParams } from "../handlers/secret";
+import type { TTezosHandler, TTezosParams } from "../handlers/tezos";
+import type { TTonHandler, TTonParams } from "../handlers/ton";
 
-export type EvmMeta = [EvmHandler, EvmParams];
-export type MultiversXMeta = [MultiversXHandler, MultiversXParams];
-export type TezosMeta = [TezosHandler, TezosParams];
-export type SecretMeta = [SecretHandler, SecretParams];
-export type TonMeta = [TonHandler, TonParams];
+export type TEvmMeta = [TEvmHandler, TEvmParams];
+export type TMultiversXMeta = [TMultiversXHandler, TMultiversXParams];
+export type TTezosMeta = [TTezosHandler, TTezosParams];
+export type TSecretMeta = [TSecretHandler, TSecretParams];
+export type TTonMeta = [TTonHandler, TTonParams];
 
 export type MetaMap = {
-  BSC: EvmMeta;
-  ETH: EvmMeta;
-  TEZOS: TezosMeta;
-  TON: TonMeta;
-  SECRET: SecretMeta;
-  MULTIVERSX: MultiversXMeta;
+  BSC: TEvmMeta;
+  ETH: TEvmMeta;
+  TEZOS: TTezosMeta;
+  TON: TTonMeta;
+  SECRET: TSecretMeta;
+  MULTIVERSX: TMultiversXMeta;
 };
 
-export type SupportedChain = keyof MetaMap;
-export type SupportedSftChain = keyof {
+export type TSupportedChain = keyof MetaMap;
+export type TSupportedSftChain = keyof {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  [k in SupportedChain as MetaMap[k][0] extends TClaimSFT<any, any, any, any>
+  [k in TSupportedChain as MetaMap[k][0] extends TClaimSFT<any, any, any, any>
     ? k
     : never]: k;
 };
 
-export type InferChainParam<K extends SupportedChain> = MetaMap[K][1];
-export type InferChainH<K extends SupportedChain> = MetaMap[K][0];
+export type TInferChainParam<K extends TSupportedChain> = MetaMap[K][1];
+export type TInferChainH<K extends TSupportedChain> = MetaMap[K][0];
 
 export type TChainFactory = {
-  inner: <T extends SupportedChain>(chain: T) => Promise<InferChainH<T>>;
+  inner: <T extends TSupportedChain>(chain: T) => Promise<TInferChainH<T>>;
   getClaimData: (
     chain: TGetClaimData,
     txHash: string,
   ) => Promise<TNftTransferDetailsObject>;
 };
 
-export type ParamMap = {
-  set<T extends SupportedChain>(k: T, v: InferChainParam<T> | undefined): void;
-  get<T extends SupportedChain>(k: T): InferChainParam<T> | undefined;
+export type TParamMap = {
+  set<T extends TSupportedChain>(
+    k: T,
+    v: TInferChainParam<T> | undefined,
+  ): void;
+  get<T extends TSupportedChain>(k: T): TInferChainParam<T> | undefined;
 };
+
+type TChainData<T extends TSupportedChain> = {
+  constructor: (p: TInferChainParam<T>) => TInferChainH<T>;
+};
+
+export type TChainInfo = {
+  set<T extends TSupportedChain>(k: T, v: TChainData<T> | undefined): void;
+  get<T extends TSupportedChain>(k: T): TChainData<T> | undefined;
+} & Map<TSupportedChain, TChainData<TSupportedChain>>;

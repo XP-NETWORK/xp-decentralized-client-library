@@ -49,14 +49,14 @@ export type ClaimStruct = {
   metadata: string;
 };
 
-export type MultiversXHandler = TSingularNftChain<
+export type TMultiversXHandler = TSingularNftChain<
   MultiversXSigner,
   ClaimStruct,
   unknown,
   string
 >;
 
-export type MultiversXParams = {
+export type TMultiversXParams = {
   provider: INetworkProvider;
   gatewayURL: string;
   bridge: string;
@@ -68,7 +68,7 @@ export function multiversxHandler({
   gatewayURL,
   bridge,
   storage,
-}: MultiversXParams): MultiversXHandler {
+}: TMultiversXParams): TMultiversXHandler {
   const abiRegistry = AbiRegistry.create(multiversXBridgeABI);
   const multiversXBridgeContract = new SmartContract({
     address: Address.fromString(bridge),

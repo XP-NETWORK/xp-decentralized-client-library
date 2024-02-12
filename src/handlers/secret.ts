@@ -23,16 +23,15 @@ export type SecretClaimData = {
   nft_type: string;
   fee: string;
 };
-export type GetNftArgs = [contract: string, tokenId: bigint];
 
-export type SecretHandler = TNftChain<
+export type TSecretHandler = TNftChain<
   SecretNetworkClient,
   SecretClaimData,
   TxOptions,
   TxResponse
 >;
 
-export type SecretParams = {
+export type TSecretParams = {
   provider: SecretNetworkClient;
   bridge: string;
   chainId: string;
@@ -45,7 +44,7 @@ export function secretHandler({
   provider,
   storage,
   bridgeCodeHash,
-}: SecretParams): SecretHandler {
+}: TSecretParams): TSecretHandler {
   return {
     async claimNft(signer, claimData, extraArgs, sigs) {
       const claim721 = {

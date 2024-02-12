@@ -10,14 +10,14 @@ import {
 import { NftCollection } from "../contractsTypes/contracts/tonNftCollection";
 import { NftItem } from "../contractsTypes/contracts/tonNftContract";
 import { TSingularNftChain } from "./chain";
-export type TonHandler = TSingularNftChain<
+export type TTonHandler = TSingularNftChain<
   Sender,
   ClaimData,
   unknown,
   undefined
 >;
 
-export type TonParams = {
+export type TTonParams = {
   client: TonClient;
   bridgeAddress: string;
   storage: BridgeStorage;
@@ -31,7 +31,7 @@ export function tonHandler({
   client,
   bridgeAddress,
   storage,
-}: TonParams): TonHandler {
+}: TTonParams): TTonHandler {
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );

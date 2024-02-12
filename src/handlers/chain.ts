@@ -1,4 +1,4 @@
-import { SupportedChain, SupportedSftChain } from "../factory";
+import { TSupportedChain, TSupportedSftChain } from "../factory";
 
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
@@ -20,7 +20,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
   lockNft: (
     signer: Signer,
     sourceNft: string,
-    destinationChain: SupportedChain,
+    destinationChain: TSupportedChain,
     to: string,
     tokenId: bigint,
     extraArgs: ExtraArgs,
@@ -186,7 +186,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
   lockSft: (
     signer: Signer,
     sourceNft: string,
-    destinationChain: SupportedSftChain,
+    destinationChain: TSupportedSftChain,
     to: string,
     tokenId: bigint,
     amt: bigint,

@@ -42,14 +42,14 @@ export type TezosClaimArgs = {
   fee: mutez;
 };
 
-export type TezosHandler = TSingularNftChain<
+export type TTezosHandler = TSingularNftChain<
   Signer,
   TezosClaimArgs,
   Partial<SendParams>,
   TransactionOperation
 >;
 
-export type TezosParams = {
+export type TTezosParams = {
   Tezos: TezosToolkit;
   bridge: string;
   storage: BridgeStorage;
@@ -59,7 +59,7 @@ export function tezosHandler({
   Tezos,
   bridge,
   storage,
-}: TezosParams): TezosHandler {
+}: TTezosParams): TTezosHandler {
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
 
