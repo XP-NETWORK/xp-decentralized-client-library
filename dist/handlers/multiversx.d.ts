@@ -24,7 +24,7 @@ export type ClaimStruct = {
     fee: string;
     metadata: string;
 };
-export type TMultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, unknown, string>;
+export type TMultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, unknown, string, INetworkProvider>;
 export type TMultiversXParams = {
     provider: INetworkProvider;
     gatewayURL: string;

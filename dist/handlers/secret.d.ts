@@ -17,7 +17,7 @@ export type SecretClaimData = {
     nft_type: string;
     fee: string;
 };
-export type TSecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, TxOptions, TxResponse>;
+export type TSecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, TxOptions, TxResponse, SecretNetworkClient>;
 export type TSecretParams = {
     provider: SecretNetworkClient;
     bridge: string;

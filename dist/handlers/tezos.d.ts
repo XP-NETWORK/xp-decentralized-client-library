@@ -18,7 +18,7 @@ export type TezosClaimArgs = {
     nft_type: string;
     fee: mutez;
 };
-export type TTezosHandler = TSingularNftChain<Signer, TezosClaimArgs, Partial<SendParams>, TransactionOperation>;
+export type TTezosHandler = TSingularNftChain<Signer, TezosClaimArgs, Partial<SendParams>, TransactionOperation, TezosToolkit>;
 export type TTezosParams = {
     Tezos: TezosToolkit;
     bridge: string;

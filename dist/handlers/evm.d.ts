@@ -1,7 +1,7 @@
-import { ContractTransactionResponse, JsonRpcProvider, Overrides, Signer } from "ethers";
+import { ContractTransactionResponse, JsonRpcProvider, Overrides, Provider, Signer } from "ethers";
 import { Bridge, BridgeStorage } from "../contractsTypes";
 import type { TNftChain } from "./chain";
-export type TEvmHandler = TNftChain<Signer, Bridge.ClaimDataStruct, Overrides, ContractTransactionResponse>;
+export type TEvmHandler = TNftChain<Signer, Bridge.ClaimDataStruct, Overrides, ContractTransactionResponse, Provider>;
 export type TEvmParams = {
     identifier: string;
     provider: JsonRpcProvider;
