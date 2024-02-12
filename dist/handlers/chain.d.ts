@@ -1,4 +1,4 @@
-import { SupportedChain, SupportedSftChain } from "../factory";
+import { TSupportedChain, TSupportedSftChain } from "../factory";
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
@@ -16,7 +16,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockNft: (signer: Signer, sourceNft: string, destinationChain: SupportedChain, to: string, tokenId: bigint, extraArgs: ExtraArgs) => Promise<{
+    lockNft: (signer: Signer, sourceNft: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, extraArgs: ExtraArgs) => Promise<{
         tx: RetTx;
         hash: () => string;
     }>;
@@ -155,7 +155,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockSft: (signer: Signer, sourceNft: string, destinationChain: SupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs: ExtraArgs) => Promise<{
+    lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs: ExtraArgs) => Promise<{
         tx: RetTx;
         hash: () => string;
     }>;

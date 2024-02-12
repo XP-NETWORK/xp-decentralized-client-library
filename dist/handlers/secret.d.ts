@@ -17,14 +17,13 @@ export type SecretClaimData = {
     nft_type: string;
     fee: string;
 };
-export type GetNftArgs = [contract: string, tokenId: bigint];
-export type SecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, TxOptions, TxResponse>;
-export type SecretParams = {
+export type TSecretHandler = TNftChain<SecretNetworkClient, SecretClaimData, TxOptions, TxResponse>;
+export type TSecretParams = {
     provider: SecretNetworkClient;
     bridge: string;
     chainId: string;
     bridgeCodeHash: string;
     storage: BridgeStorage;
 };
-export declare function secretHandler({ bridge, provider, storage, bridgeCodeHash, }: SecretParams): SecretHandler;
+export declare function secretHandler({ bridge, provider, storage, bridgeCodeHash, }: TSecretParams): TSecretHandler;
 //# sourceMappingURL=secret.d.ts.map

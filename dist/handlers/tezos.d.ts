@@ -18,13 +18,13 @@ export type TezosClaimArgs = {
     nft_type: string;
     fee: mutez;
 };
-export type TezosHandler = TSingularNftChain<Signer, TezosClaimArgs, Partial<SendParams>, TransactionOperation>;
-export type TezosParams = {
+export type TTezosHandler = TSingularNftChain<Signer, TezosClaimArgs, Partial<SendParams>, TransactionOperation>;
+export type TTezosParams = {
     Tezos: TezosToolkit;
     bridge: string;
     storage: BridgeStorage;
 };
-export declare function tezosHandler({ Tezos, bridge, storage, }: TezosParams): TezosHandler;
+export declare function tezosHandler({ Tezos, bridge, storage, }: TTezosParams): TTezosHandler;
 export declare const extractStrOrAddr: (addr: {
     str: string;
 } | {

@@ -3,20 +3,20 @@ import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
-import { EvmParams } from "../handlers/evm";
-import { MultiversXParams } from "../handlers/multiversx";
-import { SecretParams } from "../handlers/secret";
-import { TezosParams } from "../handlers/tezos";
-import { TonParams } from "../handlers/ton";
-export interface ChainParams {
-    bscParams: EvmParams;
-    ethParams: EvmParams;
-    polygonParams: EvmParams;
-    hederaParams: EvmParams;
-    tezosParams: TezosParams;
-    secretParams: SecretParams;
-    multiversxParams: MultiversXParams;
-    tonParams: TonParams;
+import { TEvmParams } from "../handlers/evm";
+import { TMultiversXParams } from "../handlers/multiversx";
+import { TSecretParams } from "../handlers/secret";
+import { TTezosParams } from "../handlers/tezos";
+import { TTonParams } from "../handlers/ton";
+export interface TChainParams {
+    bscParams: TEvmParams;
+    ethParams: TEvmParams;
+    polygonParams: TEvmParams;
+    hederaParams: TEvmParams;
+    tezosParams: TTezosParams;
+    secretParams: TSecretParams;
+    multiversxParams: TMultiversXParams;
+    tonParams: TTonParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {

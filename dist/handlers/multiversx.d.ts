@@ -24,12 +24,12 @@ export type ClaimStruct = {
     fee: string;
     metadata: string;
 };
-export type MultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, unknown, string>;
-export type MultiversXParams = {
+export type TMultiversXHandler = TSingularNftChain<MultiversXSigner, ClaimStruct, unknown, string>;
+export type TMultiversXParams = {
     provider: INetworkProvider;
     gatewayURL: string;
     bridge: string;
     storage: BridgeStorage;
 };
-export declare function multiversxHandler({ provider, gatewayURL, bridge, storage, }: MultiversXParams): MultiversXHandler;
+export declare function multiversxHandler({ provider, gatewayURL, bridge, storage, }: TMultiversXParams): TMultiversXHandler;
 //# sourceMappingURL=multiversx.d.ts.map

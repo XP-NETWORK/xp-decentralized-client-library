@@ -3,12 +3,12 @@ import { TonClient } from "@ton/ton";
 import { BridgeStorage } from "../contractsTypes";
 import { ClaimData } from "../contractsTypes/contracts/tonBridge";
 import { TSingularNftChain } from "./chain";
-export type TonHandler = TSingularNftChain<Sender, ClaimData, unknown, undefined>;
-export type TonParams = {
+export type TTonHandler = TSingularNftChain<Sender, ClaimData, unknown, undefined>;
+export type TTonParams = {
     client: TonClient;
     bridgeAddress: string;
     storage: BridgeStorage;
 };
 export declare function raise(message: string): never;
-export declare function tonHandler({ client, bridgeAddress, storage, }: TonParams): TonHandler;
+export declare function tonHandler({ client, bridgeAddress, storage, }: TTonParams): TTonHandler;
 //# sourceMappingURL=ton.d.ts.map
