@@ -113,6 +113,9 @@ export function secretHandler({
       })) as { validator_count_response: { count: number } };
       return res.validator_count_response.count;
     },
+    getStorageContract() {
+      return storage;
+    },
     async getClaimData(txHash) {
       const eventId = "LockedEventInfo";
       const tx = await provider.query.getTx(txHash);

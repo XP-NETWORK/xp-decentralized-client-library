@@ -1,3 +1,4 @@
+import { BridgeStorage } from "../contractsTypes";
 import { TSupportedChain, TSupportedSftChain } from "../factory";
 
 /**
@@ -222,6 +223,10 @@ export type TGetValidatorCount = {
   getValidatorCount: () => Promise<number>;
 };
 
+export type TGetStorage = {
+  getStorageContract: () => BridgeStorage;
+};
+
 export type TGetProvider<T> = {
   getProvider: () => T;
 };
@@ -246,7 +251,8 @@ export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
     TGetClaimData &
     TGetProvider<Provider> &
     TMapTransferDetailsToChainClaimData<ClaimData> &
-    TGetValidatorCount;
+    TGetValidatorCount &
+    TGetStorage;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.

@@ -72,6 +72,9 @@ export function tezosHandler({
     return bytes2Char(metaDataInHex);
   };
   return {
+    getStorageContract() {
+      return storage;
+    },
     getProvider() {
       return Tezos;
     },

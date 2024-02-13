@@ -99,6 +99,9 @@ export function evmHandler({
     transform(input) {
       return { ...input };
     },
+    getStorageContract() {
+      return storage;
+    },
     async getValidatorCount() {
       return Number(
         await Bridge__factory.connect(bridge, provider).validatorsCount(),

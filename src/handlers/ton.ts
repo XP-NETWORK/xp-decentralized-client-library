@@ -37,6 +37,9 @@ export function tonHandler({
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
   return {
+    getStorageContract() {
+      return storage;
+    },
     getProvider() {
       return client;
     },

@@ -140,6 +140,9 @@ export function multiversxHandler({
       const count = (firstValue ?? raise("Failed to get count")).valueOf();
       return Number(count);
     },
+    getStorageContract() {
+      return storage;
+    },
     transform(input) {
       return {
         attrs: input.metadata,
