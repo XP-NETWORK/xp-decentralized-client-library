@@ -10,6 +10,7 @@ import {
   BytesValue,
   Field,
   FieldDefinition,
+  ResultsParser,
   SmartContract,
   Struct,
   StructType,
@@ -25,6 +26,7 @@ import { UserAddress } from "@multiversx/sdk-wallet/out/userAddress";
 import axios from "axios";
 import { BridgeStorage } from "../contractsTypes";
 import { multiversXBridgeABI } from "../contractsTypes/abi";
+import { raise } from "./ton";
 
 export type MultiversXSigner = {
   sign: (message: Buffer) => Promise<Buffer>;
@@ -122,6 +124,21 @@ export function multiversxHandler({
     },
     getProvider() {
       return provider;
+    },
+    async getValidatorCount() {
+      const query = multiversXBridgeContract.createQuery({
+        func: "validatorsCount",
+      });
+      const queryResponse = await provider.queryContract(query);
+      const validatorsCountDefinition =
+        multiversXBridgeContract.getEndpoint("validatorsCount");
+
+      const { firstValue } = new ResultsParser().parseQueryResponse(
+        queryResponse,
+        validatorsCountDefinition,
+      );
+      const count = (firstValue ?? raise("Failed to get count")).valueOf();
+      return Number(count);
     },
     transform(input) {
       return {

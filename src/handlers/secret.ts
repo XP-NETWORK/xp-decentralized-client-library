@@ -103,6 +103,16 @@ export function secretHandler({
         transaction_hash: input.transactionHash,
       };
     },
+    async getValidatorCount() {
+      const res = (await provider.query.compute.queryContract({
+        contract_address: bridge,
+        code_hash: bridgeCodeHash,
+        query: {
+          get_validators_count: {},
+        },
+      })) as { validator_count_response: { count: number } };
+      return res.validator_count_response.count;
+    },
     async getClaimData(txHash) {
       const eventId = "LockedEventInfo";
       const tx = await provider.query.getTx(txHash);

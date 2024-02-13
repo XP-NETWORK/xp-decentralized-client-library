@@ -99,6 +99,11 @@ export function evmHandler({
     transform(input) {
       return { ...input };
     },
+    async getValidatorCount() {
+      return Number(
+        await Bridge__factory.connect(bridge, provider).validatorsCount(),
+      );
+    },
     async nftData(tokenId, contract, overrides) {
       const nft = ERC721Royalty__factory.connect(contract, provider);
       return {

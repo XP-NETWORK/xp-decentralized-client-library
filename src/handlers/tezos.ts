@@ -15,6 +15,7 @@ import {
   validateAddress,
 } from "@taquito/utils";
 import { BridgeStorage } from "../contractsTypes";
+import { BridgeContractType } from "../contractsTypes/tezosContractTypes/Bridge.types";
 import { NFTContractType } from "../contractsTypes/tezosContractTypes/NFT.types";
 import {
   address,
@@ -96,6 +97,11 @@ export function tezosHandler({
       return BigInt(
         (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),
       );
+    },
+    async getValidatorCount() {
+      const bc = await Tezos.contract.at<BridgeContractType>(bridge);
+      const storage = await bc.storage();
+      return storage.validators_count.toNumber();
     },
     async approveNft(signer, tokenId, contract, extraArgs) {
       const nftContract = await Tezos.contract.at<NFTContractType>(contract);
