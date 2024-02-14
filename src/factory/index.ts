@@ -1,3 +1,3 @@
 export * from "./config";
 export * from "./factory";
-export * from "./type-utils";
+export * from "./types";

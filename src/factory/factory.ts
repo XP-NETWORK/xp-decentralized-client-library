@@ -1,16 +1,16 @@
-import { evmHandler } from "../handlers/evm";
-import { multiversxHandler } from "../handlers/multiversx";
-import { secretHandler } from "../handlers/secret";
-import { tezosHandler } from "../handlers/tezos";
-import { raise, tonHandler } from "../handlers/ton";
-import { TChainParams } from "./config";
 import {
   TChainFactory,
   TChainInfo,
   TInferChainH,
   TParamMap,
   TSupportedChain,
-} from "./type-utils";
+} from "../factory/types/utils";
+import { evmHandler } from "../handlers/evm";
+import { multiversxHandler } from "../handlers/multiversx";
+import { secretHandler } from "../handlers/secret";
+import { tezosHandler } from "../handlers/tezos";
+import { raise, tonHandler } from "../handlers/ton";
+import { TChainParams } from "./config";
 
 export namespace Chain {
   export const MULTIVERSX = "MULTIVERSX";

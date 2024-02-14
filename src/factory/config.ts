@@ -3,12 +3,12 @@ import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
-import { BridgeStorage__factory } from "../contractsTypes";
-import { TEvmParams } from "../handlers/evm";
-import { TMultiversXParams } from "../handlers/multiversx";
-import { TSecretParams } from "../handlers/secret";
-import { TTezosParams } from "../handlers/tezos";
-import { TTonParams } from "../handlers/ton";
+import { BridgeStorage__factory } from "../contractsTypes/evm";
+import { TEvmParams } from "../handlers/evm/types";
+import { TMultiversXParams } from "../handlers/multiversx/types";
+import { TSecretParams } from "../handlers/secret/types";
+import { TTezosParams } from "../handlers/tezos/types";
+import { TTonParams } from "../handlers/ton/types";
 
 export interface TChainParams {
   bscParams: TEvmParams;
