@@ -7,6 +7,7 @@ import {
 } from "../../contractsTypes/ton/tonBridge";
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
+import { TonNftCollection } from "./nft";
 import { TTonHandler, TTonParams } from "./types";
 
 export function raise(message: string): never {
@@ -249,6 +250,11 @@ export function tonHandler({
       };
     },
     async approveNft(_signer, _tokenId, _contract) {},
+    async mintNft(signer, ma) {
+      const nft = new TonNftCollection(ma);
+      await nft.deploy(signer);
+      return;
+    },
     async nftData(_tokenId, contract, _overrides) {
       const nftItem = client.open(
         NftItem.fromAddress(Address.parseFriendly(contract).address),

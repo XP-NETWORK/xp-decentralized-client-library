@@ -1,6 +1,6 @@
 import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { TNftChain } from "../types";
+import { MintNft, TNftChain } from "../types";
 
 export type TSecretClaimArgs = {
   token_id: string;
@@ -19,13 +19,20 @@ export type TSecretClaimArgs = {
   fee: string;
 };
 
+export type SecretMintArgs = {
+  contractAddress: string;
+  uri: string;
+  tokenId: string;
+};
+
 export type TSecretHandler = TNftChain<
   SecretNetworkClient,
   TSecretClaimArgs,
   TxOptions,
   TxResponse,
   SecretNetworkClient
->;
+> &
+  MintNft<SecretNetworkClient, SecretMintArgs, TxResponse>;
 
 export type TSecretParams = {
   provider: SecretNetworkClient;

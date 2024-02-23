@@ -1,6 +1,10 @@
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
 
+export type MintNft<Signer, MintArgs, RetTx> = {
+  mintNft(signer: Signer, ma: MintArgs): Promise<RetTx>;
+};
+
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers

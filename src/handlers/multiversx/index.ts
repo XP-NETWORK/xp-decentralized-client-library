@@ -103,6 +103,9 @@ export function multiversxHandler({
     getStorageContract() {
       return storage;
     },
+    async mintNft(_signer, _ma) {
+      throw new Error("unimplemented");
+    },
     transform(input) {
       return {
         attrs: input.metadata,

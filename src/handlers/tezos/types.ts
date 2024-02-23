@@ -5,9 +5,10 @@ import {
 } from "@taquito/taquito";
 
 import { Signer } from "@taquito/taquito";
+import BigNumber from "bignumber.js";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
-import { TSingularNftChain } from "../types";
+import { MintNft, TSingularNftChain } from "../types";
 
 export type TTezosClaimArgs = {
   token_id: nat;
@@ -26,13 +27,20 @@ export type TTezosClaimArgs = {
   fee: mutez;
 };
 
+export type TezosMintArgs = {
+  contract: string;
+  tokenId: BigNumber;
+  uri: string;
+};
+
 export type TTezosHandler = TSingularNftChain<
   Signer,
   TTezosClaimArgs,
   Partial<SendParams>,
   TransactionOperation,
   TezosToolkit
->;
+> &
+  MintNft<Signer, TezosMintArgs, TransactionOperation>;
 
 export type TTezosParams = {
   Tezos: TezosToolkit;

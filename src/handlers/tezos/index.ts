@@ -117,6 +117,21 @@ export function tezosHandler({
         metadata: nft.metadata,
       };
     },
+    async mintNft(signer, ma) {
+      Tezos.setSignerProvider(signer);
+      const contract = await Tezos.contract.at<NFTContractType>(ma.contract);
+      const tx = contract.methods
+        .mint([
+          {
+            amt: tas.nat(1),
+            to: tas.address(await signer.publicKeyHash()),
+            token_id: tas.nat(ma.tokenId),
+            token_uri: ma.uri,
+          },
+        ])
+        .send();
+      return tx;
+    },
     async claimNft(signer, data, extraArgs, sigs) {
       const isTezosAddr =
         validateAddress(data.source_nft_contract_address) === 3;

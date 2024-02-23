@@ -50,6 +50,22 @@ export function secretHandler({
       );
       return tx;
     },
+    mintNft(signer, ma) {
+      const mint = signer.tx.snip721.mint({
+        contract_address: ma.contractAddress,
+        msg: {
+          mint_nft: {
+            public_metadata: {
+              token_uri: ma.uri,
+            },
+            token_id: ma.tokenId,
+            owner: signer.address,
+          },
+        },
+        sender: signer.address,
+      });
+      return mint;
+    },
     transform(input) {
       return {
         destination_chain: input.destinationChain,

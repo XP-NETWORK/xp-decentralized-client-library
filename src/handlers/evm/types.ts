@@ -6,7 +6,7 @@ import {
   Signer,
 } from "ethers";
 import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
-import { TNftChain } from "../types";
+import { MintNft, TNftChain } from "../types";
 
 export type TEvmHandler = TNftChain<
   Signer,
@@ -14,7 +14,18 @@ export type TEvmHandler = TNftChain<
   Overrides,
   ContractTransactionResponse,
   Provider
->;
+> &
+  MintNft<
+    Signer,
+    {
+      contract: string;
+      uri: string;
+      tokenId: bigint;
+      royalty: bigint;
+      royaltyReceiver: string;
+    },
+    ContractTransactionResponse
+  >;
 
 export type TEvmParams = {
   identifier: string;

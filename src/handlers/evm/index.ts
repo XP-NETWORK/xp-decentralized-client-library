@@ -20,6 +20,16 @@ export function evmHandler({
         extraArgs,
       );
     },
+    async mintNft(signer, ma) {
+      const minter = ERC721Royalty__factory.connect(ma.contract, signer);
+      return minter.mint(
+        await signer.getAddress(),
+        ma.tokenId,
+        ma.royalty,
+        ma.royaltyReceiver,
+        ma.uri,
+      );
+    },
     getProvider() {
       return provider;
     },
