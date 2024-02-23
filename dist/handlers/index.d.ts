@@ -1,4 +1,4 @@
-export * from "./chain";
+export * from "./types";
 export * from "./evm";
 export * from "./multiversx";
 export * from "./secret";

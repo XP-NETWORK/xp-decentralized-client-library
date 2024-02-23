@@ -3,11 +3,11 @@ import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
-import { TEvmParams } from "../handlers/evm";
-import { TMultiversXParams } from "../handlers/multiversx";
-import { TSecretParams } from "../handlers/secret";
-import { TTezosParams } from "../handlers/tezos";
-import { TTonParams } from "../handlers/ton";
+import { TEvmParams } from "../handlers/evm/types";
+import { TMultiversXParams } from "../handlers/multiversx/types";
+import { TSecretParams } from "../handlers/secret/types";
+import { TTezosParams } from "../handlers/tezos/types";
+import { TTonParams } from "../handlers/ton/types";
 export interface TChainParams {
     bscParams: TEvmParams;
     ethParams: TEvmParams;
@@ -25,51 +25,51 @@ export declare namespace ChainFactoryConfigs {
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         ethParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         polygonParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         hederaParams: {
             bridge: string;
             identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         tezosParams: {
             bridge: string;
             Tezos: TezosToolkit;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         secretParams: {
             bridge: string;
             bridgeCodeHash: string;
             chainId: string;
             provider: SecretNetworkClient;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         multiversxParams: {
             bridge: string;
             gatewayURL: string;
             provider: ProxyNetworkProvider;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
         tonParams: {
             bridgeAddress: string;
             client: TonClient;
-            storage: import("../contractsTypes").BridgeStorage;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
     };
 }

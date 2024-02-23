@@ -1,7 +1,7 @@
-import { ContractFactory, ContractTransactionResponse } from 'ethers';
-import type { Signer, ContractDeployTransaction, ContractRunner } from 'ethers';
-import type { NonPayableOverrides } from './../common';
-import type { RoyaltyInfoProxy, RoyaltyInfoProxyInterface } from './RoyaltyInfoProxy';
+import { ContractFactory, ContractTransactionResponse } from "ethers";
+import type { Signer, ContractDeployTransaction, ContractRunner } from "ethers";
+import type { NonPayableOverrides } from "../evm/common";
+import type { RoyaltyInfoProxy, RoyaltyInfoProxyInterface } from "./RoyaltyInfoProxy";
 type RoyaltyInfoProxyConstructorParams = [signer?: Signer] | ConstructorParameters<typeof ContractFactory>;
 export declare class RoyaltyInfoProxy__factory extends ContractFactory {
     constructor(...args: RoyaltyInfoProxyConstructorParams);

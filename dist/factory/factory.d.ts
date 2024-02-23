@@ -1,5 +1,5 @@
+import { TChainFactory, TChainInfo } from "../factory/types/utils";
 import { TChainParams } from "./config";
-import { TChainFactory, TChainInfo } from "./type-utils";
 export declare namespace Chain {
     const MULTIVERSX = "MULTIVERSX";
     const SECRET = "SECRET";

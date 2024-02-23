@@ -1,5 +1,5 @@
-import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from 'ethers';
-import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from '../common';
+import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
+import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../evm/common";
 export declare namespace IHederaTokenService {
     type KeyValueStruct = {
         inheritAccountKey: boolean;
@@ -201,16 +201,16 @@ export declare namespace IHederaTokenService {
     };
 }
 export interface RoyaltyInfoProxyInterface extends Interface {
-    getFunction(nameOrSignature: 'redirectForToken' | 'royaltyInfo' | 'transferFrom' | 'transferFromNFT'): FunctionFragment;
-    getEvent(nameOrSignatureOrTopic: 'CallResponseEvent'): EventFragment;
-    encodeFunctionData(functionFragment: 'redirectForToken', values: [AddressLike, BytesLike]): string;
-    encodeFunctionData(functionFragment: 'royaltyInfo', values: [AddressLike, BigNumberish]): string;
-    encodeFunctionData(functionFragment: 'transferFrom', values: [AddressLike, AddressLike, AddressLike, BigNumberish]): string;
-    encodeFunctionData(functionFragment: 'transferFromNFT', values: [AddressLike, AddressLike, AddressLike, BigNumberish]): string;
-    decodeFunctionResult(functionFragment: 'redirectForToken', data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: 'royaltyInfo', data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: 'transferFrom', data: BytesLike): Result;
-    decodeFunctionResult(functionFragment: 'transferFromNFT', data: BytesLike): Result;
+    getFunction(nameOrSignature: "redirectForToken" | "royaltyInfo" | "transferFrom" | "transferFromNFT"): FunctionFragment;
+    getEvent(nameOrSignatureOrTopic: "CallResponseEvent"): EventFragment;
+    encodeFunctionData(functionFragment: "redirectForToken", values: [AddressLike, BytesLike]): string;
+    encodeFunctionData(functionFragment: "royaltyInfo", values: [AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "transferFrom", values: [AddressLike, AddressLike, AddressLike, BigNumberish]): string;
+    encodeFunctionData(functionFragment: "transferFromNFT", values: [AddressLike, AddressLike, AddressLike, BigNumberish]): string;
+    decodeFunctionResult(functionFragment: "redirectForToken", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "royaltyInfo", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "transferFromNFT", data: BytesLike): Result;
 }
 export declare namespace CallResponseEventEvent {
     type InputTuple = [arg0: boolean, arg1: BytesLike];
@@ -245,13 +245,13 @@ export interface RoyaltyInfoProxy extends BaseContract {
             responseCode: bigint;
             response: string;
         }
-    ], 'nonpayable'>;
+    ], "nonpayable">;
     royaltyInfo: TypedContractMethod<[
         token: AddressLike,
         serialNumber: BigNumberish
     ], [
         [bigint, IHederaTokenService.NonFungibleTokenInfoStructOutput]
-    ], 'nonpayable'>;
+    ], "nonpayable">;
     transferFrom: TypedContractMethod<[
         token: AddressLike,
         from: AddressLike,
@@ -259,7 +259,7 @@ export interface RoyaltyInfoProxy extends BaseContract {
         amount: BigNumberish
     ], [
         bigint
-    ], 'nonpayable'>;
+    ], "nonpayable">;
     transferFromNFT: TypedContractMethod<[
         token: AddressLike,
         from: AddressLike,
@@ -267,9 +267,9 @@ export interface RoyaltyInfoProxy extends BaseContract {
         serialNumber: BigNumberish
     ], [
         bigint
-    ], 'nonpayable'>;
+    ], "nonpayable">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
-    getFunction(nameOrSignature: 'redirectForToken'): TypedContractMethod<[
+    getFunction(nameOrSignature: "redirectForToken"): TypedContractMethod<[
         token: AddressLike,
         encodedFunctionSelector: BytesLike
     ], [
@@ -277,32 +277,32 @@ export interface RoyaltyInfoProxy extends BaseContract {
             responseCode: bigint;
             response: string;
         }
-    ], 'nonpayable'>;
-    getFunction(nameOrSignature: 'royaltyInfo'): TypedContractMethod<[
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "royaltyInfo"): TypedContractMethod<[
         token: AddressLike,
         serialNumber: BigNumberish
     ], [
         [bigint, IHederaTokenService.NonFungibleTokenInfoStructOutput]
-    ], 'nonpayable'>;
-    getFunction(nameOrSignature: 'transferFrom'): TypedContractMethod<[
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "transferFrom"): TypedContractMethod<[
         token: AddressLike,
         from: AddressLike,
         to: AddressLike,
         amount: BigNumberish
     ], [
         bigint
-    ], 'nonpayable'>;
-    getFunction(nameOrSignature: 'transferFromNFT'): TypedContractMethod<[
+    ], "nonpayable">;
+    getFunction(nameOrSignature: "transferFromNFT"): TypedContractMethod<[
         token: AddressLike,
         from: AddressLike,
         to: AddressLike,
         serialNumber: BigNumberish
     ], [
         bigint
-    ], 'nonpayable'>;
-    getEvent(key: 'CallResponseEvent'): TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
+    ], "nonpayable">;
+    getEvent(key: "CallResponseEvent"): TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
     filters: {
-        'CallResponseEvent(bool,bytes)': TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
+        "CallResponseEvent(bool,bytes)": TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
         CallResponseEvent: TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
     };
 }
