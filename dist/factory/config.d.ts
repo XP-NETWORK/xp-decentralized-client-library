@@ -65,6 +65,7 @@ export declare namespace ChainFactoryConfigs {
             gatewayURL: string;
             provider: ProxyNetworkProvider;
             storage: import("../contractsTypes/evm").BridgeStorage;
+            chainId: string;
         };
         tonParams: {
             bridgeAddress: string;

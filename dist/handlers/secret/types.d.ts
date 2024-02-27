@@ -1,6 +1,6 @@
 import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { MintNft, TNftChain } from "../types";
+import { DeployCollection, MintNft, TNftChain } from "../types";
 export type TSecretClaimArgs = {
     token_id: string;
     source_chain: string;
@@ -22,7 +22,10 @@ export type SecretMintArgs = {
     uri: string;
     tokenId: string;
 };
-export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxResponse>;
+export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxResponse> & DeployCollection<SecretNetworkClient, {
+    name: string;
+    symbol: string;
+}, TxOptions, string>;
 export type TSecretParams = {
     provider: SecretNetworkClient;
     bridge: string;
