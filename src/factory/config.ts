@@ -84,6 +84,7 @@ export namespace ChainFactoryConfigs {
           "https://devnet-gateway.multiversx.com",
         ),
         storage,
+        chainId: "D",
       },
       tonParams: {
         bridgeAddress: "EQDI6P9gheuWLh1euThjFE2muUpa9tp2y49TD6Zz5oOF5gWL",

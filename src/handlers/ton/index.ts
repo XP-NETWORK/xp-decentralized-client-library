@@ -61,6 +61,13 @@ export function tonHandler({
         },
       );
     },
+    async deployCollection(signer, da) {
+      const nft = new TonNftCollection(da);
+
+      nft.deploy(signer);
+
+      return nft.address.toString();
+    },
     async getClaimData(txHash) {
       const tx = await client.getTransaction(bridge.address, "", txHash);
       if (!tx) {

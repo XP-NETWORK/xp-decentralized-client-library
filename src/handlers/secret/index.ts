@@ -1,3 +1,4 @@
+import { readFile } from "fs/promises";
 import {
   encodeSecp256k1Pubkey,
   encodeSecp256k1Signature,
@@ -49,6 +50,46 @@ export function secretHandler({
         },
       );
       return tx;
+    },
+    async deployCollection(signer, da, ga) {
+      const stored = await signer.tx.compute.storeCode(
+        {
+          wasm_byte_code: await readFile("./contract.wasm.gz"),
+          sender: "",
+          builder: "",
+          source: "",
+        },
+        {
+          ...ga,
+        },
+      );
+      const code = stored.arrayLog?.find((e) => e.key === "code_id")?.value;
+      if (!code) {
+        throw new Error("Code not found");
+      }
+      const contract = await signer.tx.compute.instantiateContract(
+        {
+          code_id: code,
+          init_msg: {
+            name: da.name,
+            symbol: da.symbol,
+            owner: signer.address,
+            config: {
+              public_token_supply: true,
+            },
+          },
+          init_funds: [],
+          sender: signer.address,
+          label: `${da.name}-${Date.now()}`,
+        },
+        {
+          ...ga,
+        },
+      );
+      const contractAddress = contract.arrayLog?.find(
+        (log) => log.type === "message" && log.key === "contract_address",
+      )?.value;
+      return contractAddress ?? raise("Contract not found");
     },
     mintNft(signer, ma) {
       const mint = signer.tx.snip721.mint({

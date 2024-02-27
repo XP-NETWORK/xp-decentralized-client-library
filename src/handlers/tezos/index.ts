@@ -13,6 +13,8 @@ import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
 import { address, tas } from "../../contractsTypes/tezos/type-aliases";
 
+import { MichelsonMap } from "@taquito/taquito";
+import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
 import { raise } from "../ton";
 import { TTezosHandler, TTezosParams } from "./types";
 
@@ -131,6 +133,21 @@ export function tezosHandler({
         ])
         .send();
       return tx;
+    },
+    async deployCollection(signer, _da, ga) {
+      Tezos.setSignerProvider(signer);
+      const tx = await Tezos.contract.originate({
+        code: NFTCode.code,
+        storage: {
+          ledger: new MichelsonMap(),
+          operators: new MichelsonMap(),
+          token_metadata: new MichelsonMap(),
+          metadata: new MichelsonMap(),
+          admin: tas.address(await Tezos.signer.publicKeyHash()),
+        },
+        gasLimit: ga?.gasLimit,
+      });
+      return tx.contractAddress ?? raise("No contract address found");
     },
     async claimNft(signer, data, extraArgs, sigs) {
       const isTezosAddr =

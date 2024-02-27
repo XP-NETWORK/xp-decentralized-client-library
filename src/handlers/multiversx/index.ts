@@ -8,14 +8,19 @@ import {
   BigUIntValue,
   BytesType,
   BytesValue,
+  ContractCallPayloadBuilder,
+  ContractFunction,
   Field,
   FieldDefinition,
   ResultsParser,
   SmartContract,
   Struct,
   StructType,
+  TokenTransfer,
   Transaction,
   TransactionPayload,
+  TransactionWatcher,
+  TypedValue,
   VariadicValue,
 } from "@multiversx/sdk-core/out";
 
@@ -31,6 +36,7 @@ export function multiversxHandler({
   gatewayURL,
   bridge,
   storage,
+  chainId,
 }: TMultiversXParams): TMultiversXHandler {
   const abiRegistry = AbiRegistry.create(multiversXBridgeABI);
   const multiversXBridgeContract = new SmartContract({
@@ -82,6 +88,44 @@ export function multiversxHandler({
         royalty: BigInt(royalties),
       };
     },
+    async deployCollection(signer, da, ga) {
+      const builtInSC =
+        "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
+      const args: TypedValue[] = [
+        BytesValue.fromUTF8(da.name),
+        BytesValue.fromUTF8(da.ticker),
+      ];
+      const data = new ContractCallPayloadBuilder()
+        .setFunction(new ContractFunction("issueNonFungible"))
+        .setArgs(args)
+        .build();
+
+      const payment = TokenTransfer.egldFromAmount("0.05");
+
+      const tx = new Transaction({
+        data,
+        gasLimit: ga?.gasLimit ?? 60_000_000,
+        receiver: new Address(builtInSC.trim()),
+        sender: signer.getAddress(),
+        value: payment,
+        chainID: chainId,
+      });
+
+      const signed = await signer.sign(tx.serializeForSigning());
+
+      tx.applySignature(signed);
+
+      await provider.sendTransaction(tx);
+      const watcher = new TransactionWatcher(provider);
+      const transactionOnNetwork = await watcher.awaitCompleted(tx);
+
+      const result = transactionOnNetwork.contractResults.items.find(
+        (e: { data: string }) => e.data.startsWith("@"),
+      );
+      const tickerh: string =
+        result?.data.split("@")[2] ?? raise("failed to find ticker");
+      return Buffer.from(tickerh, "hex").toString("utf-8");
+    },
     getProvider() {
       return provider;
     },
@@ -103,8 +147,40 @@ export function multiversxHandler({
     getStorageContract() {
       return storage;
     },
-    async mintNft(_signer, _ma) {
-      throw new Error("unimplemented");
+    async mintNft(signer, ma) {
+      const args: TypedValue[] = [
+        BytesValue.fromUTF8(ma.ticker),
+        new BigUIntValue(1),
+        BytesValue.fromUTF8(ma.name),
+        new BigUIntValue(Number(ma.royalties) * 100 || 0),
+        BytesValue.fromUTF8(ma.hash || ""),
+        BytesValue.fromUTF8(ma.attrs || ""),
+      ];
+      for (const uri of ma.uris) {
+        args.push(BytesValue.fromUTF8(uri));
+      }
+
+      const data = new ContractCallPayloadBuilder()
+        .setFunction(new ContractFunction("ESDTNFTCreate"))
+        .setArgs(args)
+        .build();
+
+      const tx = new Transaction({
+        data,
+        gasLimit:
+          3_000_000 +
+          data.length() * 1500 +
+          (ma.attrs?.length || 0 + (ma.hash?.length ?? 0) || 0) * 50000,
+        receiver: signer.getAddress(),
+        sender: signer.getAddress(),
+        value: 0,
+        chainID: chainId,
+      });
+
+      const signed = await signer.sign(tx.serializeForSigning());
+      tx.applySignature(signed);
+      const hash = await provider.sendTransaction(tx);
+      return hash;
     },
     transform(input) {
       return {

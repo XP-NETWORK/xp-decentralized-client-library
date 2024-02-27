@@ -20,6 +20,18 @@ export function evmHandler({
         extraArgs,
       );
     },
+    async deployCollection(signer, da, ga) {
+      const contract = await new ERC721Royalty__factory(signer).deploy(
+        da.name,
+        da.symbol,
+        da.owner ?? signer,
+        {
+          ...ga,
+          from: await signer.getAddress(),
+        },
+      );
+      return await contract.getAddress();
+    },
     async mintNft(signer, ma) {
       const minter = ERC721Royalty__factory.connect(ma.contract, signer);
       return minter.mint(

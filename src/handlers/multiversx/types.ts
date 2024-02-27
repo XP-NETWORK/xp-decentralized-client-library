@@ -1,7 +1,7 @@
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { UserAddress } from "@multiversx/sdk-wallet/out/userAddress";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { MintNft, TSingularNftChain } from "../types";
+import { DeployCollection, MintNft, TSingularNftChain } from "../types";
 
 // Custom Interface because there is no such signer interface in mx-sdk.
 export type TMultiversXSigner = {
@@ -38,6 +38,7 @@ export type NftIssueArgs = {
   readonly royalties?: number;
   readonly hash?: string;
   readonly attrs?: string;
+  readonly ticker: string;
 };
 
 export type TMultiversXHandler = TSingularNftChain<
@@ -47,11 +48,18 @@ export type TMultiversXHandler = TSingularNftChain<
   string,
   INetworkProvider
 > &
-  MintNft<TMultiversXSigner, NftIssueArgs, string>;
+  MintNft<TMultiversXSigner, NftIssueArgs, string> &
+  DeployCollection<
+    TMultiversXSigner,
+    { name: string; ticker: string },
+    { gasLimit: number },
+    string
+  >;
 
 export type TMultiversXParams = {
   provider: INetworkProvider;
   gatewayURL: string;
   bridge: string;
   storage: BridgeStorage;
+  chainId: string;
 };
