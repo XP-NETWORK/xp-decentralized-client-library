@@ -31,6 +31,6 @@
     "@tzkt/sdk-api": "^2.2.1",
     "axios": "^1.6.7",
     "ethers": "^6.10.0",
-    "secretjs": "=1.12.3"
+    "secretjs": "=1.12.4"
   }
 }
