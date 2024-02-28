@@ -14,6 +14,7 @@ import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
 import { address, tas } from "../../contractsTypes/tezos/type-aliases";
 
 import { MichelsonMap } from "@taquito/taquito";
+import axios from "axios";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
 import { raise } from "../ton";
 import { TTezosHandler, TTezosParams } from "./types";
@@ -23,6 +24,7 @@ export function tezosHandler({
   bridge,
   storage,
 }: TTezosParams): TTezosHandler {
+  const http = axios.create();
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
 
@@ -238,9 +240,9 @@ export function tezosHandler({
       try {
         const isUrl = URLCanParse(tokenMd);
         if (isUrl) {
-          const metaData: { symbol?: string } = await fetch(tokenMd).then(
-            (res) => res.json(),
-          );
+          const metaData: { symbol?: string } = await http
+            .get(tokenMd)
+            .then((res) => res.data);
           symbol = metaData.symbol ?? symbol;
         }
         symbol = JSON.parse(tokenMd).symbol ?? symbol;
@@ -264,7 +266,7 @@ export function tezosHandler({
         };
 
         if (isUrl) {
-          metaData = await fetch(metaDataOrURL).then((res) => res.json());
+          metaData = (await http.get(metaDataOrURL)).data;
         } else {
           metaData = JSON.parse(metaDataOrURL);
         }

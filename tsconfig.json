@@ -3,8 +3,6 @@
     "incremental": false,
     "target": "ES2021",
     "outDir": "./dist",
-    //"outDir": "../bridge-interface/node_modules/xp.network/dist",
-    //"outDir": "../bridge-tests/node_modules/xp.network/dist",
     "rootDir": "src",
     "moduleResolution": "node",
     "module": "commonjs",
@@ -41,7 +39,7 @@
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "lib": ["ES2021", "dom"], // elrdjs depends on dom?
+    "lib": ["ES2021"], // elrdjs depends on dom?
     "types": ["node"],
     "typeRoots": ["node_modules/@types", "src/types"]
   },

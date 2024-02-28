@@ -1,5 +1,6 @@
 import { Address, Dictionary, beginCell, toNano } from "@ton/core";
 
+import axios from "axios";
 import {
   Bridge,
   SignerAndSignature,
@@ -19,6 +20,7 @@ export function tonHandler({
   bridgeAddress,
   storage,
 }: TTonParams): TTonHandler {
+  const http = axios.create();
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
@@ -225,7 +227,7 @@ export function tonHandler({
       let hash = "";
       let retries = 0;
       while (!foundTx && retries < 5) {
-        await new Promise<undefined>((e) => setTimeout(e, 2000));
+        await new Promise((e) => setTimeout(e, 2000));
         const tx = (
           await client.getTransactions(signer.address, { limit: 1 })
         )[0];
@@ -293,7 +295,7 @@ export function tonHandler({
       const metaDataURL = individualContentSlice.loadStringTail();
 
       const metaData = (
-        await (await fetch(await getCollectionMetaData())).json()
+        await http.get<{ name: string }>(await getCollectionMetaData())
       ).data;
 
       let royalty = 0n;

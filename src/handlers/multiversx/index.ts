@@ -43,6 +43,7 @@ export function multiversxHandler({
     address: Address.fromString(bridge),
     abi: abiRegistry,
   });
+  const http = axios.create();
 
   const waitForTransaction = async (hash: string) => {
     let status = await provider.getTransactionStatus(hash);
@@ -60,13 +61,13 @@ export function multiversxHandler({
     const nonceAsHex = new Nonce(nonce).hex();
     const response = (
       await (
-        await fetch(
+        await http.get(
           `${gatewayURL.replace(
             "gateway",
             "api",
           )}/nfts/${collection}-${nonceAsHex}`,
         )
-      ).json()
+      ).data
     ).data;
     return {
       metaData: atob(response.uris[1]),
