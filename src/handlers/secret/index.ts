@@ -1,9 +1,6 @@
 import { readFile } from "fs/promises";
-import "secretjs";
-import {
-  encodeSecp256k1Pubkey,
-  encodeSecp256k1Signature,
-} from "secretjs/dist/wallet_amino";
+import { StdSignature, toBase64 } from "secretjs";
+import { Pubkey } from "secretjs/dist/wallet_amino";
 import { raise } from "../ton";
 import { TSecretHandler, TSecretParams } from "./types";
 
@@ -346,5 +343,33 @@ export function secretHandler({
         },
       };
     },
+  };
+}
+
+export function encodeSecp256k1Signature(
+  pubkey: Uint8Array,
+  signature: Uint8Array,
+): StdSignature {
+  if (signature.length !== 64) {
+    throw new Error(
+      "Signature must be 64 bytes long. Cosmos SDK uses a 2x32 byte fixed length encoding for the secp256k1 signature integers r and s.",
+    );
+  }
+
+  return {
+    pub_key: encodeSecp256k1Pubkey(pubkey),
+    signature: toBase64(signature),
+  };
+}
+
+export function encodeSecp256k1Pubkey(pubkey: Uint8Array): Pubkey {
+  if (pubkey.length !== 33 || (pubkey[0] !== 0x02 && pubkey[0] !== 0x03)) {
+    throw new Error(
+      "Public key must be compressed secp256k1, i.e. 33 bytes starting with 0x02 or 0x03",
+    );
+  }
+  return {
+    type: "tendermint/PubKeySecp256k1",
+    value: toBase64(pubkey),
   };
 }
