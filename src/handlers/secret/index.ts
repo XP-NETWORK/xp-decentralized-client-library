@@ -1,4 +1,5 @@
 import { readFile } from "fs/promises";
+import "secretjs";
 import {
   encodeSecp256k1Pubkey,
   encodeSecp256k1Signature,
