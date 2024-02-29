@@ -36,7 +36,7 @@ export function tonHandler({
         signer.address ?? raise("No Address present in signer"),
       );
     },
-    async claimNft(signer, claimData, _, sig) {
+    async claimNft(signer, claimData, sig, _) {
       const sigs: SignerAndSignature[] = sig.map((e) => {
         return {
           $$type: "SignerAndSignature",

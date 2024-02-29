@@ -36,7 +36,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
     destinationChain: TSupportedChain,
     to: string,
     tokenId: bigint,
-    extraArgs: ExtraArgs,
+    extraArgs?: ExtraArgs,
   ) => Promise<{ tx: RetTx; hash: () => string }>;
 };
 
@@ -59,7 +59,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
     signer: Signer,
     tokenId: string,
     contract: string,
-    extraArgs: ExtraArgs,
+    extraArgs?: ExtraArgs,
   ): Promise<RetTx>;
 };
 
@@ -92,8 +92,8 @@ export type TClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
   claimNft: (
     signer: Signer,
     claimData: ClaimData,
-    extraArgs: ExtraArgs,
     sig: TSignerAndSignature[],
+    extraArgs?: ExtraArgs,
   ) => Promise<Ret>;
 };
 
@@ -109,7 +109,7 @@ export type TGetBalance<Signer, ExtraArgs> = {
    * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the balance as a bigint.
    */
-  getBalance: (signer: Signer, extraArgs: ExtraArgs) => Promise<bigint>;
+  getBalance: (signer: Signer, extraArgs?: ExtraArgs) => Promise<bigint>;
 };
 
 /**
@@ -142,7 +142,7 @@ export type TGetNFTData<ExtraArgs> = {
   nftData: (
     tokenId: string,
     contract: string,
-    extraArgs: ExtraArgs,
+    extraArgs?: ExtraArgs,
   ) => Promise<TNFTData>;
 };
 
@@ -203,7 +203,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
     to: string,
     tokenId: bigint,
     amt: bigint,
-    extraArgs: ExtraArgs,
+    extraArgs?: ExtraArgs,
   ) => Promise<{ tx: RetTx; hash: () => string }>;
 };
 
@@ -227,7 +227,7 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
     signer: Signer,
     claimData: ClaimData,
     sigs: TSignerAndSignature[],
-    extraArgs: ExtraArgs,
+    extraArgs?: ExtraArgs,
   ) => Promise<Ret>;
 };
 

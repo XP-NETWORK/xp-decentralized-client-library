@@ -151,7 +151,7 @@ export function tezosHandler({
       });
       return tx.contractAddress ?? raise("No contract address found");
     },
-    async claimNft(signer, data, extraArgs, sigs) {
+    async claimNft(signer, data, sigs, extraArgs) {
       const isTezosAddr =
         validateAddress(data.source_nft_contract_address) === 3;
 

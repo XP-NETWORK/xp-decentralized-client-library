@@ -14,7 +14,7 @@ export function secretHandler({
     getProvider() {
       return provider;
     },
-    async claimNft(signer, claimData, extraArgs, sigs) {
+    async claimNft(signer, claimData, sigs, extraArgs) {
       const claim721 = {
         claim721: {
           data: {
@@ -306,6 +306,7 @@ export function secretHandler({
           sender: signer.address,
         },
         {
+          ..._,
           gasLimit: 200_000,
         },
       );

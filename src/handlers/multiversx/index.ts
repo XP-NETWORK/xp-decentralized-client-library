@@ -305,7 +305,7 @@ export function multiversxHandler({
         },
       };
     },
-    async claimNft(signer, claimData, _, sig) {
+    async claimNft(signer, claimData, sig) {
       const userAddress = new Address(signer.getAddress().bech32());
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);

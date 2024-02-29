@@ -12,7 +12,7 @@ export function evmHandler({
   storage,
 }: TEvmParams): TEvmHandler {
   return {
-    claimNft(wallet, claimData, extraArgs, sigs) {
+    claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       return contract.claimNFT721(
         claimData,
@@ -140,7 +140,9 @@ export function evmHandler({
         to,
         sourceNftAddress,
         amt,
-        extraArgs,
+        {
+          ...extraArgs,
+        },
       );
       return {
         tx,
@@ -183,7 +185,9 @@ export function evmHandler({
         destinationChain,
         to,
         sourceNftAddress,
-        extraArgs,
+        {
+          ...extraArgs,
+        },
       );
       return {
         tx,
