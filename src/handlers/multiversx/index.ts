@@ -431,7 +431,7 @@ export function multiversxHandler({
         .withSender(signer.getAddress())
         .withChainID("D")
         .withGasLimit(6_000_000_00)
-        .withValue(new BigUIntValue("50000000000000000"))
+        .withValue(new BigUIntValue(claimData.fee))
         .buildTransaction();
       transaction.setNonce(userAccount.getNonceThenIncrement());
       transaction.applySignature(

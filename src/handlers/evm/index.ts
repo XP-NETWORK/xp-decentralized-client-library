@@ -14,10 +14,13 @@ export function evmHandler({
   return {
     claimNft(wallet, claimData, extraArgs, sigs) {
       const contract = Bridge__factory.connect(bridge, wallet);
-      return contract.claimNFT1155(
+      return contract.claimNFT721(
         claimData,
         sigs.map((e) => e.signature),
-        extraArgs,
+        {
+          ...extraArgs,
+          value: claimData.fee,
+        },
       );
     },
     async deployCollection(signer, da, ga) {
@@ -34,13 +37,15 @@ export function evmHandler({
     },
     async mintNft(signer, ma) {
       const minter = ERC721Royalty__factory.connect(ma.contract, signer);
-      return minter.mint(
+      const response = await minter.mint(
         await signer.getAddress(),
         ma.tokenId,
         ma.royalty,
         ma.royaltyReceiver,
         ma.uri,
       );
+      await response.wait();
+      return response;
     },
     getProvider() {
       return provider;
@@ -155,7 +160,10 @@ export function evmHandler({
       return contract.claimNFT1155(
         claimData,
         sigs.map((e) => e.signature),
-        extraArgs,
+        {
+          ...extraArgs,
+          value: claimData.fee,
+        },
       );
     },
     async lockNft(
