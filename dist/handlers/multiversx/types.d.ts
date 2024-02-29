@@ -37,7 +37,10 @@ export type NftIssueArgs = {
     readonly attrs?: string;
     readonly ticker: string;
 };
-export type TMultiversXHandler = TSingularNftChain<TMultiversXSigner, TMultiversXClaimArgs, unknown, string, INetworkProvider> & MintNft<TMultiversXSigner, NftIssueArgs, string> & DeployCollection<TMultiversXSigner, {
+export type TMultiversXHandler = TSingularNftChain<TMultiversXSigner, TMultiversXClaimArgs, unknown, string, INetworkProvider> & MintNft<TMultiversXSigner, NftIssueArgs, {
+    gasLimit: number;
+    value: number;
+}, string> & DeployCollection<TMultiversXSigner, {
     name: string;
     ticker: string;
 }, {

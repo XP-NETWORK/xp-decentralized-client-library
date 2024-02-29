@@ -22,7 +22,7 @@ export type SecretMintArgs = {
     uri: string;
     tokenId: string;
 };
-export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxResponse> & DeployCollection<SecretNetworkClient, {
+export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> & DeployCollection<SecretNetworkClient, {
     name: string;
     symbol: string;
 }, TxOptions, string>;

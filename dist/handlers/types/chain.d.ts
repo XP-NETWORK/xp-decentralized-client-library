@@ -1,10 +1,10 @@
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
-export type MintNft<Signer, MintArgs, RetTx> = {
-    mintNft: (signer: Signer, ma: MintArgs) => Promise<RetTx>;
+export type MintNft<Signer, MintArgs, GasArgs, RetTx> = {
+    mintNft: (signer: Signer, ma: MintArgs, gasArgs?: GasArgs) => Promise<RetTx>;
 };
 export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = {
-    deployCollection: (signer: Signer, da: DeployArgs, ga: GasArgs | undefined) => Promise<RetTx>;
+    deployCollection: (signer: Signer, da: DeployArgs, ga?: GasArgs) => Promise<RetTx>;
 };
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
@@ -23,7 +23,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockNft: (signer: Signer, sourceNft: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, extraArgs: ExtraArgs) => Promise<{
+    lockNft: (signer: Signer, sourceNft: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, extraArgs?: ExtraArgs) => Promise<{
         tx: RetTx;
         hash: () => string;
     }>;
@@ -43,7 +43,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    approveNft(signer: Signer, tokenId: string, contract: string, extraArgs: ExtraArgs): Promise<RetTx>;
+    approveNft(signer: Signer, tokenId: string, contract: string, extraArgs?: ExtraArgs): Promise<RetTx>;
 };
 /**
  * Represents a signer and its corresponding signature.
@@ -70,7 +70,7 @@ export type TClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {Ret}.
      */
-    claimNft: (signer: Signer, claimData: ClaimData, extraArgs: ExtraArgs, sig: TSignerAndSignature[]) => Promise<Ret>;
+    claimNft: (signer: Signer, claimData: ClaimData, sig: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<Ret>;
 };
 /**
  * Represents a function type for getting the balance of a signer.
@@ -84,7 +84,7 @@ export type TGetBalance<Signer, ExtraArgs> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the balance as a bigint.
      */
-    getBalance: (signer: Signer, extraArgs: ExtraArgs) => Promise<bigint>;
+    getBalance: (signer: Signer, extraArgs?: ExtraArgs) => Promise<bigint>;
 };
 /**
  * Represents the data structure for an NFT (Non-Fungible Token).
@@ -112,7 +112,7 @@ export type TGetNFTData<ExtraArgs> = {
      * @param signer Signer that will send the query transaction
      * @returns
      */
-    nftData: (tokenId: string, contract: string, extraArgs: ExtraArgs) => Promise<TNFTData>;
+    nftData: (tokenId: string, contract: string, extraArgs?: ExtraArgs) => Promise<TNFTData>;
 };
 /**
  * Represents the details of a claim for an NFT/SFT.
@@ -162,7 +162,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs: ExtraArgs) => Promise<{
+    lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs?: ExtraArgs) => Promise<{
         tx: RetTx;
         hash: () => string;
     }>;
@@ -183,7 +183,7 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of generic type Ret.
      */
-    claimSft: (signer: Signer, claimData: ClaimData, sigs: TSignerAndSignature[], extraArgs: ExtraArgs) => Promise<Ret>;
+    claimSft: (signer: Signer, claimData: ClaimData, sigs: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<Ret>;
 };
 export type TGetValidatorCount = {
     getValidatorCount: () => Promise<number>;
