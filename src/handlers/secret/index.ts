@@ -89,20 +89,23 @@ export function secretHandler({
       )?.value;
       return contractAddress ?? raise("Contract not found");
     },
-    mintNft(signer, ma) {
-      const mint = signer.tx.snip721.mint({
-        contract_address: ma.contractAddress,
-        msg: {
-          mint_nft: {
-            public_metadata: {
-              token_uri: ma.uri,
+    mintNft(signer, ma, gasArgs) {
+      const mint = signer.tx.snip721.mint(
+        {
+          contract_address: ma.contractAddress,
+          msg: {
+            mint_nft: {
+              public_metadata: {
+                token_uri: ma.uri,
+              },
+              token_id: ma.tokenId,
+              owner: signer.address,
             },
-            token_id: ma.tokenId,
-            owner: signer.address,
           },
+          sender: signer.address,
         },
-        sender: signer.address,
-      });
+        gasArgs,
+      );
       return mint;
     },
     transform(input) {

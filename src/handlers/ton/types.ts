@@ -14,7 +14,7 @@ export type TTonHandler = TSingularNftChain<
   undefined,
   TonClient
 > &
-  MintNft<Sender, TonMintArgs, undefined> &
+  MintNft<Sender, TonMintArgs, never, undefined> &
   DeployCollection<Sender, TonMintArgs, never, string>;
 
 export type TTonParams = {

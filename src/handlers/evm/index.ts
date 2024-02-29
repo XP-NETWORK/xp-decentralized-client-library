@@ -35,7 +35,7 @@ export function evmHandler({
       );
       return await contract.getAddress();
     },
-    async mintNft(signer, ma) {
+    async mintNft(signer, ma, gas) {
       const minter = ERC721Royalty__factory.connect(ma.contract, signer);
       const response = await minter.mint(
         await signer.getAddress(),
@@ -43,6 +43,9 @@ export function evmHandler({
         ma.royalty,
         ma.royaltyReceiver,
         ma.uri,
+        {
+          ...gas,
+        },
       );
       await response.wait();
       return response;

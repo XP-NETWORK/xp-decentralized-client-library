@@ -40,8 +40,8 @@ export type TTezosHandler = TSingularNftChain<
   TransactionOperation,
   TezosToolkit
 > &
-  MintNft<Signer, TezosMintArgs, TransactionOperation> &
-  DeployCollection<Signer, object, { gasLimit?: number }, string>;
+  MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> &
+  DeployCollection<Signer, object, Partial<SendParams>, string>;
 
 export type TTezosParams = {
   Tezos: TezosToolkit;

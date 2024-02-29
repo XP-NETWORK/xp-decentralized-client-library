@@ -7,6 +7,7 @@ import {
 } from "ethers";
 import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 
+import { PayableOverrides } from "../../contractsTypes/evm/common";
 import { DeployCollection, MintNft, TNftChain } from "../types";
 
 export type TEvmHandler = TNftChain<
@@ -25,6 +26,7 @@ export type TEvmHandler = TNftChain<
       royalty: bigint;
       royaltyReceiver: string;
     },
+    PayableOverrides,
     ContractTransactionResponse
   > &
   DeployCollection<

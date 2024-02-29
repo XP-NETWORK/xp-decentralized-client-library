@@ -32,7 +32,7 @@ export type TSecretHandler = TNftChain<
   TxResponse,
   SecretNetworkClient
 > &
-  MintNft<SecretNetworkClient, SecretMintArgs, TxResponse> &
+  MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> &
   DeployCollection<
     SecretNetworkClient,
     { name: string; symbol: string },

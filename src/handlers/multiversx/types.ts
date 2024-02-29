@@ -48,7 +48,12 @@ export type TMultiversXHandler = TSingularNftChain<
   string,
   INetworkProvider
 > &
-  MintNft<TMultiversXSigner, NftIssueArgs, string> &
+  MintNft<
+    TMultiversXSigner,
+    NftIssueArgs,
+    { gasLimit: number; value: number },
+    string
+  > &
   DeployCollection<
     TMultiversXSigner,
     { name: string; ticker: string },

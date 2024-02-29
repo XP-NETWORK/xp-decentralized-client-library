@@ -1,15 +1,15 @@
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
 
-export type MintNft<Signer, MintArgs, RetTx> = {
-  mintNft: (signer: Signer, ma: MintArgs) => Promise<RetTx>;
+export type MintNft<Signer, MintArgs, GasArgs, RetTx> = {
+  mintNft: (signer: Signer, ma: MintArgs, gasArgs?: GasArgs) => Promise<RetTx>;
 };
 
 export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = {
   deployCollection: (
     signer: Signer,
     da: DeployArgs,
-    ga: GasArgs | undefined,
+    ga?: GasArgs,
   ) => Promise<RetTx>;
 };
 

@@ -121,7 +121,7 @@ export function tezosHandler({
         metadata: nft.metadata,
       };
     },
-    async mintNft(signer, ma) {
+    async mintNft(signer, ma, gasArgs) {
       Tezos.setSignerProvider(signer);
       const contract = await Tezos.contract.at<NFTContractType>(ma.contract);
       const tx = contract.methods
@@ -133,7 +133,7 @@ export function tezosHandler({
             token_uri: ma.uri,
           },
         ])
-        .send();
+        .send(gasArgs);
       return tx;
     },
     async deployCollection(signer, _da, ga) {

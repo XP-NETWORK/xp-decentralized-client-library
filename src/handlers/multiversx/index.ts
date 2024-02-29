@@ -148,7 +148,7 @@ export function multiversxHandler({
     getStorageContract() {
       return storage;
     },
-    async mintNft(signer, ma) {
+    async mintNft(signer, ma, gasArgs) {
       const args: TypedValue[] = [
         BytesValue.fromUTF8(ma.ticker),
         new BigUIntValue(1),
@@ -169,12 +169,13 @@ export function multiversxHandler({
       const tx = new Transaction({
         data,
         gasLimit:
+          gasArgs?.gasLimit ??
           3_000_000 +
-          data.length() * 1500 +
-          (ma.attrs?.length || 0 + (ma.hash?.length ?? 0) || 0) * 50000,
+            data.length() * 1500 +
+            (ma.attrs?.length || 0 + (ma.hash?.length ?? 0) || 0) * 50000,
         receiver: signer.getAddress(),
         sender: signer.getAddress(),
-        value: 0,
+        value: gasArgs?.value ?? 0,
         chainID: chainId,
       });
 
