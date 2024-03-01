@@ -18,7 +18,7 @@ export function secretHandler({
       const claim721 = {
         claim721: {
           data: {
-            claimData,
+            data: claimData,
             signatures: sigs.map((e) => {
               return {
                 signature: encodeSecp256k1Signature(
