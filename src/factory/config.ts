@@ -24,10 +24,10 @@ export interface TChainParams {
 export namespace ChainFactoryConfigs {
   export function TestNet() {
     const optimism = new JsonRpcProvider(
-      "https://optimism-goerli.publicnode.com",
+      "https://sepolia.optimism.io",
     );
     const storage = BridgeStorage__factory.connect(
-      "0xaeD15b9AEd9401658A177abaab5854f31973F5C8",
+      "0x8411EeadD374bDE549F61a166FFBeFca592bC60a",
       optimism,
     );
     return {
