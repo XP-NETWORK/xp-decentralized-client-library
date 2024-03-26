@@ -12,12 +12,15 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
+    "@keplr-wallet/types": "^0.12.75",
     "@types/node": "^20.11.15",
     "lefthook": "^1.6.1",
     "typedoc": "^0.25.7",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@cosmjs/amino": "^0.32.3",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@multiversx/sdk-core": "^12.18.0",
     "@multiversx/sdk-network-providers": "^2.2.1",
     "@multiversx/sdk-wallet": "^4.3.0",
@@ -28,6 +31,7 @@
     "@ton/crypto": "^3.2.0",
     "@ton/ton": "^13.9.0",
     "@tzkt/sdk-api": "^2.2.1",
+    "@xp/cosmos-client": "git+https://github.com/XP-NETWORK/cosmos-client#bleeding-edge",
     "axios": "^1.6.7",
     "ethers": "^6.10.0",
     "secretjs": "^1.12.4-beta.0"
