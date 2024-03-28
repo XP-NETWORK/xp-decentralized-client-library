@@ -28,7 +28,6 @@ export type TMultiversXClaimArgs = {
  * arguments required to issue an NFT
  */
 export type NftIssueArgs = {
-    readonly identifier: string;
     readonly uris: Array<string>;
     readonly name: string;
     readonly quantity?: number;
