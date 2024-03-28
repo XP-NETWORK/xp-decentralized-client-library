@@ -124,12 +124,12 @@ export function tezosHandler({
     async mintNft(signer, ma, gasArgs) {
       Tezos.setSignerProvider(signer);
       const contract = await Tezos.contract.at<NFTContractType>(ma.contract);
-      const tx = contract.methods
+      const tx = await contract.methods
         .mint([
           {
             amt: tas.nat(1),
             to: tas.address(await signer.publicKeyHash()),
-            token_id: tas.nat(ma.tokenId),
+            token_id: tas.nat(ma.tokenId.toString()),
             token_uri: ma.uri,
           },
         ])
@@ -141,14 +141,17 @@ export function tezosHandler({
       const tx = await Tezos.contract.originate({
         code: NFTCode.code,
         storage: {
-          ledger: new MichelsonMap(),
-          operators: new MichelsonMap(),
+          admin: await signer.publicKeyHash(),
           token_metadata: new MichelsonMap(),
+          token_total_supply: new MichelsonMap(),
+          operators: new MichelsonMap(),
+          ledger: new MichelsonMap(),
           metadata: new MichelsonMap(),
-          admin: tas.address(await Tezos.signer.publicKeyHash()),
         },
         gasLimit: ga?.gasLimit,
       });
+      console.log(tx);
+      await tx.confirmation();
       return tx.contractAddress ?? raise("No contract address found");
     },
     async claimNft(signer, data, sigs, extraArgs) {

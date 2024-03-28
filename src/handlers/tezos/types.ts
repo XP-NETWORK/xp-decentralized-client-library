@@ -29,7 +29,7 @@ export type TTezosClaimArgs = {
 
 export type TezosMintArgs = {
   contract: string;
-  tokenId: BigNumber;
+  tokenId: BigNumber.Value;
   uri: string;
 };
 
