@@ -19,7 +19,6 @@ import {
   TokenTransfer,
   Transaction,
   TransactionPayload,
-  TransactionWatcher,
   TypedValue,
   VariadicValue,
 } from "@multiversx/sdk-core/out";
@@ -102,7 +101,8 @@ export function multiversxHandler({
         .build();
 
       const payment = TokenTransfer.egldFromAmount("0.05");
-
+      const account = await provider.getAccount(signer.getAddress());
+      let nonce = account.nonce;
       const tx = new Transaction({
         data,
         gasLimit: ga?.gasLimit ?? 60_000_000,
@@ -110,21 +110,45 @@ export function multiversxHandler({
         sender: signer.getAddress(),
         value: payment,
         chainID: chainId,
+        nonce: nonce++,
       });
-
       const signed = await signer.sign(tx.serializeForSigning());
-
       tx.applySignature(signed);
+      const hash = await provider.sendTransaction(tx);
 
-      await provider.sendTransaction(tx);
-      const watcher = new TransactionWatcher(provider);
-      const transactionOnNetwork = await watcher.awaitCompleted(tx);
-
+      while (!(await provider.getTransactionStatus(hash)).isSuccessful()) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      const transactionOnNetwork = await provider.getTransaction(hash, true);
       const result = transactionOnNetwork.contractResults.items.find(
         (e: { data: string }) => e.data.startsWith("@"),
       );
       const tickerh: string =
         result?.data.split("@")[2] ?? raise("failed to find ticker");
+
+      const ssra: TypedValue[] = [
+        BytesValue.fromHex(tickerh),
+        BytesValue.fromHex(signer.getAddress().hex()),
+        BytesValue.fromHex("45534454526f6c654e4654437265617465"),
+      ];
+      const ssr = new ContractCallPayloadBuilder()
+        .setFunction(new ContractFunction("setSpecialRole"))
+        .setArgs(ssra)
+        .build();
+      const ssrTx = new Transaction({
+        data: ssr,
+        gasLimit: ga?.gasLimit ?? 60_000_000,
+        receiver: new Address(builtInSC.trim()),
+        sender: signer.getAddress(),
+        chainID: chainId,
+        nonce: nonce++,
+      });
+      const ssrSigned = await signer.sign(ssrTx.serializeForSigning());
+      ssrTx.applySignature(ssrSigned);
+      const ssrHash = await provider.sendTransaction(ssrTx);
+      while (!(await provider.getTransactionStatus(ssrHash)).isExecuted()) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
       return Buffer.from(tickerh, "hex").toString("utf-8");
     },
     getProvider() {
@@ -165,6 +189,7 @@ export function multiversxHandler({
         .setFunction(new ContractFunction("ESDTNFTCreate"))
         .setArgs(args)
         .build();
+      const account = await provider.getAccount(signer.getAddress());
 
       const tx = new Transaction({
         data,
@@ -177,6 +202,7 @@ export function multiversxHandler({
         sender: signer.getAddress(),
         value: gasArgs?.value ?? 0,
         chainID: chainId,
+        nonce: account.nonce++,
       });
 
       const signed = await signer.sign(tx.serializeForSigning());
