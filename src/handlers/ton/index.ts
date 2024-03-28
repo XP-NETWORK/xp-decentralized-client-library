@@ -53,7 +53,7 @@ export function tonHandler({
       await bridge.send(
         signer,
         {
-          value: toNano(claimData.data3.fee),
+          value: claimData.data3.fee,
         },
         {
           $$type: "ClaimNFT721",
