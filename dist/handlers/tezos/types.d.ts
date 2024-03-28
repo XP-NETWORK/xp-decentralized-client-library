@@ -22,7 +22,7 @@ export type TTezosClaimArgs = {
 };
 export type TezosMintArgs = {
     contract: string;
-    tokenId: BigNumber;
+    tokenId: BigNumber.Value;
     uri: string;
 };
 export type TTezosHandler = TSingularNftChain<Signer, TTezosClaimArgs, Partial<SendParams>, TransactionOperation, TezosToolkit> & MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> & DeployCollection<Signer, object, Partial<SendParams>, string>;
