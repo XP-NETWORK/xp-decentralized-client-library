@@ -23,9 +23,7 @@ export interface TChainParams {
 
 export namespace ChainFactoryConfigs {
   export function TestNet() {
-    const optimism = new JsonRpcProvider(
-      "https://sepolia.optimism.io",
-    );
+    const optimism = new JsonRpcProvider("https://sepolia.optimism.io");
     const storage = BridgeStorage__factory.connect(
       "0x8411EeadD374bDE549F61a166FFBeFca592bC60a",
       optimism,
@@ -40,7 +38,9 @@ export namespace ChainFactoryConfigs {
       },
       ethParams: {
         identifier: "ETH",
-        provider: new JsonRpcProvider("https://rpc.notadegen.com/eth/sepolia"),
+        provider: new JsonRpcProvider(
+          "https://ethereum-sepolia.publicnode.com",
+        ),
         bridge: ethers.getAddress("0xA0C15702892491597D369A04d7366Af234cF5F73"),
         royaltySalePrice: 10000,
         storage,
