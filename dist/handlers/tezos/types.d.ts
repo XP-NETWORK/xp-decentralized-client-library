@@ -25,7 +25,10 @@ export type TezosMintArgs = {
     tokenId: BigNumber.Value;
     uri: string;
 };
-export type TTezosHandler = TSingularNftChain<Signer, TTezosClaimArgs, Partial<SendParams>, TransactionOperation, TezosToolkit> & MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> & DeployCollection<Signer, object, Partial<SendParams>, string>;
+export type TTezosHandler = TSingularNftChain<Signer, TTezosClaimArgs, Partial<SendParams>, TransactionOperation, TezosToolkit> & MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> & DeployCollection<Signer, {
+    name: string;
+    description: string;
+}, Partial<SendParams>, string>;
 export type TTezosParams = {
     Tezos: TezosToolkit;
     bridge: string;
