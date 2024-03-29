@@ -2,6 +2,7 @@ import {
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../../contractsTypes/evm";
+import { retryFn } from "../utils";
 
 import { TEvmHandler, TEvmParams } from "./types";
 
@@ -115,13 +116,42 @@ export function evmHandler({
     },
     async nftData(tokenId, contract, overrides) {
       const nft = ERC721Royalty__factory.connect(contract, provider);
+      const code = await provider.getCode(contract).catch(() => "");
+
+      const name = await retryFn(
+        () => nft.name({ ...overrides }),
+        `Trying to fetch name() for ${contract}`,
+        nft.name.fragment.selector,
+        code,
+      );
+
+      const symbol = await retryFn(
+        () => nft.symbol(),
+        `Trying to fetch symbol() for ${contract}`,
+        nft.symbol.fragment.selector,
+        code,
+      );
+
+      const royalty = await retryFn(
+        () => nft.royaltyInfo(tokenId, royaltySalePrice),
+        `Trying to fetch royaltyInfo() for ${contract}`,
+        nft.royaltyInfo.fragment.selector,
+        code,
+      );
+
+      const metadata = await retryFn(
+        () => nft.tokenURI(tokenId),
+        `Trying to fetch tokenURI() for ${contract}`,
+        nft.tokenURI.fragment.selector,
+        code,
+      );
+
       return {
-        name: await nft.name({
-          ...overrides,
-        }),
-        symbol: await nft.symbol(),
-        royalty: (await nft.royaltyInfo(tokenId, royaltySalePrice))[1],
-        metadata: await nft.tokenURI(tokenId),
+        name: name || "XP Wrapped Nft",
+        symbol: symbol || "XPNFT",
+        // If undefined, set royalty as zero.
+        royalty: (royalty ?? [0n, 0n])[1],
+        metadata: metadata || "",
       };
     },
     async lockSft(
