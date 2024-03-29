@@ -6,12 +6,13 @@ import { eventsGetContractEvents } from "@tzkt/sdk-api";
 import {
   b58cdecode,
   b58cencode,
+  char2Bytes,
   prefix,
   validateAddress,
 } from "@taquito/utils";
 import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { address, tas } from "../../contractsTypes/tezos/type-aliases";
+import { address, bytes, tas } from "../../contractsTypes/tezos/type-aliases";
 
 import { MichelsonMap } from "@taquito/taquito";
 import axios from "axios";
@@ -70,13 +71,18 @@ export function tezosHandler({
       return storage.validators_count.toNumber();
     },
     async approveNft(signer, tokenId, contract, extraArgs) {
-      const nftContract = await Tezos.contract.at<NFTContractType>(contract);
-      const tx = await nftContract.methods
-        .add_operator(
-          (await signer.publicKeyHash()) as address,
-          bridge as address,
-          tas.nat(tokenId.toString()),
-        )
+      Tezos.setSignerProvider(signer);
+      const nftContract = await Tezos.contract.at(contract);
+      const tx = await nftContract.methodsObject
+        .update_operators([
+          {
+            add_operator: {
+              owner: (await signer.publicKeyHash()) as address,
+              operator: bridge as address,
+              token_id: tas.nat(tokenId.toString()),
+            },
+          },
+        ])
         .send({ ...extraArgs });
       return tx;
     },
@@ -136,8 +142,27 @@ export function tezosHandler({
         .send(gasArgs);
       return tx;
     },
-    async deployCollection(signer, _da, ga) {
+    async deployCollection(signer, da, ga) {
       Tezos.setSignerProvider(signer);
+      const metadata = new MichelsonMap<string, bytes>();
+      metadata.set("", tas.bytes(char2Bytes("tezos-storage:data")));
+      metadata.set(
+        "data",
+        tas.bytes(
+          char2Bytes(`{
+      "name":"${da.name}",
+      "description":"${da.description}",
+      "version":"0.0.1",
+      "license":{"name":"MIT"},
+      "source":{
+        "tools":["Ligo"],
+        "location":"https://github.com/ligolang/contract-catalogue/tree/main/lib/fa2"},
+      "interfaces":["TZIP-012"],
+      "errors": [],
+      "views": []
+      }`),
+        ),
+      );
       const tx = await Tezos.contract.originate({
         code: NFTCode.code,
         storage: {
@@ -146,11 +171,10 @@ export function tezosHandler({
           token_total_supply: new MichelsonMap(),
           operators: new MichelsonMap(),
           ledger: new MichelsonMap(),
-          metadata: new MichelsonMap(),
+          metadata: metadata,
         },
         gasLimit: ga?.gasLimit,
       });
-      console.log(tx);
       await tx.confirmation();
       return tx.contractAddress ?? raise("No contract address found");
     },

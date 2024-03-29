@@ -41,7 +41,15 @@ export type TTezosHandler = TSingularNftChain<
   TezosToolkit
 > &
   MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> &
-  DeployCollection<Signer, object, Partial<SendParams>, string>;
+  DeployCollection<
+    Signer,
+    {
+      name: string;
+      description: string;
+    },
+    Partial<SendParams>,
+    string
+  >;
 
 export type TTezosParams = {
   Tezos: TezosToolkit;
