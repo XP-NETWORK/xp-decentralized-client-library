@@ -55,7 +55,15 @@ export async function cosmWasmHandler({
           spender: bridge,
           tokenId: tokenId,
         },
-        extraArgs?.fee,
+        extraArgs?.fee ?? {
+          amount: [
+            {
+              amount: "50000",
+              denom: denom,
+            },
+          ],
+          gas: "2500000",
+        },
         extraArgs?.memo,
         extraArgs?.funds,
       );
@@ -96,7 +104,15 @@ export async function cosmWasmHandler({
             }),
           },
         },
-        extraArgs?.fee,
+        extraArgs?.fee ?? {
+          amount: [
+            {
+              amount: "50000",
+              denom: denom,
+            },
+          ],
+          gas: "2500000",
+        },
         extraArgs?.memo,
         [
           {
@@ -196,7 +212,7 @@ export async function cosmWasmHandler({
             source_nft_contract_address: sourceNft,
           },
         },
-        {
+        extraArgs?.fee ?? {
           amount: [
             {
               amount: "10000",
