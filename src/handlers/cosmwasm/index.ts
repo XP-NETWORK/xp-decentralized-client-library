@@ -1,14 +1,43 @@
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import {
+  CosmWasmClient,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 
 import { Bridge, CosmNft } from "@xp/cosmos-client";
-import { TCosmosHandler, TCosmosParams } from "./types";
+import { CosmWasmExtraArgs, TCosmWasmHandler, TCosmWasmParams } from "./types";
 
-export function cosmosHandler({
-  provider,
+export async function cosmWasmHandler({
   rpc,
   bridge,
+  denom,
+  nftCodeId,
   storage,
-}: TCosmosParams): TCosmosHandler {
+}: TCosmWasmParams): Promise<TCosmWasmHandler> {
+  const provider = await CosmWasmClient.connect(rpc);
+
+  async function nftData(
+    tokenId: string,
+    contract: string,
+    _extra: CosmWasmExtraArgs | undefined,
+  ) {
+    const nft = new CosmNft.CosmosNftQueryClient(provider, contract);
+    const data = await nft.nftInfo({ tokenId });
+    const collection = await nft.contractInfo();
+    const royalty = await nft.extension({
+      msg: {
+        royalty_info: {
+          sale_price: "10000",
+          token_id: tokenId,
+        },
+      },
+    });
+    return {
+      metadata: data.token_uri ?? "",
+      name: collection.name,
+      symbol: collection.symbol,
+      royalty: royalty.royalty_amount,
+    };
+  }
   const bc = new Bridge.BridgeQueryClient(provider, bridge);
   return {
     async approveNft(signer, tokenId, contract, extraArgs) {
@@ -128,7 +157,7 @@ export function cosmosHandler({
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
 
-      const nft = await this.nftData(tokenId, sourceNftContractAddress, {});
+      const nft = await nftData(tokenId, sourceNftContractAddress, {});
 
       return {
         destinationChain,
@@ -147,7 +176,7 @@ export function cosmosHandler({
         transactionHash: txHash,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,
         signer,
@@ -157,15 +186,27 @@ export function cosmosHandler({
         (await signer.getAccounts())[0].address,
         bridge,
       );
-      const lock = await bc.lock721({
-        data: {
-          destination_chain: destinationChain,
-          collection_code_id: 0,
-          destination_user_address: to,
-          token_id: tokenId.toString(),
-          source_nft_contract_address: sourceNft,
+      const lock = await bc.lock721(
+        {
+          data: {
+            destination_chain: destinationChain,
+            collection_code_id: 0,
+            destination_user_address: to,
+            token_id: tokenId.toString(),
+            source_nft_contract_address: sourceNft,
+          },
         },
-      });
+        {
+          amount: [
+            {
+              amount: "10000",
+              denom: denom,
+            },
+          ],
+          gas: "1000000",
+        },
+        extraArgs?.memo,
+      );
       return {
         hash() {
           return lock.transactionHash;
@@ -173,25 +214,7 @@ export function cosmosHandler({
         tx: lock,
       };
     },
-    async nftData(tokenId, contract) {
-      const nft = new CosmNft.CosmosNftQueryClient(provider, contract);
-      const data = await nft.nftInfo({ tokenId });
-      const collection = await nft.contractInfo();
-      const royalty = await nft.extension({
-        msg: {
-          royalty_info: {
-            sale_price: "10000",
-            token_id: tokenId,
-          },
-        },
-      });
-      return {
-        metadata: data.token_uri ?? "",
-        name: collection.name,
-        symbol: collection.symbol,
-        royalty: royalty.royalty_amount,
-      };
-    },
+    nftData: nftData,
     async mintNft(signer, ma, gasArgs) {
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,
@@ -204,22 +227,54 @@ export function cosmosHandler({
       );
       const mint = await nft.mint(
         {
-          extension: {
-            royalty_payment_address: ma.royalty_payment_address,
-            royalty_percentage: ma.royalty_percentage,
-          },
           owner: ma.owner ?? (await signer.getAccounts())[0].address,
           tokenId: ma.token_id,
           tokenUri: ma.token_uri,
+          // biome-ignore lint/suspicious/noExplicitAny:
+        } as unknown as any,
+        gasArgs?.fee ?? {
+          amount: [
+            {
+              amount: "50000",
+              denom: denom,
+            },
+          ],
+          gas: "150000",
         },
-        gasArgs?.fee,
         gasArgs?.memo,
         gasArgs?.funds,
       );
       return mint;
     },
-    deployCollection(_signer, _data) {
-      throw new Error("Unimplemtented");
+    async deployCollection(signer, data, gasArgs) {
+      const sender = (await signer.getAccounts())[0];
+      const client = await SigningCosmWasmClient.connectWithSigner(rpc, signer);
+      const msg = {
+        name: data.name,
+        symbol: data.symbol,
+        minter: sender.address,
+      };
+      console.log(msg);
+      const inst = await client.instantiate(
+        sender.address,
+        data.codeId ?? nftCodeId,
+        msg,
+        `${data.name}-${Math.random() * 1000}`,
+        gasArgs?.fee ?? {
+          amount: [
+            {
+              amount: "50000",
+              denom: denom,
+            },
+          ],
+          gas: "2500000",
+        },
+        {
+          funds: gasArgs?.funds,
+          memo: gasArgs?.memo,
+        },
+      );
+      return inst.contractAddress;
     },
   };
 }

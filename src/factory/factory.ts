@@ -5,6 +5,7 @@ import {
   TParamMap,
   TSupportedChain,
 } from "../factory/types/utils";
+import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { multiversxHandler } from "../handlers/multiversx";
 import { secretHandler } from "../handlers/secret";
@@ -19,6 +20,7 @@ export namespace Chain {
   export const ETH = "ETH";
   export const BSC = "BSC";
   export const TEZOS = "TEZOS";
+  export const TERRA = "TERRA";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -29,6 +31,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.TEZOS, chainParams.tezosParams);
   cToP.set(Chain.SECRET, chainParams.secretParams);
   cToP.set(Chain.TON, chainParams.tonParams);
+  cToP.set(Chain.TERRA, chainParams.terraParams);
   return cToP;
 }
 
@@ -43,7 +46,7 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       }
       const params = map.get(chain) ?? raise("No Such Chain Found in cToP");
       const cf = CHAIN_INFO.get(chain) ?? raise("No such chain in CHAIN_INFO");
-      const handler = cf.constructor(params);
+      const handler = await cf.constructor(params);
       helpers.set(chain, handler);
       return handler;
     },
@@ -85,4 +88,7 @@ CHAIN_INFO.set(Chain.TON, {
 });
 CHAIN_INFO.set(Chain.TEZOS, {
   constructor: tezosHandler,
+});
+CHAIN_INFO.set(Chain.TERRA, {
+  constructor: cosmWasmHandler,
 });

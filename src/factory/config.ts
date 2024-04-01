@@ -4,6 +4,7 @@ import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
+import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
 import { TSecretParams } from "../handlers/secret/types";
@@ -19,6 +20,7 @@ export interface TChainParams {
   secretParams: TSecretParams;
   multiversxParams: TMultiversXParams;
   tonParams: TTonParams;
+  terraParams: TCosmWasmParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -92,6 +94,15 @@ export namespace ChainFactoryConfigs {
           endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC",
         }),
         storage,
+      },
+      terraParams: {
+        bridge:
+          "terra1hypmjkxnvyfyjzenxvwjd5q23khx06630hm8qyjdl6zhgx32rnqq62d9sf",
+        chainId: "pisco-1",
+        rpc: "https://rpc.testcosmos.directory/terra2testnet",
+        storage,
+        denom: "uluna",
+        nftCodeId: 13488,
       },
     } satisfies Partial<TChainParams>;
   }
