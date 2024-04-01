@@ -15,7 +15,7 @@ export type TParamMap = {
     get<T extends TSupportedChain>(k: T): TInferChainParam<T> | undefined;
 };
 type TChainData<T extends TSupportedChain> = {
-    constructor: (p: TInferChainParam<T>) => TInferChainH<T>;
+    constructor: (p: TInferChainParam<T>) => Promise<TInferChainH<T>> | TInferChainH<T>;
 };
 export type TChainInfo = {
     set<T extends TSupportedChain>(k: T, v: TChainData<T> | undefined): void;

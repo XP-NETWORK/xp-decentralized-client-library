@@ -3,6 +3,7 @@ import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
+import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
 import { TSecretParams } from "../handlers/secret/types";
@@ -17,6 +18,7 @@ export interface TChainParams {
     secretParams: TSecretParams;
     multiversxParams: TMultiversXParams;
     tonParams: TTonParams;
+    terraParams: TCosmWasmParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {
@@ -71,6 +73,14 @@ export declare namespace ChainFactoryConfigs {
             bridgeAddress: string;
             client: TonClient;
             storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        terraParams: {
+            bridge: string;
+            chainId: string;
+            rpc: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+            denom: string;
+            nftCodeId: number;
         };
     };
 }

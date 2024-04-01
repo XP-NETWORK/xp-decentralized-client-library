@@ -1,38 +1,32 @@
-import { Coin, OfflineAminoSigner, StdFee } from "@cosmjs/amino";
+import { Coin, StdFee } from "@cosmjs/amino";
 import { CosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { DeployCollection, MintNft, TSingularNftChain } from "../types";
-export type TCosmosParams = {
-    provider: CosmWasmClient;
+export type TCosmWasmParams = {
     bridge: string;
     chainId: string;
     rpc: string;
     storage: BridgeStorage;
+    denom: string;
+    nftCodeId: number;
 };
 export type TCosmWasmClaimArgs = ClaimData;
 export type TCosmWasmMintArgs = {
     contract: string;
-    royalty_payment_address: string;
-    royalty_percentage: number;
     token_id: string;
     token_uri: string;
     owner?: string;
 };
-export type TCosmosHandler = TSingularNftChain<OfflineAminoSigner, TCosmWasmClaimArgs, {
+export type CosmWasmExtraArgs = {
     fee?: "auto" | number | StdFee;
     memo?: string;
     funds?: Coin[];
-}, ExecuteResult, CosmWasmClient> & MintNft<OfflineAminoSigner, TCosmWasmMintArgs, {
-    fee?: "auto" | number | StdFee;
-    memo?: string;
-    funds?: Coin[];
-}, ExecuteResult> & DeployCollection<OfflineAminoSigner, {
+};
+export type TCosmWasmHandler = TSingularNftChain<OfflineDirectSigner, TCosmWasmClaimArgs, CosmWasmExtraArgs, ExecuteResult, CosmWasmClient> & MintNft<OfflineDirectSigner, TCosmWasmMintArgs, CosmWasmExtraArgs, ExecuteResult> & DeployCollection<OfflineDirectSigner, {
     name: string;
     symbol: string;
-}, {
-    fee?: "auto" | number | StdFee;
-    memo?: string;
-    funds?: Coin[];
-}, ExecuteResult>;
+    codeId?: number;
+}, CosmWasmExtraArgs, string>;
 //# sourceMappingURL=types.d.ts.map

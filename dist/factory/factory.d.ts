@@ -7,6 +7,7 @@ export declare namespace Chain {
     const ETH = "ETH";
     const BSC = "BSC";
     const TEZOS = "TEZOS";
+    const TERRA = "TERRA";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
