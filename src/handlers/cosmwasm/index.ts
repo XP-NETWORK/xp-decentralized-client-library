@@ -99,7 +99,7 @@ export async function cosmWasmHandler({
             signatures: sig.map((e) => {
               return {
                 signature: e.signature,
-                signer_address: e.signer,
+                signer_address: e.signerAddress,
               };
             }),
           },

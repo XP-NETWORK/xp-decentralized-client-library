@@ -215,7 +215,10 @@ export function tezosHandler({
           sigs: sigs.map((e) => {
             const addr = tas.address(
               b58cencode(
-                hash(new Uint8Array(b58cdecode(e.signer, prefix.edpk)), 20),
+                hash(
+                  new Uint8Array(b58cdecode(e.signerAddress, prefix.edpk)),
+                  20,
+                ),
                 prefix.tz1,
               ),
             );
@@ -224,7 +227,7 @@ export function tezosHandler({
               sig: tas.signature(
                 Buffer.from(e.signature.replace("0x", ""), "hex").toString(),
               ),
-              signer: tas.key(e.signer),
+              signer: tas.key(e.signerAddress),
             };
           }),
         })

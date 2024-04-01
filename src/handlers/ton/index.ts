@@ -40,7 +40,7 @@ export function tonHandler({
       const sigs: SignerAndSignature[] = sig.map((e) => {
         return {
           $$type: "SignerAndSignature",
-          key: BigInt(`0x${e.signer}`),
+          key: BigInt(`0x${e.signerAddress}`),
           signature: beginCell()
             .storeBuffer(Buffer.from(e.signature.replace("0x", ""), "hex"))
             .endCell(),

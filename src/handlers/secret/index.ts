@@ -22,11 +22,11 @@ export function secretHandler({
             signatures: sigs.map((e) => {
               return {
                 signature: encodeSecp256k1Signature(
-                  Buffer.from(e.signer, "hex"),
+                  Buffer.from(e.signerAddress, "hex"),
                   Buffer.from(e.signature.replace("0x", ""), "hex"),
                 ).signature,
                 signer_address: encodeSecp256k1Pubkey(
-                  Buffer.from(e.signer, "hex"),
+                  Buffer.from(e.signerAddress, "hex"),
                 ).value,
               };
             }),
@@ -192,11 +192,11 @@ export function secretHandler({
             signatures: sigs.map((e) => {
               return {
                 signature: encodeSecp256k1Signature(
-                  Buffer.from(e.signer, "hex"),
+                  Buffer.from(e.signerAddress, "hex"),
                   Buffer.from(e.signature.replace("0x", ""), "hex"),
                 ).signature,
                 signer_address: encodeSecp256k1Pubkey(
-                  Buffer.from(e.signer, "hex"),
+                  Buffer.from(e.signerAddress, "hex"),
                 ).value,
               };
             }),

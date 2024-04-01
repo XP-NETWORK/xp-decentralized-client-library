@@ -69,7 +69,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
  * @field signature The generated signature as a string (should be HEX Encoded)
  */
 export type TSignerAndSignature = {
-  signer: string;
+  signerAddress: string;
   signature: string;
 };
 

@@ -440,7 +440,7 @@ export function multiversxHandler({
         sig.map((item) => {
           return {
             public_key: new AddressValue(
-              new Address(Buffer.from(item.signer, "hex")),
+              new Address(Buffer.from(item.signerAddress, "hex")),
             ),
             sig: new BytesValue(
               Buffer.from(item.signature.replace("0x", ""), "hex"),
