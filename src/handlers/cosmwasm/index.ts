@@ -117,7 +117,7 @@ export async function cosmWasmHandler({
         [
           {
             amount: claimData.fee.toString(),
-            denom: "uatom",
+            denom: denom,
           },
         ],
       );
