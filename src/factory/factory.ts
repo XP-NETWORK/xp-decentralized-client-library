@@ -22,6 +22,7 @@ export namespace Chain {
   export const TEZOS = "TEZOS";
   export const TERRA = "TERRA";
   export const POLYGON = "POLYGON";
+  export const HEDERA = "HEDERA";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -29,6 +30,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.MULTIVERSX, chainParams.multiversxParams);
   cToP.set(Chain.BSC, chainParams.bscParams);
   cToP.set(Chain.POLYGON, chainParams.polygonParams);
+  cToP.set(Chain.HEDERA, chainParams.hederaParams);
   cToP.set(Chain.ETH, chainParams.ethParams);
   cToP.set(Chain.TEZOS, chainParams.tezosParams);
   cToP.set(Chain.SECRET, chainParams.secretParams);
@@ -80,6 +82,9 @@ CHAIN_INFO.set(Chain.ETH, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.POLYGON, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.HEDERA, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.MULTIVERSX, {
