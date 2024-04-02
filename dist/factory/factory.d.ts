@@ -8,6 +8,7 @@ export declare namespace Chain {
     const BSC = "BSC";
     const TEZOS = "TEZOS";
     const TERRA = "TERRA";
+    const POLYGON = "POLYGON";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
