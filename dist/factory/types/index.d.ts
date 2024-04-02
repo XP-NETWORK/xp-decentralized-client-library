@@ -14,6 +14,7 @@ export type MetaMap = {
     BSC: TEvmMeta;
     ETH: TEvmMeta;
     POLYGON: TEvmMeta;
+    HEDERA: TEvmMeta;
     TEZOS: TTezosMeta;
     TON: TTonMeta;
     SECRET: TSecretMeta;
