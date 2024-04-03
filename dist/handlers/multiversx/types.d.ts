@@ -1,11 +1,10 @@
-/// <reference types="node" />
+import { Transaction } from "@multiversx/sdk-core/out";
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
-import { UserAddress } from "@multiversx/sdk-wallet/out/userAddress";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { DeployCollection, MintNft, TSingularNftChain } from "../types";
 export type TMultiversXSigner = {
-    sign: (message: Buffer) => Promise<Buffer>;
-    getAddress: () => UserAddress;
+    signTransaction(transaction: Transaction): Promise<Transaction>;
+    getAddress: () => Promise<string>;
 };
 export type TMultiversXClaimArgs = {
     tokenId: string;
