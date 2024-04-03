@@ -12,7 +12,7 @@ import { TTonParams } from "../handlers/ton/types";
 export interface TChainParams {
     bscParams: TEvmParams;
     ethParams: TEvmParams;
-    polygonParams: TEvmParams;
+    maticParams: TEvmParams;
     hederaParams: TEvmParams;
     tezosParams: TTezosParams;
     secretParams: TSecretParams;
@@ -36,7 +36,7 @@ export declare namespace ChainFactoryConfigs {
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
-        polygonParams: {
+        maticParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;

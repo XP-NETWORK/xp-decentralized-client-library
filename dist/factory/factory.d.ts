@@ -8,7 +8,7 @@ export declare namespace Chain {
     const BSC = "BSC";
     const TEZOS = "TEZOS";
     const TERRA = "TERRA";
-    const POLYGON = "POLYGON";
+    const MATIC = "MATIC";
     const HEDERA = "HEDERA";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
