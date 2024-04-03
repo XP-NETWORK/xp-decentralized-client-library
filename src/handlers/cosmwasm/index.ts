@@ -98,8 +98,13 @@ export async function cosmWasmHandler({
             data: claimData,
             signatures: sig.map((e) => {
               return {
-                signature: e.signature,
-                signer_address: e.signerAddress,
+                signature: Buffer.from(
+                  e.signature.replace("0x", ""),
+                  "hex",
+                ).toString("base64"),
+                signer_address: Buffer.from(e.signerAddress, "hex").toString(
+                  "base64",
+                ),
               };
             }),
           },
@@ -130,7 +135,8 @@ export async function cosmWasmHandler({
       return {
         destination_chain: input.destinationChain,
         destination_user_address: input.destinationUserAddress,
-        fee: parseInt(input.fee),
+        // biome-ignore lint/suspicious/noExplicitAny: broken cosmwasm types
+        fee: input.fee as any,
         name: input.name,
         symbol: input.symbol,
         metadata: input.metadata,
@@ -139,7 +145,8 @@ export async function cosmWasmHandler({
         royalty_receiver: input.royaltyReceiver,
         source_chain: input.sourceChain,
         source_nft_contract_address: input.sourceNftContractAddress,
-        token_amount: parseInt(input.tokenAmount),
+        // biome-ignore lint/suspicious/noExplicitAny: broken cosmwasm types
+        token_amount: input.tokenAmount as any,
         token_id: input.tokenId,
         transaction_hash: input.transactionHash,
       };
@@ -270,7 +277,6 @@ export async function cosmWasmHandler({
         symbol: data.symbol,
         minter: sender.address,
       };
-      console.log(msg);
       const inst = await client.instantiate(
         sender.address,
         data.codeId ?? nftCodeId,
