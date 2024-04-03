@@ -25,10 +25,15 @@ import {
 
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
 
+import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/evm/abi";
 import { raise } from "../ton";
-import { TMultiversXHandler, TMultiversXParams } from "./types";
+import {
+  TMultiversXHandler,
+  TMultiversXParams,
+  TMultiversXSigner,
+} from "./types";
 
 export function multiversxHandler({
   provider,
@@ -101,20 +106,21 @@ export function multiversxHandler({
         .build();
 
       const payment = TokenTransfer.egldFromAmount("0.05");
-      const account = await provider.getAccount(signer.getAddress());
+      const account = await provider.getAccount(
+        Address.fromString(await signer.getAddress()),
+      );
       let nonce = account.nonce;
       const tx = new Transaction({
         data,
         gasLimit: ga?.gasLimit ?? 60_000_000,
         receiver: new Address(builtInSC.trim()),
-        sender: signer.getAddress(),
+        sender: Address.fromString(await signer.getAddress()),
         value: payment,
         chainID: chainId,
         nonce: nonce++,
       });
-      const signed = await signer.sign(tx.serializeForSigning());
-      tx.applySignature(signed);
-      const hash = await provider.sendTransaction(tx);
+      const signed = await signer.signTransaction(tx);
+      const hash = await provider.sendTransaction(signed);
 
       while (!(await provider.getTransactionStatus(hash)).isSuccessful()) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -128,7 +134,7 @@ export function multiversxHandler({
 
       const ssra: TypedValue[] = [
         BytesValue.fromHex(tickerh),
-        BytesValue.fromHex(signer.getAddress().hex()),
+        BytesValue.fromHex(Address.fromString(await signer.getAddress()).hex()),
         BytesValue.fromHex("45534454526f6c654e4654437265617465"),
       ];
       const ssr = new ContractCallPayloadBuilder()
@@ -139,13 +145,12 @@ export function multiversxHandler({
         data: ssr,
         gasLimit: ga?.gasLimit ?? 60_000_000,
         receiver: new Address(builtInSC.trim()),
-        sender: signer.getAddress(),
+        sender: Address.fromString(await signer.getAddress()),
         chainID: chainId,
         nonce: nonce++,
       });
-      const ssrSigned = await signer.sign(ssrTx.serializeForSigning());
-      ssrTx.applySignature(ssrSigned);
-      const ssrHash = await provider.sendTransaction(ssrTx);
+      const ssrSigned = await signer.signTransaction(ssrTx);
+      const ssrHash = await provider.sendTransaction(ssrSigned);
       while (!(await provider.getTransactionStatus(ssrHash)).isExecuted()) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -189,7 +194,9 @@ export function multiversxHandler({
         .setFunction(new ContractFunction("ESDTNFTCreate"))
         .setArgs(args)
         .build();
-      const account = await provider.getAccount(signer.getAddress());
+      const account = await provider.getAccount(
+        Address.fromString(await signer.getAddress()),
+      );
 
       const tx = new Transaction({
         data,
@@ -198,16 +205,15 @@ export function multiversxHandler({
           3_000_000 +
             data.length() * 1500 +
             (ma.attrs?.length || 0 + (ma.hash?.length ?? 0) || 0) * 50000,
-        receiver: signer.getAddress(),
-        sender: signer.getAddress(),
+        receiver: Address.fromString(await signer.getAddress()),
+        sender: Address.fromString(await signer.getAddress()),
         value: gasArgs?.value ?? 0,
         chainID: chainId,
         nonce: account.nonce++,
       });
 
-      const signed = await signer.sign(tx.serializeForSigning());
-      tx.applySignature(signed);
-      const hash = await provider.sendTransaction(tx);
+      const signed = await signer.signTransaction(tx);
+      const hash = await provider.sendTransaction(signed);
       return hash;
     },
     transform(input) {
@@ -288,7 +294,8 @@ export function multiversxHandler({
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
       const ba = new Address(bridge);
 
-      const userAddress = new Address(signer.getAddress().bech32());
+      const userAddress = Address.fromString(await signer.getAddress());
+
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);
       userAccount.update(userOnNetwork);
@@ -312,18 +319,16 @@ export function multiversxHandler({
           `ESDTNFTTransfer${collectionIdentifiers}${noncec}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${noncec}`,
         ),
         gasLimit: 600000000,
-        sender: signer.getAddress(),
-        receiver: signer.getAddress(),
+        sender: Address.fromString(await signer.getAddress()),
+        receiver: Address.fromString(await signer.getAddress()),
         chainID: "D",
       });
 
       tx3.setNonce(userAccount.getNonceThenIncrement());
 
-      const serializedTransaction = tx3.serializeForSigning();
-      const transactionSignature = await signer.sign(serializedTransaction);
-      tx3.applySignature(transactionSignature);
+      const signed = await signer.signTransaction(tx3);
 
-      const txHash = await provider.sendTransaction(tx3);
+      const txHash = await provider.sendTransaction(signed);
       return {
         tx: txHash,
         hash() {
@@ -332,7 +337,7 @@ export function multiversxHandler({
       };
     },
     async claimNft(signer, claimData, sig) {
-      const userAddress = new Address(signer.getAddress().bech32());
+      const userAddress = Address.fromString(await signer.getAddress());
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);
       userAccount.update(userOnNetwork);
@@ -455,21 +460,23 @@ export function multiversxHandler({
       ];
       const transaction = multiversXBridgeContract.methods
         .claimNft721(data)
-        .withSender(signer.getAddress())
+        .withSender(Address.fromString(await signer.getAddress()))
         .withChainID("D")
         .withGasLimit(6_000_000_00)
         .withValue(new BigUIntValue("50000000000000000"))
         .buildTransaction();
       transaction.setNonce(userAccount.getNonceThenIncrement());
-      transaction.applySignature(
-        await signer.sign(transaction.serializeForSigning()),
-      );
-      const hash = await provider.sendTransaction(transaction);
+      const signed = await signer.signTransaction(transaction);
+      const hash = await provider.sendTransaction(signed);
       return hash;
     },
     async getBalance(signer, _) {
       const bal = BigInt(
-        (await provider.getAccount(signer.getAddress())).balance.toString(),
+        (
+          await provider.getAccount(
+            Address.fromString(await signer.getAddress()),
+          )
+        ).balance.toString(),
       );
       return bal;
     },
@@ -481,3 +488,16 @@ const decodeBase64Array = (encodedArray: string[]): string[] => {
     return Buffer.from(encodedString, "base64").toString("utf-8");
   });
 };
+
+export function userSignerToSigner(us: UserSigner): TMultiversXSigner {
+  return {
+    async getAddress() {
+      return us.getAddress().toString();
+    },
+    async signTransaction(transaction) {
+      const signature = await us.sign(transaction.serializeForSigning());
+      transaction.applySignature(signature);
+      return transaction;
+    },
+  };
+}
