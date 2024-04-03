@@ -21,7 +21,7 @@ export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
 export type MetaMap = {
   BSC: TEvmMeta;
   ETH: TEvmMeta;
-  POLYGON: TEvmMeta;
+  MATIC: TEvmMeta;
   HEDERA: TEvmMeta;
   TEZOS: TTezosMeta;
   TON: TTonMeta;

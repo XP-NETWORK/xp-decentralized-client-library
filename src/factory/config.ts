@@ -14,7 +14,7 @@ import { TTonParams } from "../handlers/ton/types";
 export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
-  polygonParams: TEvmParams;
+  maticParams: TEvmParams;
   hederaParams: TEvmParams;
   tezosParams: TTezosParams;
   secretParams: TSecretParams;
@@ -47,7 +47,7 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
       },
-      polygonParams: {
+      maticParams: {
         identifier: "MATIC",
         provider: new JsonRpcProvider(
           "https://polygon-mumbai-bor.publicnode.com",
