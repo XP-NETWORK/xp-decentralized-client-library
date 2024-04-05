@@ -1,7 +1,7 @@
 import { ContractTransactionResponse, JsonRpcProvider, Overrides, Provider, Signer } from "ethers";
 import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 import { PayableOverrides } from "../../contractsTypes/evm/common";
-import { DeployCollection, MintNft, TNftChain } from "../types";
+import { DeployCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNftChain } from "../types";
 export type TEvmHandler = TNftChain<Signer, Bridge.ClaimDataStruct, Overrides, ContractTransactionResponse, Provider> & MintNft<Signer, {
     contract: string;
     uri: string;
@@ -12,7 +12,7 @@ export type TEvmHandler = TNftChain<Signer, Bridge.ClaimDataStruct, Overrides, C
     name: string;
     symbol: string;
     owner?: string;
-}, Overrides, string>;
+}, Overrides, string> & ReadClaimed721Event & ReadClaimed1155Event;
 export type TEvmParams = {
     identifier: string;
     provider: JsonRpcProvider;

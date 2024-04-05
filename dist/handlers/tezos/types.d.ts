@@ -3,7 +3,7 @@ import { Signer } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
-import { DeployCollection, MintNft, TSingularNftChain } from "../types";
+import { DeployCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
 export type TTezosClaimArgs = {
     token_id: nat;
     source_chain: string;
@@ -28,7 +28,7 @@ export type TezosMintArgs = {
 export type TTezosHandler = TSingularNftChain<Signer, TTezosClaimArgs, Partial<SendParams>, TransactionOperation, TezosToolkit> & MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> & DeployCollection<Signer, {
     name: string;
     description: string;
-}, Partial<SendParams>, string>;
+}, Partial<SendParams>, string> & ReadClaimed721Event;
 export type TTezosParams = {
     Tezos: TezosToolkit;
     bridge: string;

@@ -3,7 +3,7 @@ import { CosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployCollection, MintNft, TSingularNftChain } from "../types";
+import { DeployCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
 export type TCosmWasmParams = {
     bridge: string;
     chainId: string;
@@ -28,5 +28,5 @@ export type TCosmWasmHandler = TSingularNftChain<OfflineDirectSigner, TCosmWasmC
     name: string;
     symbol: string;
     codeId?: number;
-}, CosmWasmExtraArgs, string>;
+}, CosmWasmExtraArgs, string> & ReadClaimed721Event;
 //# sourceMappingURL=types.d.ts.map
