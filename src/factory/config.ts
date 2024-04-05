@@ -64,7 +64,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1NHxTSXAFKH2y94PpfqDsg4bZ5SiF2V8a4",
+        bridge: "KT18pSSB3f9H3xtHzBfMCjTdPja82nqpAm66",
         Tezos: new TezosToolkit("https://ghostnet.smartpy.io"),
         storage,
       },
