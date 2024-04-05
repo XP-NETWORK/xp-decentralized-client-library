@@ -24,6 +24,61 @@ export function evmHandler({
         },
       );
     },
+    async readClaimed721Event(hash) {
+      const receipt = await provider.getTransactionReceipt(hash);
+      if (!receipt) {
+        throw new Error("Transaction not found");
+      }
+      const log = receipt.logs.find((e) =>
+        e.topics.includes(
+          Bridge__factory.createInterface().getEvent("Claimed").topicHash,
+        ),
+      );
+      if (!log) {
+        throw new Error("Log not found");
+      }
+      const claimed = Bridge__factory.createInterface().parseLog({
+        data: log.data,
+        topics: log.topics as string[],
+      });
+      if (!claimed) {
+        throw new Error("Failed to parse log");
+      }
+      return {
+        nft_contract: claimed.args.nftContract,
+        source_chain: claimed.args.sourceChain,
+        token_id: claimed.args.tokenId,
+        transaction_hash: claimed.args.transaction_hash,
+      };
+    },
+    async readClaimed1155Event(hash) {
+      const receipt = await provider.getTransactionReceipt(hash);
+      if (!receipt) {
+        throw new Error("Transaction not found");
+      }
+      const log = receipt.logs.find((e) =>
+        e.topics.includes(
+          Bridge__factory.createInterface().getEvent("Claimed").topicHash,
+        ),
+      );
+      if (!log) {
+        throw new Error("Log not found");
+      }
+      const claimed = Bridge__factory.createInterface().parseLog({
+        data: log.data,
+        topics: log.topics as string[],
+      });
+      if (!claimed) {
+        throw new Error("Failed to parse log");
+      }
+      return {
+        nft_contract: claimed.args.nftContract,
+        source_chain: claimed.args.sourceChain,
+        token_id: claimed.args.tokenId,
+        transaction_hash: claimed.args.transaction_hash,
+        amount: claimed.args.amount,
+      };
+    },
     async deployCollection(signer, da, ga) {
       const contract = await new ERC721Royalty__factory(signer).deploy(
         da.name,

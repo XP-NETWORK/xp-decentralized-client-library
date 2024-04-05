@@ -126,6 +126,25 @@ export type TNFTData = {
   metadata: string;
 };
 
+export type Claimed721Event = {
+  transaction_hash: string;
+  source_chain: string;
+  token_id: string;
+  nft_contract: string;
+};
+
+export type Claimed1155Event = Claimed721Event & {
+  amount: bigint;
+};
+
+export type ReadClaimed721Event = {
+  readClaimed721Event(hash: string): Promise<Claimed721Event>;
+};
+
+export type ReadClaimed1155Event = {
+  readClaimed1155Event(hash: string): Promise<Claimed1155Event>;
+};
+
 /**
  * Represents a type that defines a function to retrieve NFT data.
  * @template ExtraArgs The type of the extra arguments.

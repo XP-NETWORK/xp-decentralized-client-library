@@ -12,6 +12,7 @@ export async function cosmWasmHandler({
   denom,
   nftCodeId,
   storage,
+  chainId,
 }: TCosmWasmParams): Promise<TCosmWasmHandler> {
   const provider = await CosmWasmClient.connect(rpc);
 
@@ -68,6 +69,26 @@ export async function cosmWasmHandler({
         extraArgs?.funds,
       );
       return approved;
+    },
+    async readClaimed721Event(hash) {
+      const tx = await provider.getTx(hash);
+      if (!tx) throw new Error(`Failed to find tx hash on ${chainId}: ${hash}`);
+      const attributes = tx.events.flatMap((e) => {
+        if (e.type === "wasm") return e.attributes;
+        return [];
+      });
+      const attribute = attributes.find((e) => e.key === "ClaimedEventInfo");
+      if (!attribute)
+        throw new Error(
+          `No ClaimedEventInfo attribute found in tx: ${tx.hash}`,
+        );
+      const data = JSON.parse(attribute.value);
+      return {
+        nft_contract: data.contract,
+        source_chain: data.source_chain,
+        transaction_hash: data.transaction_hash,
+        token_id: data.token_id,
+      };
     },
     getProvider() {
       return provider;

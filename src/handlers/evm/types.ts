@@ -8,7 +8,13 @@ import {
 import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 
 import { PayableOverrides } from "../../contractsTypes/evm/common";
-import { DeployCollection, MintNft, TNftChain } from "../types";
+import {
+  DeployCollection,
+  MintNft,
+  ReadClaimed721Event,
+  ReadClaimed1155Event,
+  TNftChain,
+} from "../types";
 
 export type TEvmHandler = TNftChain<
   Signer,
@@ -38,7 +44,9 @@ export type TEvmHandler = TNftChain<
     },
     Overrides,
     string
-  >;
+  > &
+  ReadClaimed721Event &
+  ReadClaimed1155Event;
 
 export type TEvmParams = {
   identifier: string;

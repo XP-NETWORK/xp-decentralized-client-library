@@ -255,6 +255,21 @@ export function tezosHandler({
         },
       };
     },
+    async readClaimed721Event(hash) {
+      const op = await eventsGetContractEvents({
+        contract: {
+          eq: bridge,
+        },
+      });
+      const claimData = op.find((e) => e.timestamp === hash);
+      const data = claimData?.payload ?? raise("No claim data found");
+      return {
+        nft_contract: data.nft_contract,
+        transaction_hash: data.tx_hash,
+        token_id: data.token_id,
+        source_chain: data.source_chain,
+      };
+    },
     async nftData(tokenId, contract) {
       const tokenMd = await getNftTokenMetaData(contract, BigInt(tokenId));
       let name = "NTEZOS";
