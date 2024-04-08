@@ -34,7 +34,7 @@ export namespace ChainFactoryConfigs {
       bscParams: {
         identifier: "BSC",
         provider: new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
-        bridge: ethers.getAddress("0x3EC2839EcEAfa2Ce9e419718364B070563Db516e"),
+        bridge: ethers.getAddress("0x78689e37C0b9F623251e0117ea4F618408059857"),
         royaltySalePrice: 10000,
         storage,
       },
@@ -43,7 +43,7 @@ export namespace ChainFactoryConfigs {
         provider: new JsonRpcProvider(
           "https://ethereum-sepolia.publicnode.com",
         ),
-        bridge: ethers.getAddress("0xA0C15702892491597D369A04d7366Af234cF5F73"),
+        bridge: ethers.getAddress("0xCa3563d84f0D62344B8467382623d780Bb58871f"),
         royaltySalePrice: 10000,
         storage,
       },
@@ -52,7 +52,7 @@ export namespace ChainFactoryConfigs {
         provider: new JsonRpcProvider(
           "https://polygon-mumbai-bor.publicnode.com",
         ),
-        bridge: ethers.getAddress("0x1f89dce7eBFb78D6CA0A4d16F9B6a9F61B186ebc"),
+        bridge: ethers.getAddress("0xac89F63f0aE64c53c4052DB5B695f03BA349bf60"),
         royaltySalePrice: 10000,
         storage,
       },
