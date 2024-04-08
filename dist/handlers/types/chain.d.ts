@@ -70,7 +70,10 @@ export type TClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {Ret}.
      */
-    claimNft: (signer: Signer, claimData: ClaimData, sig: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<Ret>;
+    claimNft: (signer: Signer, claimData: ClaimData, sig: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<{
+        ret: Ret;
+        hash: () => string;
+    }>;
 };
 /**
  * Represents a function type for getting the balance of a signer.
@@ -198,7 +201,10 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of generic type Ret.
      */
-    claimSft: (signer: Signer, claimData: ClaimData, sigs: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<Ret>;
+    claimSft: (signer: Signer, claimData: ClaimData, sigs: TSignerAndSignature[], extraArgs?: ExtraArgs) => Promise<{
+        ret: Ret;
+        hash: () => string;
+    }>;
 };
 export type TGetValidatorCount = {
     getValidatorCount: () => Promise<number>;
