@@ -47,7 +47,10 @@ export function secretHandler({
           ...extraArgs,
         },
       );
-      return tx;
+      return {
+        hash: () => tx.transactionHash,
+        ret: tx,
+      };
     },
     async deployCollection(signer, da, ga) {
       const stored = await signer.tx.compute.storeCode(
@@ -218,7 +221,10 @@ export function secretHandler({
         },
       );
 
-      return tx;
+      return {
+        ret: tx,
+        hash: () => tx.transactionHash,
+      };
     },
     async nftData(tokenId, contract) {
       const data = (

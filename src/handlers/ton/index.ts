@@ -62,6 +62,10 @@ export function tonHandler({
           len: BigInt(sigs.length),
         },
       );
+      return {
+        hash: () => "",
+        ret: undefined,
+      };
     },
     async deployCollection(signer, da) {
       const nft = new TonNftCollection(da);

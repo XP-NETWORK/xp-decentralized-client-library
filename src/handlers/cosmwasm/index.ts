@@ -147,7 +147,12 @@ export async function cosmWasmHandler({
           },
         ],
       );
-      return claim;
+      return {
+        ret: claim,
+        hash() {
+          return claim.transactionHash;
+        },
+      };
     },
     getStorageContract() {
       return storage;

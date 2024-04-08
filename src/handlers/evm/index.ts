@@ -13,9 +13,9 @@ export function evmHandler({
   storage,
 }: TEvmParams): TEvmHandler {
   return {
-    claimNft(wallet, claimData, sigs, extraArgs) {
+    async claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
-      return contract.claimNFT721(
+      const ret = await contract.claimNFT721(
         claimData,
         sigs.map((e) => e.signature),
         {
@@ -23,6 +23,10 @@ export function evmHandler({
           value: claimData.fee,
         },
       );
+      return {
+        ret: ret,
+        hash: () => ret.hash,
+      };
     },
     async readClaimed721Event(hash) {
       const receipt = await provider.getTransactionReceipt(hash);
@@ -245,9 +249,9 @@ export function evmHandler({
         },
       );
     },
-    claimSft(wallet, claimData, sigs, extraArgs) {
+    async claimSft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
-      return contract.claimNFT1155(
+      const ret = await contract.claimNFT1155(
         claimData,
         sigs.map((e) => e.signature),
         {
@@ -255,6 +259,10 @@ export function evmHandler({
           value: claimData.fee,
         },
       );
+      return {
+        ret,
+        hash: () => ret.hash,
+      };
     },
     async lockNft(
       signer,

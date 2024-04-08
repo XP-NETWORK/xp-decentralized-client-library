@@ -468,7 +468,7 @@ export function multiversxHandler({
       transaction.setNonce(userAccount.getNonceThenIncrement());
       const signed = await signer.signTransaction(transaction);
       const hash = await provider.sendTransaction(signed);
-      return hash;
+      return { hash: () => hash, ret: hash };
     },
     async getBalance(signer, _) {
       const bal = BigInt(

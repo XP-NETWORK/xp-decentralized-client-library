@@ -237,7 +237,10 @@ export function tezosHandler({
           mutez: true,
           fee: data.fee.toNumber(),
         });
-      return tx;
+      return {
+        hash: () => tx.hash,
+        ret: tx,
+      };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
       Tezos.setSignerProvider(signer);

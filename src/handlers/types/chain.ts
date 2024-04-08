@@ -94,7 +94,7 @@ export type TClaimNFT<Signer, ClaimData, ExtraArgs, Ret> = {
     claimData: ClaimData,
     sig: TSignerAndSignature[],
     extraArgs?: ExtraArgs,
-  ) => Promise<Ret>;
+  ) => Promise<{ ret: Ret; hash: () => string }>;
 };
 
 /**
@@ -247,7 +247,7 @@ export type TClaimSFT<Signer, ClaimData, ExtraArgs, Ret> = {
     claimData: ClaimData,
     sigs: TSignerAndSignature[],
     extraArgs?: ExtraArgs,
-  ) => Promise<Ret>;
+  ) => Promise<{ ret: Ret; hash: () => string }>;
 };
 
 export type TGetValidatorCount = {
