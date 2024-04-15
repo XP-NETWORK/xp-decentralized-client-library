@@ -34,7 +34,7 @@ export namespace ChainFactoryConfigs {
       bscParams: {
         identifier: "BSC",
         provider: new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
-        bridge: ethers.getAddress("0x78689e37C0b9F623251e0117ea4F618408059857"),
+        bridge: ethers.getAddress("0xCa5c7090Fa1F3C0939E226ec827Ae140494d81F4"),
         royaltySalePrice: 10000,
         storage,
       },
@@ -50,14 +50,14 @@ export namespace ChainFactoryConfigs {
       maticParams: {
         identifier: "MATIC",
         provider: new JsonRpcProvider(
-          "https://polygon-mumbai-bor.publicnode.com",
+          "https://polygon-amoy-bor-rpc.publicnode.com",
         ),
-        bridge: ethers.getAddress("0xac89F63f0aE64c53c4052DB5B695f03BA349bf60"),
+        bridge: ethers.getAddress("0x820c0b504fe85b43E3c43D2EA24cb764ad78d52e"),
         royaltySalePrice: 10000,
         storage,
       },
       hederaParams: {
-        bridge: ethers.getAddress("0x742f68F53583Be22a62338e916eB8DE90D07daB1"),
+        bridge: ethers.getAddress("0xb3cE27eDadFE006f9f47C5ed5b62E63DFd9Cf3bD"),
         identifier: "HEDERA",
         provider: new JsonRpcProvider("https://testnet.hashio.io/api"),
         royaltySalePrice: 10000,
