@@ -35,7 +35,7 @@ export function evmHandler({
       }
       const log = receipt.logs.find((e) =>
         e.topics.includes(
-          Bridge__factory.createInterface().getEvent("Claimed").topicHash,
+          Bridge__factory.createInterface().getEvent("Claimed721").topicHash,
         ),
       );
       if (!log) {
@@ -52,7 +52,7 @@ export function evmHandler({
         nft_contract: claimed.args.nftContract,
         source_chain: claimed.args.sourceChain,
         token_id: claimed.args.tokenId,
-        transaction_hash: claimed.args.transaction_hash,
+        transaction_hash: claimed.args.transactionHash,
       };
     },
     async readClaimed1155Event(hash) {
@@ -62,7 +62,7 @@ export function evmHandler({
       }
       const log = receipt.logs.find((e) =>
         e.topics.includes(
-          Bridge__factory.createInterface().getEvent("Claimed").topicHash,
+          Bridge__factory.createInterface().getEvent("Claim1155").topicHash,
         ),
       );
       if (!log) {
@@ -79,7 +79,7 @@ export function evmHandler({
         nft_contract: claimed.args.nftContract,
         source_chain: claimed.args.sourceChain,
         token_id: claimed.args.tokenId,
-        transaction_hash: claimed.args.transaction_hash,
+        transaction_hash: claimed.args.transactionHash,
         amount: claimed.args.amount,
       };
     },

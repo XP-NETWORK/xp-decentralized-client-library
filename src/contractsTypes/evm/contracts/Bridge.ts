@@ -110,7 +110,8 @@ export interface BridgeInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "AddNewValidator"
-      | "Claimed"
+      | "Claim1155"
+      | "Claimed721"
       | "Locked"
       | "LogHash"
       | "RewardValidator"
@@ -262,12 +263,52 @@ export namespace AddNewValidatorEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ClaimedEvent {
-  export type InputTuple = [sourceChain: string, transactionHash: string];
-  export type OutputTuple = [sourceChain: string, transactionHash: string];
+export namespace Claim1155Event {
+  export type InputTuple = [
+    sourceChain: string,
+    transactionHash: string,
+    nftContract: AddressLike,
+    tokenId: BigNumberish,
+    amount: BigNumberish,
+  ];
+  export type OutputTuple = [
+    sourceChain: string,
+    transactionHash: string,
+    nftContract: string,
+    tokenId: bigint,
+    amount: bigint,
+  ];
   export interface OutputObject {
     sourceChain: string;
     transactionHash: string;
+    nftContract: string;
+    tokenId: bigint;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace Claimed721Event {
+  export type InputTuple = [
+    sourceChain: string,
+    transactionHash: string,
+    nftContract: AddressLike,
+    tokenId: BigNumberish,
+  ];
+  export type OutputTuple = [
+    sourceChain: string,
+    transactionHash: string,
+    nftContract: string,
+    tokenId: bigint,
+  ];
+  export interface OutputObject {
+    sourceChain: string;
+    transactionHash: string;
+    nftContract: string;
+    tokenId: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -633,11 +674,18 @@ export interface Bridge extends BaseContract {
     AddNewValidatorEvent.OutputObject
   >;
   getEvent(
-    key: "Claimed",
+    key: "Claim1155",
   ): TypedContractEvent<
-    ClaimedEvent.InputTuple,
-    ClaimedEvent.OutputTuple,
-    ClaimedEvent.OutputObject
+    Claim1155Event.InputTuple,
+    Claim1155Event.OutputTuple,
+    Claim1155Event.OutputObject
+  >;
+  getEvent(
+    key: "Claimed721",
+  ): TypedContractEvent<
+    Claimed721Event.InputTuple,
+    Claimed721Event.OutputTuple,
+    Claimed721Event.OutputObject
   >;
   getEvent(
     key: "Locked",
@@ -687,15 +735,26 @@ export interface Bridge extends BaseContract {
       AddNewValidatorEvent.OutputObject
     >;
 
-    "Claimed(string,string)": TypedContractEvent<
-      ClaimedEvent.InputTuple,
-      ClaimedEvent.OutputTuple,
-      ClaimedEvent.OutputObject
+    "Claim1155(string,string,address,uint256,uint256)": TypedContractEvent<
+      Claim1155Event.InputTuple,
+      Claim1155Event.OutputTuple,
+      Claim1155Event.OutputObject
     >;
-    Claimed: TypedContractEvent<
-      ClaimedEvent.InputTuple,
-      ClaimedEvent.OutputTuple,
-      ClaimedEvent.OutputObject
+    Claim1155: TypedContractEvent<
+      Claim1155Event.InputTuple,
+      Claim1155Event.OutputTuple,
+      Claim1155Event.OutputObject
+    >;
+
+    "Claimed721(string,string,address,uint256)": TypedContractEvent<
+      Claimed721Event.InputTuple,
+      Claimed721Event.OutputTuple,
+      Claimed721Event.OutputObject
+    >;
+    Claimed721: TypedContractEvent<
+      Claimed721Event.InputTuple,
+      Claimed721Event.OutputTuple,
+      Claimed721Event.OutputObject
     >;
 
     "Locked(uint256,string,string,string,uint256,string,string)": TypedContractEvent<
