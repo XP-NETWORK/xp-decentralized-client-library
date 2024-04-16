@@ -27,7 +27,7 @@ import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
 
 import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
-import { multiversXBridgeABI } from "../../contractsTypes/evm/abi";
+import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
 import {
   TMultiversXHandler,
