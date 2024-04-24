@@ -1,10 +1,12 @@
 import {
   SendParams,
+  Signer,
   TezosToolkit,
   TransactionOperation,
+  TransactionWalletOperation,
 } from "@taquito/taquito";
 
-import { Signer } from "@taquito/taquito";
+import { WalletProvider } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
@@ -14,6 +16,14 @@ import {
   ReadClaimed721Event,
   TSingularNftChain,
 } from "../types";
+
+export type TezosSigner = Signer | WalletProvider;
+
+export function isTezosSigner(ts: TezosSigner): ts is Signer {
+  return "secretKey" in ts;
+}
+
+export type Operation = TransactionOperation | TransactionWalletOperation;
 
 export type TTezosClaimArgs = {
   token_id: nat;
@@ -39,15 +49,15 @@ export type TezosMintArgs = {
 };
 
 export type TTezosHandler = TSingularNftChain<
-  Signer,
+  TezosSigner,
   TTezosClaimArgs,
   Partial<SendParams>,
-  TransactionOperation,
+  string,
   TezosToolkit
 > &
-  MintNft<Signer, TezosMintArgs, Partial<SendParams>, TransactionOperation> &
+  MintNft<TezosSigner, TezosMintArgs, Partial<SendParams>, string> &
   DeployCollection<
-    Signer,
+    TezosSigner,
     {
       name: string;
       description: string;

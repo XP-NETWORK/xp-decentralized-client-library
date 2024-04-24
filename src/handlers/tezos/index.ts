@@ -12,19 +12,141 @@ import {
 } from "@taquito/utils";
 import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { address, bytes, tas } from "../../contractsTypes/tezos/type-aliases";
+import { bytes, tas } from "../../contractsTypes/tezos/type-aliases";
 
-import { MichelsonMap } from "@taquito/taquito";
+import {
+  ContractAbstraction,
+  ContractMethod,
+  ContractMethodObject,
+  ContractProvider,
+  MichelsonMap,
+  OriginateParams,
+  SendParams,
+  TransactionOperation,
+  TransactionWalletOperation,
+  Wallet,
+} from "@taquito/taquito";
 import axios from "axios";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
 import { raise } from "../ton";
-import { TTezosHandler, TTezosParams } from "./types";
+import { TTezosHandler, TTezosParams, TezosSigner } from "./types";
 
 export function tezosHandler({
   Tezos,
   bridge,
   storage,
 }: TTezosParams): TTezosHandler {
+  async function withContract(
+    sender: TezosSigner,
+    contract: string,
+    cb: (
+      contract: ContractAbstraction<ContractProvider | Wallet>,
+    ) => ContractMethod<ContractProvider | Wallet>,
+    params?: Partial<SendParams>,
+  ) {
+    if ("publicKeyHash" in sender) {
+      Tezos.setSignerProvider(sender);
+
+      const contractI = await Tezos.contract.at(contract);
+
+      const res = cb(contractI);
+      const tx = await res.send(params);
+      await tx.confirmation();
+      return (tx as TransactionOperation).hash;
+    }
+    Tezos.setWalletProvider(sender);
+    const contractI = await Tezos.wallet.at(contract);
+
+    const res = cb(contractI);
+
+    const estim = await Tezos.estimate
+      .transfer(res.toTransferParams(params))
+      .catch(() => ({ storageLimit: 0 }));
+
+    if (params) {
+      if (!params.storageLimit) params.storageLimit = estim.storageLimit;
+    } else {
+      // biome-ignore lint/style/noParameterAssign: cope
+      params = { storageLimit: estim.storageLimit };
+    }
+    const tx = await res.send(params);
+    await tx.confirmation();
+    return (tx as TransactionWalletOperation).opHash;
+  }
+
+  async function originateWithTezosSigner(
+    sender: TezosSigner,
+    originateParams: OriginateParams<unknown>,
+  ) {
+    if ("publicKeyHash" in sender) {
+      Tezos.setSignerProvider(sender);
+      const contractI = await Tezos.contract.originate(originateParams);
+      await contractI.confirmation();
+      return contractI.contractAddress ?? raise("Unreachable");
+    }
+    Tezos.setWalletProvider(sender);
+    const contractI = Tezos.wallet.originate(originateParams);
+
+    const tx = await contractI.send();
+
+    await tx.confirmation();
+    return (await tx.contract()).address;
+  }
+
+  async function withContractMethodObject(
+    sender: TezosSigner,
+    contract: string,
+    cb: (
+      contract: ContractAbstraction<ContractProvider | Wallet>,
+    ) => ContractMethodObject<ContractProvider | Wallet>,
+    params?: Partial<SendParams>,
+  ) {
+    if ("publicKeyHash" in sender) {
+      Tezos.setSignerProvider(sender);
+
+      const contractI = await Tezos.contract.at(contract);
+
+      const res = cb(contractI);
+      const tx = await res.send(params);
+      await tx.confirmation();
+      return (tx as TransactionOperation).hash;
+    }
+    Tezos.setWalletProvider(sender);
+    const contractI = await Tezos.wallet.at(contract);
+
+    const res = cb(contractI);
+
+    const estim = await Tezos.estimate
+      .transfer(res.toTransferParams(params))
+      .catch(() => ({ storageLimit: 0 }));
+
+    if (params) {
+      if (!params.storageLimit) params.storageLimit = estim.storageLimit;
+    } else {
+      // biome-ignore lint/style/noParameterAssign: cope
+      params = { storageLimit: estim.storageLimit };
+    }
+    const tx = await res.send(params);
+    await tx.confirmation();
+    return (tx as TransactionWalletOperation).opHash;
+  }
+  function withBridge(
+    sender: TezosSigner,
+    cb: (
+      bridge: ContractAbstraction<ContractProvider | Wallet>,
+    ) => ContractMethod<ContractProvider | Wallet>,
+    params?: Partial<SendParams>,
+  ) {
+    return withContract(sender, bridge, cb, params);
+  }
+
+  function getAddress(sender: TezosSigner) {
+    if ("publicKeyHash" in sender) {
+      return sender.publicKeyHash();
+    }
+    return sender.getPKH();
+  }
+
   const http = axios.create();
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
@@ -62,7 +184,7 @@ export function tezosHandler({
     },
     async getBalance(signer, _) {
       return BigInt(
-        (await Tezos.tz.getBalance(await signer.publicKeyHash())).toString(),
+        (await Tezos.tz.getBalance(await getAddress(signer))).toString(),
       );
     },
     async getValidatorCount() {
@@ -71,20 +193,22 @@ export function tezosHandler({
       return storage.validators_count.toNumber();
     },
     async approveNft(signer, tokenId, contract, extraArgs) {
-      Tezos.setSignerProvider(signer);
-      const nftContract = await Tezos.contract.at(contract);
-      const tx = await nftContract.methodsObject
-        .update_operators([
-          {
-            add_operator: {
-              owner: (await signer.publicKeyHash()) as address,
-              operator: bridge as address,
-              token_id: tas.nat(tokenId.toString()),
+      const owner = await getAddress(signer);
+      return await withContract(
+        signer,
+        contract,
+        (contract) =>
+          contract.methods.update_operators([
+            {
+              add_operator: {
+                owner,
+                operator: bridge,
+                token_id: tokenId,
+              },
             },
-          },
-        ])
-        .send({ ...extraArgs });
-      return tx;
+          ]),
+        extraArgs,
+      );
     },
     async getClaimData(txHash) {
       const op = await eventsGetContractEvents({
@@ -128,45 +252,50 @@ export function tezosHandler({
       };
     },
     async mintNft(signer, ma, gasArgs) {
-      Tezos.setSignerProvider(signer);
-      const contract = await Tezos.contract.at<NFTContractType>(ma.contract);
-      const tx = await contract.methods
-        .mint([
-          {
-            amt: tas.nat(1),
-            to: tas.address(await signer.publicKeyHash()),
-            token_id: tas.nat(ma.tokenId.toString()),
-            token_uri: ma.uri,
-          },
-        ])
-        .send(gasArgs);
-      return tx;
+      const owner = await getAddress(signer);
+      return await withContract(
+        signer,
+        ma.contract,
+        (contract) =>
+          contract.methods.mint([
+            {
+              amt: tas.nat(1),
+              to: tas.address(owner),
+              token_id: tas.nat(ma.tokenId.toString()),
+              token_uri: ma.uri,
+            },
+          ]),
+        gasArgs,
+      );
     },
     async deployCollection(signer, da, ga) {
-      Tezos.setSignerProvider(signer);
       const metadata = new MichelsonMap<string, bytes>();
       metadata.set("", tas.bytes(char2Bytes("tezos-storage:data")));
       metadata.set(
         "data",
         tas.bytes(
           char2Bytes(`{
-      "name":"${da.name}",
-      "description":"${da.description}",
-      "version":"0.0.1",
-      "license":{"name":"MIT"},
-      "source":{
-        "tools":["Ligo"],
-        "location":"https://github.com/ligolang/contract-catalogue/tree/main/lib/fa2"},
-      "interfaces":["TZIP-012"],
-      "errors": [],
-      "views": []
+            "name":"${da.name}",
+            "description":"${da.description}",
+            "version":"0.0.1",
+            "license":{"name":"MIT"},
+            "source":{
+              "tools":["Ligo"],
+              "location":"https://github.com/ligolang/contract-catalogue/tree/main/lib/fa2"
+            },
+            "interfaces":["TZIP-012"],
+            "errors": [],
+            "views": []
       }`),
         ),
       );
-      const tx = await Tezos.contract.originate({
+
+      const owner = await getAddress(signer);
+
+      return await originateWithTezosSigner(signer, {
         code: NFTCode.code,
         storage: {
-          admin: await signer.publicKeyHash(),
+          admin: owner,
           token_metadata: new MichelsonMap(),
           token_total_supply: new MichelsonMap(),
           operators: new MichelsonMap(),
@@ -175,8 +304,6 @@ export function tezosHandler({
         },
         gasLimit: ga?.gasLimit,
       });
-      await tx.confirmation();
-      return tx.contractAddress ?? raise("No contract address found");
     },
     async claimNft(signer, data, sigs, extraArgs) {
       const isTezosAddr =
@@ -189,72 +316,78 @@ export function tezosHandler({
         : {
             str: data.source_nft_contract_address,
           };
-      const bridgeInstance = await Tezos.contract.at(bridge);
-      Tezos.setSignerProvider(signer);
 
-      const tx = await bridgeInstance.methodsObject
-        .claim_nft({
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //@ts-ignore
-          data: {
-            dest_address: data.dest_address,
-            dest_chain: data.dest_chain,
-            fee: data.fee,
-            metadata: data.metadata,
-            name: data.name,
-            nft_type: data.nft_type,
-            royalty: data.royalty,
-            royalty_receiver: data.royalty_receiver,
-            source_chain: data.source_chain,
-            symbol: data.symbol,
-            token_amount: data.token_amount,
-            token_id: tas.nat(data.token_id),
-            transaction_hash: data.transaction_hash,
-            source_nft_contract_address: sourceNftContractAddress,
-          },
-          sigs: sigs.map((e) => {
-            const addr = tas.address(
-              b58cencode(
-                hash(
-                  new Uint8Array(b58cdecode(e.signerAddress, prefix.edpk)),
-                  20,
+      const txHash = await withContractMethodObject(
+        signer,
+        bridge,
+        (bridgeInstance) => {
+          return bridgeInstance.methodsObject.claim_nft({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            data: {
+              dest_address: data.dest_address,
+              dest_chain: data.dest_chain,
+              fee: data.fee,
+              metadata: data.metadata,
+              name: data.name,
+              nft_type: data.nft_type,
+              royalty: data.royalty,
+              royalty_receiver: data.royalty_receiver,
+              source_chain: data.source_chain,
+              symbol: data.symbol,
+              token_amount: data.token_amount,
+              token_id: tas.nat(data.token_id),
+              transaction_hash: data.transaction_hash,
+              source_nft_contract_address: sourceNftContractAddress,
+            },
+            sigs: sigs.map((e) => {
+              const addr = tas.address(
+                b58cencode(
+                  hash(
+                    new Uint8Array(b58cdecode(e.signerAddress, prefix.edpk)),
+                    20,
+                  ),
+                  prefix.tz1,
                 ),
-                prefix.tz1,
-              ),
-            );
-            return {
-              addr,
-              sig: tas.signature(
-                Buffer.from(e.signature.replace("0x", ""), "hex").toString(),
-              ),
-              signer: tas.key(e.signerAddress),
-            };
-          }),
-        })
-        .send({
-          ...extraArgs,
-          amount: data.fee.toNumber(),
-          mutez: true,
-          fee: data.fee.toNumber(),
-        });
+              );
+              return {
+                addr,
+                sig: tas.signature(
+                  Buffer.from(e.signature.replace("0x", ""), "hex").toString(),
+                ),
+                signer: tas.key(e.signerAddress),
+              };
+            }),
+          });
+        },
+        extraArgs,
+      );
+
       return {
-        hash: () => tx.hash,
-        ret: tx,
+        hash: () => txHash,
+        ret: txHash,
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
-      Tezos.setSignerProvider(signer);
-      const bridgeInstance = await Tezos.contract.at(bridge);
-      const tx = await bridgeInstance.methods
-        .lock_nft(tas.nat(tokenId.toString()), destinationChain, to, {
-          addr: tas.address(sourceNft),
-        })
-        .send({ ...extraArgs });
+      const hash = await withBridge(
+        signer,
+        (bridgeInstance) => {
+          return bridgeInstance.methods.lock_nft(
+            tas.nat(tokenId.toString()),
+            destinationChain,
+            to,
+            {
+              addr: tas.address(sourceNft),
+            },
+          );
+        },
+        extraArgs,
+      );
 
       return {
-        tx,
+        tx: hash,
         hash() {
-          return tx.hash;
+          return hash;
         },
       };
     },
