@@ -1,6 +1,7 @@
 import { hash } from "@stablelib/blake2b";
 
 import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
+import * as api from "@tzkt/sdk-api";
 import { eventsGetContractEvents } from "@tzkt/sdk-api";
 
 import {
@@ -35,7 +36,9 @@ export function tezosHandler({
   Tezos,
   bridge,
   storage,
+  tzktApi,
 }: TTezosParams): TTezosHandler {
+  api.defaults.baseUrl = tzktApi;
   async function withContract(
     sender: TezosSigner,
     contract: string,
@@ -211,12 +214,14 @@ export function tezosHandler({
       );
     },
     async getClaimData(txHash) {
+      const txs = await api.operationsGetTransactionByHash(txHash);
+      const tx = txs[0] ?? raise("No such txn found");
       const op = await eventsGetContractEvents({
         contract: {
           eq: bridge,
         },
       });
-      const claimData = op.find((e) => e.timestamp === txHash);
+      const claimData = op.find((e) => e.timestamp === tx.timestamp);
 
       const data = claimData?.payload ?? raise("No claim data found");
       const sourceNftContractAddress = extractStrOrAddr(
@@ -392,12 +397,14 @@ export function tezosHandler({
       };
     },
     async readClaimed721Event(hash) {
+      const txs = await api.operationsGetTransactionByHash(hash);
+      const tx = txs[0] ?? raise("No such txn found");
       const op = await eventsGetContractEvents({
         contract: {
           eq: bridge,
         },
       });
-      const claimData = op.find((e) => e.timestamp === hash);
+      const claimData = op.find((e) => e.timestamp === tx.timestamp);
       const data = claimData?.payload ?? raise("No claim data found");
       return {
         nft_contract: data.nft_contract,
