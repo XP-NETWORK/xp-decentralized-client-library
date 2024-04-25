@@ -54,6 +54,7 @@ export declare namespace ChainFactoryConfigs {
             bridge: string;
             Tezos: TezosToolkit;
             storage: import("../contractsTypes/evm").BridgeStorage;
+            tzktApi: string;
         };
         secretParams: {
             bridge: string;
