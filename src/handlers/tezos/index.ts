@@ -365,7 +365,7 @@ export function tezosHandler({
             }),
           });
         },
-        extraArgs,
+        { fee: data.fee.toNumber(), ...extraArgs },
       );
 
       return {
