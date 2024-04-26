@@ -235,11 +235,14 @@ export async function cosmWasmHandler({
         (await signer.getAccounts())[0].address,
         bridge,
       );
+      const lockCollectionId =
+        await cosmSigner.getContractCodeHistory(sourceNft);
       const lock = await bc.lock721(
         {
           data: {
             destination_chain: destinationChain,
-            collection_code_id: 0,
+            collection_code_id:
+              lockCollectionId[lockCollectionId.length - 1].codeId,
             destination_user_address: to,
             token_id: tokenId.toString(),
             source_nft_contract_address: sourceNft,
@@ -248,7 +251,7 @@ export async function cosmWasmHandler({
         extraArgs?.fee ?? {
           amount: [
             {
-              amount: "10000",
+              amount: "15000",
               denom: denom,
             },
           ],
