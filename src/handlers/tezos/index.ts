@@ -133,6 +133,7 @@ export function tezosHandler({
     await tx.confirmation();
     return (tx as TransactionWalletOperation).opHash;
   }
+  //@ts-ignore
   function withBridge(
     sender: TezosSigner,
     cb: (
@@ -374,17 +375,18 @@ export function tezosHandler({
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
-      const hash = await withBridge(
+      const hash = await withContractMethodObject(
         signer,
+        bridge,
         (bridgeInstance) => {
-          return bridgeInstance.methods.lock_nft(
-            tas.nat(tokenId.toString()),
-            destinationChain,
-            to,
-            {
+          return bridgeInstance.methodsObject.lock_nft({
+            token_id: tas.nat(tokenId.toString()),
+            dest_chain: destinationChain,
+            dest_address: to,
+            source_nft_address: {
               addr: tas.address(sourceNft),
             },
-          );
+          });
         },
         extraArgs,
       );
