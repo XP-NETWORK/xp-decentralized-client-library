@@ -30,6 +30,7 @@ import {
 import axios from "axios";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
 import { raise } from "../ton";
+import { TNFTData } from "../types";
 import { TTezosHandler, TTezosParams, TezosSigner } from "./types";
 
 export function tezosHandler({
@@ -239,7 +240,15 @@ export function tezosHandler({
       } = data;
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      const nft = await this.nftData(tokenId, sourceNftContractAddress, {});
+      let nft: TNFTData = {
+        metadata: "",
+        name: "",
+        royalty: 0n,
+        symbol: "",
+      };
+      if (validateAddress(sourceNftContractAddress) === 3) {
+        nft = await this.nftData(tokenId, sourceNftContractAddress, {});
+      }
       return {
         tokenId,
         destinationChain,
