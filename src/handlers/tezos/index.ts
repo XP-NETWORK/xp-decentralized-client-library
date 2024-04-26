@@ -236,7 +236,6 @@ export function tezosHandler({
         token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
-        transaction_hash: transactionHash,
       } = data;
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
@@ -256,7 +255,7 @@ export function tezosHandler({
         tokenAmount,
         nftType,
         sourceChain,
-        transactionHash,
+        transactionHash: claimData?.transactionId?.toString() ?? "",
         sourceNftContractAddress,
         fee: fee.toString(),
         royaltyReceiver,
