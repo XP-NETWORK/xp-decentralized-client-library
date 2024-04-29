@@ -98,7 +98,7 @@ export namespace ChainFactoryConfigs {
       },
       terraParams: {
         bridge:
-          "terra1pscwnx4dch2pmdkda89mdnl5n576hnccrjw4dlssfq5nhgrr850scz0q64",
+          "terra10yjpnq0vgu2hfhlahg96344snk2l6pmcayr23t6fp8jny95t6yxq8ztv7s",
         chainId: "pisco-1",
         rpc: "https://rpc.testcosmos.directory/terra2testnet",
         storage,
