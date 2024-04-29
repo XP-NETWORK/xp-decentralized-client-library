@@ -4,6 +4,7 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 
 import { Bridge, CosmNft } from "@xp/cosmos-client";
+import { TNFTData } from "../types";
 import { CosmWasmExtraArgs, TCosmWasmHandler, TCosmWasmParams } from "./types";
 
 export async function cosmWasmHandler({
@@ -183,8 +184,10 @@ export async function cosmWasmHandler({
         throw new Error("Transaction not found");
       }
       const e = tx.events.find((e) => {
-        e.type === "wasm" &&
-          e.attributes.find((e) => e.key === "LockedEventInfo");
+        return (
+          e.type === "wasm" &&
+          e.attributes.find((e) => e.key === "LockedEventInfo")
+        );
       });
       if (!e) {
         throw new Error("Event not found");
@@ -206,7 +209,17 @@ export async function cosmWasmHandler({
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
 
-      const nft = await nftData(tokenId, sourceNftContractAddress, {});
+      let nft: TNFTData = {
+        metadata: "",
+        name: "",
+        royalty: 0n,
+        symbol: "",
+      };
+
+      try {
+        await provider.getAccount(sourceNftContractAddress);
+        nft = await nftData(tokenId, sourceNftContractAddress, {});
+      } catch (e) {}
 
       return {
         destinationChain,
@@ -251,11 +264,11 @@ export async function cosmWasmHandler({
         extraArgs?.fee ?? {
           amount: [
             {
-              amount: "15000",
+              amount: "50000",
               denom: denom,
             },
           ],
-          gas: "1000000",
+          gas: "2500000",
         },
         extraArgs?.memo,
       );
