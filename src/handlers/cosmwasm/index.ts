@@ -25,19 +25,34 @@ export async function cosmWasmHandler({
     const nft = new CosmNft.CosmosNftQueryClient(provider, contract);
     const data = await nft.nftInfo({ tokenId });
     const collection = await nft.contractInfo();
-    const royalty = await nft.extension({
-      msg: {
-        royalty_info: {
-          sale_price: "10000",
-          token_id: tokenId,
+    const check_royalties = await nft
+      .extension({
+        msg: {
+          check_royalties: {},
         },
-      },
-    });
+      })
+      .catch(() => false);
+    if (check_royalties) {
+      const royalty = await nft.extension({
+        msg: {
+          royalty_info: {
+            sale_price: "10000",
+            token_id: tokenId,
+          },
+        },
+      });
+      return {
+        metadata: data.token_uri ?? "",
+        name: collection.name,
+        symbol: collection.symbol,
+        royalty: royalty.royalty_amount,
+      };
+    }
     return {
       metadata: data.token_uri ?? "",
       name: collection.name,
       symbol: collection.symbol,
-      royalty: royalty.royalty_amount,
+      royalty: 1n,
     };
   }
   const bc = new Bridge.BridgeQueryClient(provider, bridge);
