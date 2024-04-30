@@ -72,7 +72,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             terraParams: {
-                bridge: "terra1ndavkjuqk940pkm5hwat4c2c85q47qa0dw0mr86rdpcnnxmrwdeqnqc2sp",
+                bridge: "terra1jdek24uwru97s8c48smzx035tmw55yqxzrc2sy7flepr980rx7hsrnyl03",
                 chainId: "pisco-1",
                 rpc: "https://rpc.testcosmos.directory/terra2testnet",
                 storage,
