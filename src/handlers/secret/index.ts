@@ -273,6 +273,53 @@ export function secretHandler({
         royalty: BigInt(royalty),
       };
     },
+    async readClaimed1155Event(txHash) {
+      const eventId = "Claimed1155EventInfo";
+      const tx = await provider.query.getTx(txHash);
+      if (!tx) {
+        throw new Error("Tx not found");
+      }
+      const log =
+        tx.jsonLog
+          ?.at(0)
+          ?.events.find((item) => item.type === "wasm")
+          ?.attributes.find((item) => item.key === eventId) ??
+        raise("Log not found");
+
+      const { amount, nft_contract, source_chain, transaction_hash, token_id } =
+        JSON.parse(log.value);
+
+      return {
+        amount: BigInt(amount),
+        nft_contract,
+        source_chain,
+        token_id,
+        transaction_hash,
+      };
+    },
+    async readClaimed721Event(txHash) {
+      const eventId = "Claimed721EventInfo";
+      const tx = await provider.query.getTx(txHash);
+      if (!tx) {
+        throw new Error("Tx not found");
+      }
+      const log =
+        tx.jsonLog
+          ?.at(0)
+          ?.events.find((item) => item.type === "wasm")
+          ?.attributes.find((item) => item.key === eventId) ??
+        raise("Log not found");
+
+      const { nft_contract, source_chain, transaction_hash, token_id } =
+        JSON.parse(log.value);
+
+      return {
+        nft_contract,
+        source_chain,
+        token_id,
+        transaction_hash,
+      };
+    },
     async approveNft(signer, tokenId, contract, extraArgs) {
       const res = await signer.tx.compute.executeContract(
         {
