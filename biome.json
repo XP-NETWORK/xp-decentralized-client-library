@@ -16,6 +16,10 @@
   },
   "files": {
     "include": ["src/**/*.ts"],
-    "ignore": ["src/contractsTypes/**/*.ts"]
+    "ignore": [
+      "src/contractsTypes/**/*.ts",
+      "src/handlers/ton/nftc.ts",
+      "src/handlers/ton/nfti.ts"
+    ]
   }
 }

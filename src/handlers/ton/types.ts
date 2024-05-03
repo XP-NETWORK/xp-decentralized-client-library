@@ -1,11 +1,18 @@
-import { Sender } from "@ton/core";
+import { Address, Cell, Sender } from "@ton/core";
 import { TonClient } from "@ton/ton";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/ton/tonBridge";
 import { DeployCollection, MintNft, TSingularNftChain } from "../types";
-import { collectionData } from "./nft";
+import { RoyaltyParams } from "./nftc";
 
-export type TonMintArgs = collectionData;
+export type TonDeployArgs = {
+  owner_address: Address;
+  collection_content: Cell;
+  royalty_params: RoyaltyParams;
+};
+export type TonMintArgs = {
+  contract: Address;
+};
 
 export type TTonHandler = TSingularNftChain<
   Sender,
@@ -15,7 +22,7 @@ export type TTonHandler = TSingularNftChain<
   TonClient
 > &
   MintNft<Sender, TonMintArgs, never, undefined> &
-  DeployCollection<Sender, TonMintArgs, never, string>;
+  DeployCollection<Sender, TonDeployArgs, never, string>;
 
 export type TTonParams = {
   client: TonClient;

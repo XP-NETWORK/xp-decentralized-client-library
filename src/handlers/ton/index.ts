@@ -8,7 +8,7 @@ import {
 } from "../../contractsTypes/ton/tonBridge";
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
-import { TonNftCollection } from "./nft";
+import { ExampleNFTCollection } from "./nftc";
 import { TTonHandler, TTonParams } from "./types";
 
 export function raise(message: string): never {
@@ -68,9 +68,24 @@ export function tonHandler({
       };
     },
     async deployCollection(signer, da) {
-      const nft = new TonNftCollection(da);
+      const nft = client.open(
+        await ExampleNFTCollection.fromInit(
+          da.owner_address,
+          da.collection_content,
+          da.royalty_params,
+        ),
+      );
 
-      nft.deploy(signer);
+      await nft.send(
+        signer,
+        {
+          value: toNano("0.5"),
+        },
+        {
+          $$type: "Deploy",
+          queryId: 3424n,
+        },
+      );
 
       return nft.address.toString();
     },
@@ -264,8 +279,14 @@ export function tonHandler({
     },
     async approveNft(_signer, _tokenId, _contract) {},
     async mintNft(signer, ma) {
-      const nft = new TonNftCollection(ma);
-      await nft.deploy(signer);
+      const nft = client.open(ExampleNFTCollection.fromAddress(ma.contract));
+      await nft.send(
+        signer,
+        {
+          value: toNano("0.1"),
+        },
+        "Mint",
+      );
       return;
     },
     async nftData(_tokenId, contract, _overrides) {
