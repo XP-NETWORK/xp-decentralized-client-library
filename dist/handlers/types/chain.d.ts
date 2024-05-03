@@ -43,7 +43,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    approveNft(signer: Signer, tokenId: string, contract: string, extraArgs?: ExtraArgs): Promise<RetTx>;
+    approveNft: (signer: Signer, tokenId: string, contract: string, extraArgs?: ExtraArgs) => Promise<RetTx>;
 };
 /**
  * Represents a signer and its corresponding signature.
@@ -112,10 +112,10 @@ export type Claimed1155Event = Claimed721Event & {
     amount: bigint;
 };
 export type ReadClaimed721Event = {
-    readClaimed721Event(hash: string): Promise<Claimed721Event>;
+    readClaimed721Event: (hash: string) => Promise<Claimed721Event>;
 };
 export type ReadClaimed1155Event = {
-    readClaimed1155Event(hash: string): Promise<Claimed1155Event>;
+    readClaimed1155Event: (hash: string) => Promise<Claimed1155Event>;
 };
 /**
  * Represents a type that defines a function to retrieve NFT data.
