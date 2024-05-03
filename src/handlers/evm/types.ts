@@ -13,6 +13,7 @@ import {
   MintNft,
   ReadClaimed721Event,
   ReadClaimed1155Event,
+  TApproveNFT,
   TNftChain,
 } from "../types";
 
@@ -35,6 +36,7 @@ export type TEvmHandler = TNftChain<
     PayableOverrides,
     ContractTransactionResponse
   > &
+  TApproveNFT<Signer, PayableOverrides, ContractTransactionResponse> &
   DeployCollection<
     Signer,
     {
