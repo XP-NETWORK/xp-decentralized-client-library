@@ -55,12 +55,12 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
    * @param extraArgs The extra arguments required for a chain.
    * @returns A promise that resolves to the transaction which is of type {RetTx}.
    */
-  approveNft(
+  approveNft: (
     signer: Signer,
     tokenId: string,
     contract: string,
     extraArgs?: ExtraArgs,
-  ): Promise<RetTx>;
+  ) => Promise<RetTx>;
 };
 
 /**
@@ -138,11 +138,11 @@ export type Claimed1155Event = Claimed721Event & {
 };
 
 export type ReadClaimed721Event = {
-  readClaimed721Event(hash: string): Promise<Claimed721Event>;
+  readClaimed721Event: (hash: string) => Promise<Claimed721Event>;
 };
 
 export type ReadClaimed1155Event = {
-  readClaimed1155Event(hash: string): Promise<Claimed1155Event>;
+  readClaimed1155Event: (hash: string) => Promise<Claimed1155Event>;
 };
 
 /**
