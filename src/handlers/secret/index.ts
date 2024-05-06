@@ -57,22 +57,25 @@ export function secretHandler({
       if (!code) {
         throw new Error("Code not found");
       }
+      const msg = {
+        name: da.name,
+        symbol: da.symbol,
+        owner: signer.address,
+        destination_user_address: signer.address,
+        entropy: "bruh",
+        config: {
+          public_token_supply: true,
+        },
+      };
       const contract = await signer.tx.compute.instantiateContract(
         {
           code_id: code,
-          init_msg: {
-            name: da.name,
-            symbol: da.symbol,
-            owner: signer.address,
-            config: {
-              public_token_supply: true,
-            },
-          },
-          init_funds: [],
+          init_msg: msg,
+          label: `snip721-${da.name}-${new Date().getUTCMilliseconds()}`,
           sender: signer.address,
-          label: `${da.name}-${Date.now()}`,
         },
         {
+          gasLimit: 70000,
           ...ga,
         },
       );

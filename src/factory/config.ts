@@ -78,7 +78,7 @@ export namespace ChainFactoryConfigs {
           url: "https://lcd.pulsar-3.secretsaturn.net",
         }),
         storage,
-        nftCodeId: 7103,
+        nftCodeId: 7104,
       },
       multiversxParams: {
         bridge:
