@@ -56,7 +56,7 @@ var ChainFactoryConfigs;
                     url: "https://lcd.pulsar-3.secretsaturn.net",
                 }),
                 storage,
-                nftCodeId: 7103,
+                nftCodeId: 7104,
             },
             multiversxParams: {
                 bridge: "erd1qqqqqqqqqqqqqpgqtsw8s3evjjyqqa2j2tfn9yvufqskdv236n9s2a06h9",
