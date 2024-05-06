@@ -1,4 +1,4 @@
-import { Cell, Slice, Address, ContractProvider, Sender, Contract, ContractABI } from "ton-core";
+import { Cell, Slice, Address, Builder, ContractProvider, Sender, Contract, ContractABI } from "@ton/core";
 export type StateInit = {
     $$type: "StateInit";
     code: Cell;
@@ -7,8 +7,8 @@ export type StateInit = {
 export declare function storeStateInit(src: StateInit): (builder: Builder) => void;
 export declare function loadStateInit(slice: Slice): {
     $$type: "StateInit";
-    code: any;
-    data: any;
+    code: Cell;
+    data: Cell;
 };
 export type Context = {
     $$type: "Context";
@@ -20,10 +20,10 @@ export type Context = {
 export declare function storeContext(src: Context): (builder: Builder) => void;
 export declare function loadContext(slice: Slice): {
     $$type: "Context";
-    bounced: any;
-    sender: any;
-    value: any;
-    raw: any;
+    bounced: boolean;
+    sender: Address;
+    value: bigint;
+    raw: Cell;
 };
 export type SendParameters = {
     $$type: "SendParameters";
@@ -38,13 +38,13 @@ export type SendParameters = {
 export declare function storeSendParameters(src: SendParameters): (builder: Builder) => void;
 export declare function loadSendParameters(slice: Slice): {
     $$type: "SendParameters";
-    bounce: any;
-    to: any;
-    value: any;
-    mode: any;
-    body: any;
-    code: any;
-    data: any;
+    bounce: boolean;
+    to: Address;
+    value: bigint;
+    mode: bigint;
+    body: Cell | null;
+    code: Cell | null;
+    data: Cell | null;
 };
 export type Deploy = {
     $$type: "Deploy";
@@ -53,7 +53,7 @@ export type Deploy = {
 export declare function storeDeploy(src: Deploy): (builder: Builder) => void;
 export declare function loadDeploy(slice: Slice): {
     $$type: "Deploy";
-    queryId: any;
+    queryId: bigint;
 };
 export type DeployOk = {
     $$type: "DeployOk";
@@ -62,7 +62,7 @@ export type DeployOk = {
 export declare function storeDeployOk(src: DeployOk): (builder: Builder) => void;
 export declare function loadDeployOk(slice: Slice): {
     $$type: "DeployOk";
-    queryId: any;
+    queryId: bigint;
 };
 export type FactoryDeploy = {
     $$type: "FactoryDeploy";
@@ -72,8 +72,8 @@ export type FactoryDeploy = {
 export declare function storeFactoryDeploy(src: FactoryDeploy): (builder: Builder) => void;
 export declare function loadFactoryDeploy(slice: Slice): {
     $$type: "FactoryDeploy";
-    queryId: any;
-    cashback: any;
+    queryId: bigint;
+    cashback: Address;
 };
 export type CollectionData = {
     $$type: "CollectionData";
@@ -84,9 +84,9 @@ export type CollectionData = {
 export declare function storeCollectionData(src: CollectionData): (builder: Builder) => void;
 export declare function loadCollectionData(slice: Slice): {
     $$type: "CollectionData";
-    next_item_index: any;
-    collection_content: any;
-    owner_address: any;
+    next_item_index: bigint;
+    collection_content: Cell;
+    owner_address: Address;
 };
 export type RoyaltyParams = {
     $$type: "RoyaltyParams";
@@ -97,9 +97,9 @@ export type RoyaltyParams = {
 export declare function storeRoyaltyParams(src: RoyaltyParams): (builder: Builder) => void;
 export declare function loadRoyaltyParams(slice: Slice): {
     $$type: "RoyaltyParams";
-    numerator: any;
-    denominator: any;
-    destination: any;
+    numerator: bigint;
+    denominator: bigint;
+    destination: Address;
 };
 export type GetRoyaltyParams = {
     $$type: "GetRoyaltyParams";
@@ -108,7 +108,7 @@ export type GetRoyaltyParams = {
 export declare function storeGetRoyaltyParams(src: GetRoyaltyParams): (builder: Builder) => void;
 export declare function loadGetRoyaltyParams(slice: Slice): {
     $$type: "GetRoyaltyParams";
-    query_id: any;
+    query_id: bigint;
 };
 export type ReportRoyaltyParams = {
     $$type: "ReportRoyaltyParams";
@@ -120,10 +120,10 @@ export type ReportRoyaltyParams = {
 export declare function storeReportRoyaltyParams(src: ReportRoyaltyParams): (builder: Builder) => void;
 export declare function loadReportRoyaltyParams(slice: Slice): {
     $$type: "ReportRoyaltyParams";
-    query_id: any;
-    numerator: any;
-    denominator: any;
-    destination: any;
+    query_id: bigint;
+    numerator: bigint;
+    denominator: bigint;
+    destination: Address;
 };
 export type Transfer = {
     $$type: "Transfer";
@@ -137,12 +137,12 @@ export type Transfer = {
 export declare function storeTransfer(src: Transfer): (builder: Builder) => void;
 export declare function loadTransfer(slice: Slice): {
     $$type: "Transfer";
-    query_id: any;
-    new_owner: any;
-    response_destination: any;
-    custom_payload: any;
-    forward_amount: any;
-    forward_payload: any;
+    query_id: bigint;
+    new_owner: Address;
+    response_destination: Address;
+    custom_payload: Cell | null;
+    forward_amount: bigint;
+    forward_payload: Cell;
 };
 export type OwnershipAssigned = {
     $$type: "OwnershipAssigned";
@@ -153,9 +153,9 @@ export type OwnershipAssigned = {
 export declare function storeOwnershipAssigned(src: OwnershipAssigned): (builder: Builder) => void;
 export declare function loadOwnershipAssigned(slice: Slice): {
     $$type: "OwnershipAssigned";
-    query_id: any;
-    prev_owner: any;
-    forward_payload: any;
+    query_id: bigint;
+    prev_owner: Address;
+    forward_payload: Cell;
 };
 export type Excesses = {
     $$type: "Excesses";
@@ -164,7 +164,7 @@ export type Excesses = {
 export declare function storeExcesses(src: Excesses): (builder: Builder) => void;
 export declare function loadExcesses(slice: Slice): {
     $$type: "Excesses";
-    query_id: any;
+    query_id: bigint;
 };
 export type GetStaticData = {
     $$type: "GetStaticData";
@@ -173,7 +173,7 @@ export type GetStaticData = {
 export declare function storeGetStaticData(src: GetStaticData): (builder: Builder) => void;
 export declare function loadGetStaticData(slice: Slice): {
     $$type: "GetStaticData";
-    query_id: any;
+    query_id: bigint;
 };
 export type ReportStaticData = {
     $$type: "ReportStaticData";
@@ -184,9 +184,9 @@ export type ReportStaticData = {
 export declare function storeReportStaticData(src: ReportStaticData): (builder: Builder) => void;
 export declare function loadReportStaticData(slice: Slice): {
     $$type: "ReportStaticData";
-    query_id: any;
-    index: any;
-    collection: any;
+    query_id: bigint;
+    index: bigint;
+    collection: Address;
 };
 export type NftData = {
     $$type: "NftData";
@@ -199,16 +199,16 @@ export type NftData = {
 export declare function storeNftData(src: NftData): (builder: Builder) => void;
 export declare function loadNftData(slice: Slice): {
     $$type: "NftData";
-    is_initialized: any;
-    index: any;
-    collection_address: any;
-    owner_address: any;
-    individual_content: any;
+    is_initialized: boolean;
+    index: bigint;
+    collection_address: Address;
+    owner_address: Address;
+    individual_content: Cell;
 };
 export declare class ExampleNFTCollection implements Contract {
     static init(owner_address: Address, collection_content: Cell, royalty_params: RoyaltyParams): Promise<{
-        code: any;
-        data: any;
+        code: Cell;
+        data: Cell;
     }>;
     static fromInit(owner_address: Address, collection_content: Cell, royalty_params: RoyaltyParams): Promise<ExampleNFTCollection>;
     static fromAddress(address: Address): ExampleNFTCollection;
@@ -225,17 +225,17 @@ export declare class ExampleNFTCollection implements Contract {
     }, message: "Mint" | GetRoyaltyParams | Deploy): Promise<void>;
     getGetCollectionData(provider: ContractProvider): Promise<{
         $$type: "CollectionData";
-        next_item_index: any;
-        collection_content: any;
-        owner_address: any;
+        next_item_index: bigint;
+        collection_content: Cell;
+        owner_address: Address;
     }>;
-    getGetNftAddressByIndex(provider: ContractProvider, index: bigint): Promise<any>;
-    getGetNftContent(provider: ContractProvider, index: bigint, individual_content: Cell): Promise<any>;
+    getGetNftAddressByIndex(provider: ContractProvider, index: bigint): Promise<Address>;
+    getGetNftContent(provider: ContractProvider, index: bigint, individual_content: Cell): Promise<Cell>;
     getRoyaltyParams(provider: ContractProvider): Promise<{
         $$type: "RoyaltyParams";
-        numerator: any;
-        denominator: any;
-        destination: any;
+        numerator: bigint;
+        denominator: bigint;
+        destination: Address;
     }>;
 }
 //# sourceMappingURL=nftc.d.ts.map
