@@ -43,7 +43,7 @@ export type TSecretHandler = TNftChain<
   ReadClaimed1155Event &
   DeployCollection<
     SecretNetworkClient,
-    { name: string; symbol: string },
+    { name: string; symbol: string; codeId?: number },
     TxOptions,
     string
   >;
@@ -54,4 +54,5 @@ export type TSecretParams = {
   chainId: string;
   bridgeCodeHash: string;
   storage: BridgeStorage;
+  nftCodeId: number;
 };

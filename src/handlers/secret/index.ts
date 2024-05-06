@@ -1,4 +1,3 @@
-import { readFile } from "fs/promises";
 import { StdSignature, toBase64 } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { raise } from "../ton";
@@ -9,6 +8,7 @@ export function secretHandler({
   provider,
   storage,
   bridgeCodeHash,
+  nftCodeId,
 }: TSecretParams): TSecretHandler {
   return {
     getProvider() {
@@ -53,18 +53,7 @@ export function secretHandler({
       };
     },
     async deployCollection(signer, da, ga) {
-      const stored = await signer.tx.compute.storeCode(
-        {
-          wasm_byte_code: await readFile("./contract.wasm.gz"),
-          sender: "",
-          builder: "",
-          source: "",
-        },
-        {
-          ...ga,
-        },
-      );
-      const code = stored.arrayLog?.find((e) => e.key === "code_id")?.value;
+      const code = da.codeId ?? nftCodeId;
       if (!code) {
         throw new Error("Code not found");
       }
