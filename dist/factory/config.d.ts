@@ -62,6 +62,7 @@ export declare namespace ChainFactoryConfigs {
             chainId: string;
             provider: SecretNetworkClient;
             storage: import("../contractsTypes/evm").BridgeStorage;
+            nftCodeId: number;
         };
         multiversxParams: {
             bridge: string;

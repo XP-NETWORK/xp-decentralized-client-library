@@ -25,6 +25,7 @@ export type SecretMintArgs = {
 export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> & ReadClaimed721Event & ReadClaimed1155Event & DeployCollection<SecretNetworkClient, {
     name: string;
     symbol: string;
+    codeId?: number;
 }, TxOptions, string>;
 export type TSecretParams = {
     provider: SecretNetworkClient;
@@ -32,5 +33,6 @@ export type TSecretParams = {
     chainId: string;
     bridgeCodeHash: string;
     storage: BridgeStorage;
+    nftCodeId: number;
 };
 //# sourceMappingURL=types.d.ts.map
