@@ -1,5 +1,6 @@
 import { StdSignature, toBase64 } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
+import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
 import { TSecretHandler, TSecretParams } from "./types";
 
@@ -90,16 +91,17 @@ export function secretHandler({
           contract_address: ma.contractAddress,
           msg: {
             mint_nft: {
-              public_metadata: {
-                token_uri: ma.uri,
-              },
+              public_metadata: { token_uri: ma.uri },
               token_id: ma.tokenId,
               owner: signer.address,
             },
           },
           sender: signer.address,
         },
-        gasArgs,
+        {
+          gasLimit: 60000,
+          ...gasArgs,
+        },
       );
       return mint;
     },
@@ -325,6 +327,7 @@ export function secretHandler({
           },
         },
         {
+          gasLimit: 50000,
           ...extraArgs,
         },
       );
@@ -338,21 +341,41 @@ export function secretHandler({
       return BigInt(result.balance?.amount ?? 0);
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: {
+      const codeHashResponse =
+        await signer.query.compute.codeHashByContractAddress({
+          contract_address: sourceNft,
+        });
+      const { contract_info } = await signer.query.compute.contractInfo({
+        contract_address: sourceNft,
+      });
+      const lock: Lock721 = {
+        lock721: {
+          data: {
             destination_chain: destinationChain,
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
-            token_id: tokenId,
+            token_id: tokenId.toString(),
+            collection_code_info: {
+              code_id: Number.parseInt(
+                contract_info?.code_id ?? raise("Code id not found"),
+              ),
+              code_hash:
+                codeHashResponse.code_hash ?? raise("Code hash not found"),
+            },
           },
-          code_hash: bridgeCodeHash,
+        },
+      };
+      console.log(JSON.stringify(lock, null, 4));
+      const tx = await signer.tx.compute.executeContract(
+        {
+          contract_address: bridge,
+          msg: lock,
+          // code_hash: bridgeCodeHash,
           sender: signer.address,
         },
         {
+          gasLimit: 250_000,
           ..._,
-          gasLimit: 200_000,
         },
       );
       return { tx, hash: () => tx.transactionHash };
@@ -366,17 +389,35 @@ export function secretHandler({
       amt,
       extraArgs,
     ) {
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: {
+      const codeHashResponse =
+        await signer.query.compute.codeHashByContractAddress({
+          contract_address: sourceNft,
+        });
+      const { contract_info } = await signer.query.compute.contractInfo({
+        contract_address: sourceNft,
+      });
+      const lock: Lock1155 = {
+        lock1155: {
+          data: {
+            collection_code_info: {
+              code_id: Number.parseInt(
+                contract_info?.code_id ?? raise("Code id not found"),
+              ),
+              code_hash:
+                codeHashResponse.code_hash ?? raise("Code hash not found"),
+            },
             destination_chain: destinationChain,
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
-            collection_code_info: {},
-            token_id: tokenId,
             token_amount: amt.toString(),
+            token_id: tokenId.toString(),
           },
+        },
+      };
+      const tx = await signer.tx.compute.executeContract(
+        {
+          contract_address: bridge,
+          msg: lock,
           code_hash: bridgeCodeHash,
           sender: signer.address,
         },

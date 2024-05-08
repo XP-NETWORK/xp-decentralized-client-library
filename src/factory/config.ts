@@ -70,7 +70,7 @@ export namespace ChainFactoryConfigs {
         tzktApi: "https://api.ghostnet.tzkt.io/",
       },
       secretParams: {
-        bridge: "secret1c9k79ee6t0erdawjv8nflgeynt70ryke26vj7d",
+        bridge: "secret19ftdaxua6p0pqehmd3stme7qy9nqe4xx7gv6mx",
         bridgeCodeHash: "",
         chainId: "pulsar-3",
         provider: new SecretNetworkClient({
