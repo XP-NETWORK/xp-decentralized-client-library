@@ -48,7 +48,7 @@ var ChainFactoryConfigs;
                 tzktApi: "https://api.ghostnet.tzkt.io/",
             },
             secretParams: {
-                bridge: "secret19ftdaxua6p0pqehmd3stme7qy9nqe4xx7gv6mx",
+                bridge: "secret1hvdnaj73pw37e6dagq77fc5l7v7qrkx9hde762",
                 bridgeCodeHash: "",
                 chainId: "pulsar-3",
                 provider: new secretjs_1.SecretNetworkClient({
