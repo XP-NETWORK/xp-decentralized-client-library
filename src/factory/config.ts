@@ -75,7 +75,7 @@ export namespace ChainFactoryConfigs {
         chainId: "pulsar-3",
         provider: new SecretNetworkClient({
           chainId: "pulsar-3",
-          url: "https://lcd.pulsar-3.secretsaturn.net",
+          url: "https://api.pulsar.scrttestnet.com",
         }),
         storage,
         nftCodeId: 7104,
