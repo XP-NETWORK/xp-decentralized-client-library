@@ -169,7 +169,7 @@ export function secretHandler({
         destinationUserAddress,
         sourceNftContractAddress,
         tokenId,
-        tokenAmount,
+        tokenAmount: tokenAmount.toString(),
         nftType,
         sourceChain,
         fee: fee.toString(),
