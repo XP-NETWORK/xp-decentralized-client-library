@@ -241,9 +241,11 @@ export function secretHandler({
           };
         }
       ).royalty_info.royalty_info;
-      const decimal_places_in_rates = royalty_info.decimal_places_in_rates;
+      console.log(royalty_info);
+      const decimal_places_in_rates =
+        royalty_info?.decimal_places_in_rates ?? 0;
       const max_percentage = Number(`1${"0".repeat(decimal_places_in_rates)}`);
-      const rate = royalty_info.royalties[0].rate;
+      const rate = royalty_info?.royalties.at(0)?.rate ?? 0;
       const royalty = (rate / max_percentage) * 10000;
 
       const nft_info = (
@@ -258,7 +260,11 @@ export function secretHandler({
           };
         }
       ).nft_info;
-      const tokenURI = nft_info?.extension?.media[0]?.url || "";
+      const tokenURI =
+        nft_info?.extension?.media[0]?.url ||
+        //@ts-ignore
+        nft_info?.token_uri ||
+        "";
 
       return {
         name: data.name,
