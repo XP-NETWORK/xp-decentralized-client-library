@@ -5,6 +5,7 @@ import { JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
+import { THederaParams } from "../handlers/hedera/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
@@ -13,7 +14,7 @@ export interface TChainParams {
     bscParams: TEvmParams;
     ethParams: TEvmParams;
     maticParams: TEvmParams;
-    hederaParams: TEvmParams;
+    hederaParams: THederaParams;
     tezosParams: TTezosParams;
     secretParams: TSecretParams;
     multiversxParams: TMultiversXParams;
@@ -49,6 +50,7 @@ export declare namespace ChainFactoryConfigs {
             provider: JsonRpcProvider;
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
+            royaltyProxy: string;
         };
         tezosParams: {
             bridge: string;
