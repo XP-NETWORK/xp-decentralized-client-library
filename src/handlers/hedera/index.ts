@@ -26,11 +26,13 @@ export function hederaHandler({
     async mintNft(signer, mintArgs, extraArgs) {
       const ihrc = IHRC__factory.connect(mintArgs.contract, signer);
       await ihrc.associate();
-      const mint = await proxy.mint(mintArgs.contract, mintArgs.uri, {
-        value: ethers.parseEther("10"),
-        gasLimit: 15000000,
-        ...extraArgs,
-      });
+      const mint = await proxy
+        .connect(signer)
+        .mint(mintArgs.contract, mintArgs.uri, {
+          value: ethers.parseEther("10"),
+          gasLimit: 15000000,
+          ...extraArgs,
+        });
       console.log(mint);
       return mint;
     },
