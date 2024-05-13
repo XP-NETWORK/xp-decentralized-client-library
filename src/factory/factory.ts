@@ -7,6 +7,7 @@ import {
 } from "../factory/types/utils";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
+import { hederaHandler } from "../handlers/hedera";
 import { multiversxHandler } from "../handlers/multiversx";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
@@ -85,7 +86,7 @@ CHAIN_INFO.set(Chain.MATIC, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.HEDERA, {
-  constructor: evmHandler,
+  constructor: hederaHandler,
 });
 CHAIN_INFO.set(Chain.MULTIVERSX, {
   constructor: multiversxHandler,

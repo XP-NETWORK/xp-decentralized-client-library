@@ -6,6 +6,7 @@ import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
+import { THederaParams } from "../handlers/hedera/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
@@ -15,7 +16,7 @@ export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
   maticParams: TEvmParams;
-  hederaParams: TEvmParams;
+  hederaParams: THederaParams;
   tezosParams: TTezosParams;
   secretParams: TSecretParams;
   multiversxParams: TMultiversXParams;
@@ -62,6 +63,7 @@ export namespace ChainFactoryConfigs {
         provider: new JsonRpcProvider("https://testnet.hashio.io/api"),
         royaltySalePrice: 10000,
         storage,
+        royaltyProxy: "0xFdDEEbDf5F2e959A1637Cb130cE753d42083a2EA",
       },
       tezosParams: {
         bridge: "KT18pSSB3f9H3xtHzBfMCjTdPja82nqpAm66",

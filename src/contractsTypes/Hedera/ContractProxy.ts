@@ -37,7 +37,7 @@ export declare namespace IHederaTokenService {
     contractId: string,
     ed25519: string,
     ECDSA_secp256k1: string,
-    delegatableContractId: string,
+    delegatableContractId: string
   ] & {
     inheritAccountKey: boolean;
     contractId: string;
@@ -53,7 +53,7 @@ export declare namespace IHederaTokenService {
 
   export type TokenKeyStructOutput = [
     keyType: bigint,
-    key: IHederaTokenService.KeyValueStructOutput,
+    key: IHederaTokenService.KeyValueStructOutput
   ] & { keyType: bigint; key: IHederaTokenService.KeyValueStructOutput };
 
   export type ExpiryStruct = {
@@ -65,7 +65,7 @@ export declare namespace IHederaTokenService {
   export type ExpiryStructOutput = [
     second: bigint,
     autoRenewAccount: string,
-    autoRenewPeriod: bigint,
+    autoRenewPeriod: bigint
   ] & { second: bigint; autoRenewAccount: string; autoRenewPeriod: bigint };
 
   export type HederaTokenStruct = {
@@ -89,7 +89,7 @@ export declare namespace IHederaTokenService {
     maxSupply: bigint,
     freezeDefault: boolean,
     tokenKeys: IHederaTokenService.TokenKeyStructOutput[],
-    expiry: IHederaTokenService.ExpiryStructOutput,
+    expiry: IHederaTokenService.ExpiryStructOutput
   ] & {
     name: string;
     symbol: string;
@@ -115,7 +115,7 @@ export declare namespace IHederaTokenService {
     tokenId: string,
     useHbarsForPayment: boolean,
     useCurrentTokenForPayment: boolean,
-    feeCollector: string,
+    feeCollector: string
   ] & {
     amount: bigint;
     tokenId: string;
@@ -139,7 +139,7 @@ export declare namespace IHederaTokenService {
     minimumAmount: bigint,
     maximumAmount: bigint,
     netOfTransfers: boolean,
-    feeCollector: string,
+    feeCollector: string
   ] & {
     numerator: bigint;
     denominator: bigint;
@@ -164,7 +164,7 @@ export declare namespace IHederaTokenService {
     amount: bigint,
     tokenId: string,
     useHbarsForPayment: boolean,
-    feeCollector: string,
+    feeCollector: string
   ] & {
     numerator: bigint;
     denominator: bigint;
@@ -195,7 +195,7 @@ export declare namespace IHederaTokenService {
     fixedFees: IHederaTokenService.FixedFeeStructOutput[],
     fractionalFees: IHederaTokenService.FractionalFeeStructOutput[],
     royaltyFees: IHederaTokenService.RoyaltyFeeStructOutput[],
-    ledgerId: string,
+    ledgerId: string
   ] & {
     token: IHederaTokenService.HederaTokenStructOutput;
     totalSupply: bigint;
@@ -223,7 +223,7 @@ export declare namespace IHederaTokenService {
     ownerId: string,
     creationTime: bigint,
     metadata: string,
-    spenderId: string,
+    spenderId: string
   ] & {
     tokenInfo: IHederaTokenService.TokenInfoStructOutput;
     serialNumber: bigint;
@@ -234,49 +234,78 @@ export declare namespace IHederaTokenService {
   };
 }
 
-export interface RoyaltyInfoProxyInterface extends Interface {
+export interface ContractProxyInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "DEFAULT_EXPIRY"
+      | "MAX_INT"
+      | "deployNft"
+      | "mint"
       | "redirectForToken"
       | "royaltyInfo"
       | "transferFrom"
-      | "transferFromNFT",
+      | "transferFromNFT"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "CallResponseEvent"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic:
+      | "CallResponseEvent"
+      | "Mint"
+      | "NftCollectionCreated"
+  ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "DEFAULT_EXPIRY",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "MAX_INT", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "deployNft",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [AddressLike, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "redirectForToken",
-    values: [AddressLike, BytesLike],
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "royaltyInfo",
-    values: [AddressLike, BigNumberish],
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish],
+    values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFromNFT",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish],
+    values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "DEFAULT_EXPIRY",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "MAX_INT", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deployNft", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "redirectForToken",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "royaltyInfo",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferFrom",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferFromNFT",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
 }
 
@@ -293,48 +322,98 @@ export namespace CallResponseEventEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface RoyaltyInfoProxy extends BaseContract {
-  connect(runner?: ContractRunner | null): RoyaltyInfoProxy;
+export namespace MintEvent {
+  export type InputTuple = [
+    token: AddressLike,
+    owner: AddressLike,
+    serialNumber: BigNumberish
+  ];
+  export type OutputTuple = [
+    token: string,
+    owner: string,
+    serialNumber: bigint
+  ];
+  export interface OutputObject {
+    token: string;
+    owner: string;
+    serialNumber: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace NftCollectionCreatedEvent {
+  export type InputTuple = [token: AddressLike];
+  export type OutputTuple = [token: string];
+  export interface OutputObject {
+    token: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export interface ContractProxy extends BaseContract {
+  connect(runner?: ContractRunner | null): ContractProxy;
   waitForDeployment(): Promise<this>;
 
-  interface: RoyaltyInfoProxyInterface;
+  interface: ContractProxyInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
   queryFilter<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
   on<TCEvent extends TypedContractEvent>(
     event: TCEvent,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
 
   once<TCEvent extends TypedContractEvent>(
     event: TCEvent,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
 
   listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
+    event: TCEvent
   ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent,
+    event?: TCEvent
   ): Promise<this>;
+
+  DEFAULT_EXPIRY: TypedContractMethod<[], [bigint], "view">;
+
+  MAX_INT: TypedContractMethod<[], [bigint], "view">;
+
+  deployNft: TypedContractMethod<
+    [name: string, symbol: string],
+    [void],
+    "payable"
+  >;
+
+  mint: TypedContractMethod<
+    [token: AddressLike, tokenURI: string],
+    [void],
+    "payable"
+  >;
 
   redirectForToken: TypedContractMethod<
     [token: AddressLike, encodedFunctionSelector: BytesLike],
@@ -353,7 +432,7 @@ export interface RoyaltyInfoProxy extends BaseContract {
       token: AddressLike,
       from: AddressLike,
       to: AddressLike,
-      amount: BigNumberish,
+      amount: BigNumberish
     ],
     [bigint],
     "nonpayable"
@@ -364,61 +443,91 @@ export interface RoyaltyInfoProxy extends BaseContract {
       token: AddressLike,
       from: AddressLike,
       to: AddressLike,
-      serialNumber: BigNumberish,
+      serialNumber: BigNumberish
     ],
     [bigint],
     "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment,
+    key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "redirectForToken",
+    nameOrSignature: "DEFAULT_EXPIRY"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_INT"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "deployNft"
+  ): TypedContractMethod<[name: string, symbol: string], [void], "payable">;
+  getFunction(
+    nameOrSignature: "mint"
+  ): TypedContractMethod<
+    [token: AddressLike, tokenURI: string],
+    [void],
+    "payable"
+  >;
+  getFunction(
+    nameOrSignature: "redirectForToken"
   ): TypedContractMethod<
     [token: AddressLike, encodedFunctionSelector: BytesLike],
     [[bigint, string] & { responseCode: bigint; response: string }],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "royaltyInfo",
+    nameOrSignature: "royaltyInfo"
   ): TypedContractMethod<
     [token: AddressLike, serialNumber: BigNumberish],
     [[bigint, IHederaTokenService.NonFungibleTokenInfoStructOutput]],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "transferFrom",
+    nameOrSignature: "transferFrom"
   ): TypedContractMethod<
     [
       token: AddressLike,
       from: AddressLike,
       to: AddressLike,
-      amount: BigNumberish,
+      amount: BigNumberish
     ],
     [bigint],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "transferFromNFT",
+    nameOrSignature: "transferFromNFT"
   ): TypedContractMethod<
     [
       token: AddressLike,
       from: AddressLike,
       to: AddressLike,
-      serialNumber: BigNumberish,
+      serialNumber: BigNumberish
     ],
     [bigint],
     "nonpayable"
   >;
 
   getEvent(
-    key: "CallResponseEvent",
+    key: "CallResponseEvent"
   ): TypedContractEvent<
     CallResponseEventEvent.InputTuple,
     CallResponseEventEvent.OutputTuple,
     CallResponseEventEvent.OutputObject
+  >;
+  getEvent(
+    key: "Mint"
+  ): TypedContractEvent<
+    MintEvent.InputTuple,
+    MintEvent.OutputTuple,
+    MintEvent.OutputObject
+  >;
+  getEvent(
+    key: "NftCollectionCreated"
+  ): TypedContractEvent<
+    NftCollectionCreatedEvent.InputTuple,
+    NftCollectionCreatedEvent.OutputTuple,
+    NftCollectionCreatedEvent.OutputObject
   >;
 
   filters: {
@@ -431,6 +540,28 @@ export interface RoyaltyInfoProxy extends BaseContract {
       CallResponseEventEvent.InputTuple,
       CallResponseEventEvent.OutputTuple,
       CallResponseEventEvent.OutputObject
+    >;
+
+    "Mint(address,address,int64)": TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
+    Mint: TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
+
+    "NftCollectionCreated(address)": TypedContractEvent<
+      NftCollectionCreatedEvent.InputTuple,
+      NftCollectionCreatedEvent.OutputTuple,
+      NftCollectionCreatedEvent.OutputObject
+    >;
+    NftCollectionCreated: TypedContractEvent<
+      NftCollectionCreatedEvent.InputTuple,
+      NftCollectionCreatedEvent.OutputTuple,
+      NftCollectionCreatedEvent.OutputObject
     >;
   };
 }
