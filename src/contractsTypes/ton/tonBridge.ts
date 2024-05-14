@@ -1634,17 +1634,21 @@ export function storeClaimedEvent(src: ClaimedEvent) {
 }
 
 export function loadClaimedEvent(slice: Slice) {
-    const sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1639470925) {
-        throw Error('Invalid prefix');
-    }
-    const _sourceChain = sc_0.loadStringRefTail();
-    const _transactionHash = sc_0.loadStringRefTail();
-    return {
-        $$type: 'ClaimedEvent' as const,
-        sourceChain: _sourceChain,
-        transactionHash: _transactionHash,
-    };
+  let sc_0 = slice;
+  if (sc_0.loadUint(32) !== 663924102) {
+    throw Error("Invalid prefix");
+  }
+  let _tokenId = sc_0.loadUintBig(256);
+  let _newlyDeployCollection = sc_0.loadAddress();
+  let _sourceChain = sc_0.loadStringRefTail();
+  let _transactionHash = sc_0.loadStringRefTail();
+  return {
+    $$type: "ClaimedEvent" as const,
+    tokenId: _tokenId,
+    newlyDeployCollection: _newlyDeployCollection,
+    sourceChain: _sourceChain,
+    transactionHash: _transactionHash,
+  };
 }
 
 type Bridge_init_args = {

@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   Bridge,
   SignerAndSignature,
+  loadClaimedEvent,
   loadLockedEvent,
 } from "../../contractsTypes/ton/tonBridge";
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
@@ -66,6 +67,33 @@ export function tonHandler({
         hash: () => "",
         ret: undefined,
       };
+    },
+    async readClaimed721Event(bridgeTxHash) {
+      const tx = await client.getTransactions(bridge.address, {
+        hash: bridgeTxHash,
+        limit: 1,
+      });
+      if (!tx.length) raise("Transaction not found");
+      const om = tx[0].outMessages;
+      const size = om.size;
+      for (let i = 0; i < size; i++) {
+        const msg = om.get(i) ?? raise("Unreachable");
+        if (msg.body.asSlice().loadUint(32) === 663924102) {
+          const {
+            newlyDeployCollection,
+            tokenId,
+            sourceChain,
+            transactionHash,
+          } = loadClaimedEvent(msg.body.asSlice());
+          return {
+            nft_contract: newlyDeployCollection.toString(),
+            source_chain: sourceChain,
+            token_id: tokenId.toString(),
+            transaction_hash: transactionHash,
+          };
+        }
+      }
+      throw new Error("Claimed event not found");
     },
     async deployCollection(signer, da) {
       const nft = client.open(
