@@ -702,6 +702,8 @@ export type ClaimedEvent = {
 export declare function storeClaimedEvent(src: ClaimedEvent): (builder: Builder) => void;
 export declare function loadClaimedEvent(slice: Slice): {
     $$type: "ClaimedEvent";
+    tokenId: bigint;
+    newlyDeployCollection: Address;
     sourceChain: string;
     transactionHash: string;
 };
