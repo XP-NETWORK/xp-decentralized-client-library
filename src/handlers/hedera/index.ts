@@ -1,7 +1,10 @@
 import { EventLog, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
-import { ERC721Royalty__factory } from "../../contractsTypes/evm";
+import {
+  Bridge__factory,
+  ERC721Royalty__factory,
+} from "../../contractsTypes/evm";
 import { evmHandler } from "../evm";
 import { THederaHandler, THederaParams } from "./types";
 
@@ -35,6 +38,21 @@ export function hederaHandler({
         });
       console.log(mint);
       return mint;
+    },
+    async claimNft(wallet, claimData, sigs, extraArgs) {
+      const contract = Bridge__factory.connect(bridge, wallet);
+      const ret = await contract.claimNFT721(
+        claimData,
+        sigs.map((e) => e.signature),
+        {
+          value: BigInt(claimData.fee) * BigInt(2e10),
+          ...extraArgs,
+        },
+      );
+      return {
+        ret: ret,
+        hash: () => ret.hash,
+      };
     },
     async deployCollection(signer, da, ga) {
       const rif = proxy.connect(signer);
