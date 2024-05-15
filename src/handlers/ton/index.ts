@@ -26,9 +26,9 @@ export function tonHandler({
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
 
-  async function getLastBridgeTxHashInHex() {
+  async function getLastBridgeTxHashInBase64() {
     const txns = await client.getTransactions(bridge.address, { limit: 1 });
-    return txns[0].hash().toString("hex");
+    return txns[0].hash().toString("base64");
   }
 
   return {
@@ -58,7 +58,7 @@ export function tonHandler({
       sigs.forEach((item, index) => {
         dictA = dictA.set(BigInt(index), item);
       });
-      const lastBridgeTxHash = await getLastBridgeTxHashInHex();
+      const lastBridgeTxHash = await getLastBridgeTxHashInBase64();
       await bridge.send(
         signer,
         {
@@ -79,30 +79,14 @@ export function tonHandler({
         const tx = (
           await client.getTransactions(bridge.address, { limit: 1 })
         )[0];
-        if (tx.hash().toString("hex") === lastBridgeTxHash) {
+        if (tx.hash().toString("base64") === lastBridgeTxHash) {
           await new Promise((e) => setTimeout(e, 10000));
+          retries++;
           continue;
         }
-        console.log("Got New Tx");
-        for (let i = 0; i < tx.outMessages.size; i++) {
-          const msg = tx.outMessages.get(i) ?? raise("Unreachable");
-          if (msg.body.asSlice().loadUint(32) !== 663924102) {
-            console.log("Not claimed event");
-            continue;
-          }
-          console.log("Claimed Event");
-          const log = loadClaimedEvent(msg.body.asSlice());
-          if (
-            claimData.data1.sourceChain === log.sourceChain &&
-            claimData.data4.transactionHash === log.transactionHash
-          ) {
-            foundTx = true;
-            hash = tx.hash().toString("hex");
-          }
-        }
-        retries++;
+        hash = tx.hash().toString("base64");
+        foundTx = true;
       }
-      console.log("Claimed", foundTx, hash);
       return {
         ret: undefined,
         hash() {
@@ -113,10 +97,10 @@ export function tonHandler({
     async readClaimed721Event(bridgeTxHash) {
       const tx = await client.getTransactions(bridge.address, {
         hash: bridgeTxHash,
-        limit: 1,
+        limit: 2,
       });
       if (!tx.length) raise("Transaction not found");
-      const om = tx[0].outMessages;
+      const om = tx[1].outMessages;
       const size = om.size;
       for (let i = 0; i < size; i++) {
         const msg = om.get(i) ?? raise("Unreachable");
@@ -160,63 +144,72 @@ export function tonHandler({
       return nft.address.toString();
     },
     async getClaimData(txHash) {
-      const tx = await client.getTransaction(bridge.address, "", txHash);
-      if (!tx) {
+      const txs = await client.getTransactions(bridge.address, {
+        hash: txHash,
+        limit: 2,
+      });
+      if (!txs.length) {
         throw new Error("Transaction not found");
       }
-      for (let i = 0; i < tx.outMessages.size; i++) {
-        const msg = tx.outMessages.get(i);
-        if (!msg) {
-          continue;
-        }
-        const hash = txHash;
-        if (msg.body.asSlice().loadUint(32) !== 3571773646) {
-          continue;
-        }
-        const {
-          tokenId, // Unique ID for the NFT transfer
-          destinationChain, // Chain to where the NFT is being transferred
-          destinationUserAddress, // User's address in the destination chain
-          sourceNftContractAddress, // Address of the NFT contract in the source chain
-          tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
-          nftType, // Sigular or multiple ( 721 / 1155)
-          sourceChain, // Source chain of NFT
-        } = loadLockedEvent(msg.body.asSlice());
-
-        const fee = await storage.chainFee(destinationChain);
-        const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-
-        const getSourceNftContractAddress = () => {
-          try {
-            return sourceNftContractAddress.asSlice().loadAddress().toString();
-          } catch (e) {
-            return sourceNftContractAddress.asSlice().loadStringTail();
+      for (const tx of txs) {
+        for (let i = 0; i < tx.outMessages.size; i++) {
+          const msg = tx.outMessages.get(i);
+          if (!msg) {
+            continue;
           }
-        };
+          const hash = txHash;
+          if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+            continue;
+          }
+          const {
+            tokenId, // Unique ID for the NFT transfer
+            destinationChain, // Chain to where the NFT is being transferred
+            destinationUserAddress, // User's address in the destination chain
+            sourceNftContractAddress, // Address of the NFT contract in the source chain
+            tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
+            nftType, // Sigular or multiple ( 721 / 1155)
+            sourceChain, // Source chain of NFT
+          } = loadLockedEvent(msg.body.asSlice());
 
-        const { royalty, name, symbol, metadata } = await this.nftData(
-          tokenId.toString(),
-          getSourceNftContractAddress(),
-          undefined,
-        );
+          const fee = await storage.chainFee(destinationChain);
+          const royaltyReceiver = await storage.chainRoyalty(destinationChain);
 
-        return {
-          destinationChain,
-          destinationUserAddress: destinationUserAddress.toString(),
-          sourceNftContractAddress: getSourceNftContractAddress(),
-          tokenId: tokenId.toString(),
-          tokenAmount: tokenAmount.toString(),
-          nftType: nftType.toString(),
-          sourceChain: sourceChain.toString(),
-          fee: fee.toString(),
-          royaltyReceiver: royaltyReceiver.toString(),
-          metadata,
-          name,
-          symbol,
-          royalty: royalty.toString(),
-          transactionHash: hash,
-        };
+          const getSourceNftContractAddress = () => {
+            try {
+              return sourceNftContractAddress
+                .asSlice()
+                .loadAddress()
+                .toString();
+            } catch (e) {
+              return sourceNftContractAddress.asSlice().loadStringTail();
+            }
+          };
+
+          const { royalty, name, symbol, metadata } = await this.nftData(
+            tokenId.toString(),
+            getSourceNftContractAddress(),
+            undefined,
+          );
+
+          return {
+            destinationChain,
+            destinationUserAddress: destinationUserAddress.toString(),
+            sourceNftContractAddress: getSourceNftContractAddress(),
+            tokenId: tokenId.toString(),
+            tokenAmount: tokenAmount.toString(),
+            nftType: nftType.toString(),
+            sourceChain: sourceChain.toString(),
+            fee: fee.toString(),
+            royaltyReceiver: royaltyReceiver.toString(),
+            metadata,
+            name,
+            symbol,
+            royalty: royalty.toString(),
+            transactionHash: hash,
+          };
+        }
       }
+
       throw new Error("No locked event found");
     },
     transform(input) {
@@ -298,6 +291,7 @@ export function tonHandler({
       if (!signer.address) {
         throw new Error("No Address present in signer");
       }
+      const lastBridgeTxHash = await getLastBridgeTxHashInBase64();
       await bridge.send(
         signer,
         {
@@ -317,24 +311,25 @@ export function tonHandler({
       let retries = 0;
       while (!foundTx && retries < 10) {
         await new Promise((e) => setTimeout(e, 2000));
-        const tx = (
-          await client.getTransactions(signer.address, { limit: 1 })
-        )[0];
-        for (let i = 0; i < tx.outMessages.size; i++) {
-          const msg = tx.outMessages.get(i);
-          if (!msg) {
-            continue;
-          }
-          if (msg.body.asSlice().loadUint(32) !== 3571773646) {
-            continue;
-          }
-          const log = loadLockedEvent(msg.body.asSlice());
-          if (
-            destinationChain === log.destinationChain &&
-            to === log.destinationUserAddress
-          ) {
-            foundTx = true;
-            hash = tx.hash().toString("hex");
+        const txs = await client.getTransactions(bridge.address, { limit: 2 });
+        for (const tx of txs) {
+          for (let i = 0; i < tx.outMessages.size; i++) {
+            const msg = tx.outMessages.get(i) ?? raise("Unreachable");
+            if (tx.hash().toString("base64") === lastBridgeTxHash) {
+              await new Promise((e) => setTimeout(e, 10000));
+              continue;
+            }
+            if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+              continue;
+            }
+            const log = loadLockedEvent(msg.body.asSlice());
+            if (
+              destinationChain === log.destinationChain &&
+              to === log.destinationUserAddress
+            ) {
+              foundTx = true;
+              hash = tx.hash().toString("base64");
+            }
           }
         }
         retries++;
