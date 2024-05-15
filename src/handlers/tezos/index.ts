@@ -400,7 +400,7 @@ export function tezosHandler({
       );
 
       return {
-        tx: hash,
+        ret: hash,
         hash() {
           return hash;
         },

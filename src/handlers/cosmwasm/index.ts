@@ -291,7 +291,7 @@ export async function cosmWasmHandler({
         hash() {
           return lock.transactionHash;
         },
-        tx: lock,
+        ret: lock,
       };
     },
     nftData: nftData,

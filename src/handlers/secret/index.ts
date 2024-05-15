@@ -384,7 +384,7 @@ export function secretHandler({
           ..._,
         },
       );
-      return { tx, hash: () => tx.transactionHash };
+      return { ret: tx, hash: () => tx.transactionHash };
     },
     async lockSft(
       signer,

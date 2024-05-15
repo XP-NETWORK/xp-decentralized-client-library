@@ -330,7 +330,7 @@ export function multiversxHandler({
 
       const txHash = await provider.sendTransaction(signed);
       return {
-        tx: txHash,
+        ret: txHash,
         hash() {
           return txHash;
         },

@@ -38,6 +38,7 @@ export function tonHandler({
       );
     },
     async claimNft(signer, claimData, sig, _) {
+      if (!signer.address) raise("No Address present in signer");
       const sigs: SignerAndSignature[] = sig.map((e) => {
         return {
           $$type: "SignerAndSignature",
@@ -63,9 +64,39 @@ export function tonHandler({
           len: BigInt(sigs.length),
         },
       );
+      let foundTx = false;
+      let hash = "";
+      let retries = 0;
+      while (!foundTx && retries < 10) {
+        await new Promise((e) => setTimeout(e, 2000));
+        const tx = (
+          await client.getTransactions(signer.address, { limit: 1 })
+        )[0];
+        for (let i = 0; i < tx.outMessages.size; i++) {
+          const msg = tx.outMessages.get(i);
+          if (!msg) {
+            continue;
+          }
+          if (msg.body.asSlice().loadUint(32) !== 663924102) {
+            continue;
+          }
+          const log = loadClaimedEvent(msg.body.asSlice());
+          if (
+            claimData.data1.sourceChain === log.sourceChain &&
+            claimData.data4.transactionHash === log.transactionHash
+          ) {
+            foundTx = true;
+            hash = tx.hash().toString("hex");
+          }
+        }
+        retries++;
+      }
+
       return {
-        hash: () => "",
         ret: undefined,
+        hash() {
+          return hash;
+        },
       };
     },
     async readClaimed721Event(bridgeTxHash) {
@@ -273,7 +304,7 @@ export function tonHandler({
       let foundTx = false;
       let hash = "";
       let retries = 0;
-      while (!foundTx && retries < 5) {
+      while (!foundTx && retries < 10) {
         await new Promise((e) => setTimeout(e, 2000));
         const tx = (
           await client.getTransactions(signer.address, { limit: 1 })
@@ -299,7 +330,7 @@ export function tonHandler({
       }
 
       return {
-        tx: undefined,
+        ret: undefined,
         hash() {
           return hash;
         },
