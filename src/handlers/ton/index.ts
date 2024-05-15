@@ -25,6 +25,12 @@ export function tonHandler({
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
+
+  async function getLastBridgeTxHashInHex() {
+    const txns = await client.getTransactions(bridge.address, { limit: 1 });
+    return txns[0].hash().toString("hex");
+  }
+
   return {
     getStorageContract() {
       return storage;
@@ -52,6 +58,7 @@ export function tonHandler({
       sigs.forEach((item, index) => {
         dictA = dictA.set(BigInt(index), item);
       });
+      const lastBridgeTxHash = await getLastBridgeTxHashInHex();
       await bridge.send(
         signer,
         {
@@ -67,19 +74,23 @@ export function tonHandler({
       let foundTx = false;
       let hash = "";
       let retries = 0;
-      while (!foundTx && retries < 10) {
-        await new Promise((e) => setTimeout(e, 2000));
+      while (!foundTx && retries < 20) {
+        await new Promise((e) => setTimeout(e, 4000));
         const tx = (
-          await client.getTransactions(signer.address, { limit: 1 })
+          await client.getTransactions(bridge.address, { limit: 1 })
         )[0];
+        if (tx.hash().toString("hex") === lastBridgeTxHash) {
+          await new Promise((e) => setTimeout(e, 10000));
+          continue;
+        }
+        console.log("Got New Tx");
         for (let i = 0; i < tx.outMessages.size; i++) {
-          const msg = tx.outMessages.get(i);
-          if (!msg) {
-            continue;
-          }
+          const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           if (msg.body.asSlice().loadUint(32) !== 663924102) {
+            console.log("Not claimed event");
             continue;
           }
+          console.log("Claimed Event");
           const log = loadClaimedEvent(msg.body.asSlice());
           if (
             claimData.data1.sourceChain === log.sourceChain &&
@@ -91,7 +102,7 @@ export function tonHandler({
         }
         retries++;
       }
-
+      console.log("Claimed", foundTx, hash);
       return {
         ret: undefined,
         hash() {

@@ -93,9 +93,10 @@ export namespace ChainFactoryConfigs {
         chainId: "D",
       },
       tonParams: {
-        bridgeAddress: "EQDI6P9gheuWLh1euThjFE2muUpa9tp2y49TD6Zz5oOF5gWL",
+        bridgeAddress: "EQBth6KbeHoQc61Zx7R5IUeEfiGdweRF4r1Svbd-BxiaQsui",
         client: new TonClient({
-          endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC",
+          endpoint:
+            "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
         }),
         storage,
       },
@@ -103,7 +104,7 @@ export namespace ChainFactoryConfigs {
         bridge:
           "terra1jdek24uwru97s8c48smzx035tmw55yqxzrc2sy7flepr980rx7hsrnyl03",
         chainId: "pisco-1",
-        rpc: "https://rpc.testcosmos.directory/terra2testnet",
+        rpc: "https://pisco-rpc.terra.dev/",
         storage,
         denom: "uluna",
         nftCodeId: 13488,
