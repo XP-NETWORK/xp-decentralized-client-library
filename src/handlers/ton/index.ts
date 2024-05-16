@@ -6,8 +6,10 @@ import {
   SignerAndSignature,
   loadClaimedEvent,
   loadLockedEvent,
+  storeLock721,
 } from "../../contractsTypes/ton/tonBridge";
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
+
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
 import { ExampleNFTCollection } from "./nftc";
 import { TTonHandler, TTonParams } from "./types";
@@ -22,6 +24,22 @@ export function tonHandler({
   storage,
 }: TTonParams): TTonHandler {
   const http = axios.create();
+
+  async function fetchHttpOrIpfs(uri: string) {
+    const url = new URL(uri);
+    if (url.protocol === "http:" || url.protocol === "https:") {
+      const response = await http.get(uri);
+      return response.data;
+    }
+    if (url.protocol === "ipfs:") {
+      const response = await http.get(
+        `https://ipfs.io/ipfs/${uri.replace("ipfs://", "")}`,
+      );
+      return response.data;
+    }
+    throw new Error("Unsupported protocol");
+  }
+
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
@@ -146,17 +164,14 @@ export function tonHandler({
     async getClaimData(txHash) {
       const txs = await client.getTransactions(bridge.address, {
         hash: txHash,
-        limit: 2,
+        limit: 100,
       });
       if (!txs.length) {
         throw new Error("Transaction not found");
       }
       for (const tx of txs) {
         for (let i = 0; i < tx.outMessages.size; i++) {
-          const msg = tx.outMessages.get(i);
-          if (!msg) {
-            continue;
-          }
+          const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           const hash = txHash;
           if (msg.body.asSlice().loadUint(32) !== 3571773646) {
             continue;
@@ -292,17 +307,40 @@ export function tonHandler({
         throw new Error("No Address present in signer");
       }
       const lastBridgeTxHash = await getLastBridgeTxHashInBase64();
-      await bridge.send(
+
+      const collection = client.open(
+        NftCollection.fromAddress(Address.parse(sourceNft)),
+      );
+      const nftItemAddress = await collection.getGetNftAddressByIndex(tokenId);
+      if (!nftItemAddress) raise("NFT Does not exist.");
+      const nftItem = client.open(NftItem.fromAddress(nftItemAddress));
+      const nftItemData = await nftItem.getGetNftData();
+      const exists = nftItemData.is_initialized;
+      if (!exists) raise("NFT Is not initialized.");
+
+      const locked = beginCell();
+
+      storeLock721({
+        $$type: "Lock721",
+        destinationChain: destinationChain,
+        destinationUserAddress: to,
+        sourceNftContractAddress: Address.parse(sourceNft),
+        tokenId: tokenId,
+      })(locked);
+
+      await nftItem.send(
         signer,
         {
-          value: toNano("2"),
+          value: toNano("0.8"),
         },
         {
-          $$type: "Lock721",
-          destinationChain,
-          destinationUserAddress: to,
-          sourceNftContractAddress: Address.parseFriendly(sourceNft).address,
-          tokenId: BigInt(tokenId),
+          $$type: "Transfer",
+          forward_payload: locked.asCell(),
+          custom_payload: null,
+          forward_amount: toNano("0.5"),
+          new_owner: bridge.address,
+          query_id: 42069n,
+          response_destination: bridge.address,
         },
       );
 
@@ -354,56 +392,53 @@ export function tonHandler({
       );
       return;
     },
-    async nftData(_tokenId, contract, _overrides) {
-      const nftItem = client.open(
-        NftItem.fromAddress(Address.parseFriendly(contract).address),
+    async nftData(tokenId, contract, _overrides) {
+      const collection = client.open(
+        NftCollection.fromAddress(Address.parse(contract)),
+      );
+      const royaltyParams = await collection.getRoyaltyParams();
+      const royalty =
+        royaltyParams.numerator /
+        (royaltyParams.denominator === 0n ? 1n : royaltyParams.denominator);
+      const collection_md_uri = (
+        await collection.getGetCollectionData()
+      ).collection_content
+        .asSlice()
+        .loadStringTail();
+      const collection_md = await fetchHttpOrIpfs(collection_md_uri).catch(
+        (_) => {
+          return {
+            name: "TTON",
+            symbol: "TTON",
+          };
+        },
       );
 
-      const getCollectionMetaData = async () => {
-        const nftData = await nftItem.getGetNftData();
-        if (nftData.collection_address) {
-          const nftCollection = client.open(
-            NftCollection.fromAddress(nftData.collection_address),
-          );
-          const { collection_content } =
-            await nftCollection.getGetCollectionData();
-          const collectionContentSlice = collection_content.asSlice();
-          collectionContentSlice.loadUint(8);
-          const metaDataURL = collectionContentSlice.loadStringTail();
-          console.log({ metaDataURL });
-          return metaDataURL;
-        }
-        const individualContentSlice = nftData.individual_content.asSlice();
-        individualContentSlice.loadBits(8);
-        const metaDataURL = individualContentSlice.loadStringTail();
-        return metaDataURL;
-      };
-
+      const nftItem = client.open(
+        NftItem.fromAddress(
+          (await collection.getGetNftAddressByIndex(BigInt(tokenId))) ??
+            raise("NFT Does not exist."),
+        ),
+      );
       const nftData = await nftItem.getGetNftData();
-      const individualContentSlice = nftData.individual_content.asSlice();
-      individualContentSlice.loadBits(8);
-      const metaDataURL = individualContentSlice.loadStringTail();
-
-      const metaData = (
-        await http.get<{ name: string }>(await getCollectionMetaData())
-      ).data;
-
-      let royalty = 0n;
-
-      if (nftData.collection_address) {
-        const nftCollection = client.open(
-          NftCollection.fromAddress(nftData.collection_address),
-        );
-        const royaltyParams = await nftCollection.getRoyaltyParams();
-        const royaltyInNum =
-          royaltyParams.numerator / royaltyParams.denominator;
-        const standardRoyalty = royaltyInNum * BigInt(10);
-        royalty = standardRoyalty;
-      }
+      const content = nftData.individual_content.asSlice();
+      content.loadUint(8);
+      const uri = content.loadStringTail();
+      const nft_uri: string = uri.includes("://")
+        ? uri
+        : `${collection_md_uri.substring(
+            0,
+            collection_md_uri.lastIndexOf("/") + 1,
+          )}${uri}`;
+      const md = await fetchHttpOrIpfs(nft_uri).catch((_) => {
+        return {
+          name: "TTON",
+        };
+      });
       return {
-        metadata: metaDataURL,
-        symbol: "TTON",
-        name: metaData.name,
+        metadata: uri,
+        symbol: collection_md.name ?? "TTON",
+        name: md.name ?? collection_md.name ?? "TTON",
         royalty,
       };
     },
