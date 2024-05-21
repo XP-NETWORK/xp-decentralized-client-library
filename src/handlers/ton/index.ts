@@ -173,7 +173,7 @@ export function tonHandler({
         for (let i = 0; i < tx.outMessages.size; i++) {
           const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           const hash = txHash;
-          if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+          if (msg.body.asSlice().loadUint(32) !== 4205190074) {
             continue;
           }
           const {
@@ -186,8 +186,12 @@ export function tonHandler({
             sourceChain, // Source chain of NFT
           } = loadLockedEvent(msg.body.asSlice());
 
-          const fee = await storage.chainFee(destinationChain);
-          const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+          const fee = await storage.chainFee(
+            destinationChain.asSlice().loadStringRefTail(),
+          );
+          const royaltyReceiver = await storage.chainRoyalty(
+            destinationChain.asSlice().loadStringRefTail(),
+          );
 
           const getSourceNftContractAddress = () => {
             try {
@@ -207,8 +211,10 @@ export function tonHandler({
           );
 
           return {
-            destinationChain,
-            destinationUserAddress: destinationUserAddress.toString(),
+            destinationChain: destinationChain.asSlice().loadStringRefTail(),
+            destinationUserAddress: destinationUserAddress
+              .asSlice()
+              .loadStringRefTail(),
             sourceNftContractAddress: getSourceNftContractAddress(),
             tokenId: tokenId.toString(),
             tokenAmount: tokenAmount.toString(),
@@ -322,8 +328,10 @@ export function tonHandler({
 
       storeLock721({
         $$type: "Lock721",
-        destinationChain: destinationChain,
-        destinationUserAddress: to,
+        destinationChain: beginCell()
+          .storeStringRefTail(destinationChain)
+          .endCell(),
+        destinationUserAddress: beginCell().storeStringRefTail(to).endCell(),
         sourceNftContractAddress: Address.parse(sourceNft),
         tokenId: tokenId,
       })(locked);
@@ -336,8 +344,13 @@ export function tonHandler({
         },
         {
           $$type: "Transfer",
-          forward_payload: locked.asCell(),
-          custom_payload: locked.asCell(),
+          forward_payload: beginCell()
+            .storeInt(tokenId, 256)
+            .storeAddress(Address.parse(sourceNft))
+            .storeRef(beginCell().storeStringRefTail(destinationChain))
+            .storeRef(beginCell().storeStringRefTail(to))
+            .endCell(),
+          custom_payload: null,
           forward_amount: toNano("0.5"),
           new_owner: bridge.address,
           query_id: 42069n,
@@ -362,10 +375,13 @@ export function tonHandler({
               continue;
             }
             const log = loadLockedEvent(msg.body.asSlice());
-            if (
-              destinationChain === log.destinationChain &&
-              to === log.destinationUserAddress
-            ) {
+            const log_dest_chain = log.destinationChain
+              .asSlice()
+              .loadStringRefTail();
+            const log_dest_ua = log.destinationUserAddress
+              .asSlice()
+              .loadStringRefTail();
+            if (destinationChain === log_dest_chain && to === log_dest_ua) {
               foundTx = true;
               hash = tx.hash().toString("base64");
             }
