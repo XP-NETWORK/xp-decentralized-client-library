@@ -501,7 +501,7 @@ export function storeTransfer(src: Transfer) {
             b_0.storeBit(false);
         }
         b_0.storeCoins(src.forward_amount);
-        b_0.storeBuilder(src.forward_payload.asBuilder());
+        b_0.storeRef(src.forward_payload.asBuilder());
     };
 }
 

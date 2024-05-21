@@ -332,11 +332,12 @@ export function tonHandler({
         signer,
         {
           value: toNano("0.8"),
+          bounce: true,
         },
         {
           $$type: "Transfer",
           forward_payload: locked.asCell(),
-          custom_payload: null,
+          custom_payload: locked.asCell(),
           forward_amount: toNano("0.5"),
           new_owner: bridge.address,
           query_id: 42069n,
@@ -397,9 +398,8 @@ export function tonHandler({
         NftCollection.fromAddress(Address.parse(contract)),
       );
       const royaltyParams = await collection.getRoyaltyParams();
-      const royalty =
-        royaltyParams.numerator /
-        (royaltyParams.denominator === 0n ? 1n : royaltyParams.denominator);
+      const denom = 10000 / Number(royaltyParams.denominator);
+      const royalty = Number(royaltyParams.numerator) * denom;
       const collection_md_uri = (
         await collection.getGetCollectionData()
       ).collection_content
@@ -439,7 +439,7 @@ export function tonHandler({
         metadata: uri,
         symbol: collection_md.name ?? "TTON",
         name: md.name ?? collection_md.name ?? "TTON",
-        royalty,
+        royalty: BigInt(royalty),
       };
     },
   };
