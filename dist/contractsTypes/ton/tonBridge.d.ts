@@ -81,8 +81,8 @@ export type DeployNFT721Storage = {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -93,8 +93,8 @@ export declare function loadDeployNFT721Storage(slice: Slice): {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -275,8 +275,8 @@ export type HiFromDeployNFT721Storage = {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -288,8 +288,8 @@ export declare function loadHiFromDeployNFT721Storage(slice: Slice): {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -323,8 +323,8 @@ export type StorageDeploy = {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -335,8 +335,8 @@ export declare function loadStorageDeploy(slice: Slice): {
     isOriginal: boolean;
     key: bigint;
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
 };
@@ -576,16 +576,16 @@ export declare function loadRewardValidator(slice: Slice): {
 export type Lock721 = {
     $$type: "Lock721";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Address;
 };
 export declare function storeLock721(src: Lock721): (builder: Builder) => void;
 export declare function loadLock721(slice: Slice): {
     $$type: "Lock721";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Address;
 };
 export type ClaimNFT721 = {
@@ -667,8 +667,8 @@ export declare function loadRewardValidatorEvent(slice: Slice): {
 export type LockedEvent = {
     $$type: "LockedEvent";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Cell;
     tokenAmount: bigint;
     nftType: string;
@@ -678,8 +678,8 @@ export declare function storeLockedEvent(src: LockedEvent): (builder: Builder) =
 export declare function loadLockedEvent(slice: Slice): {
     $$type: "LockedEvent";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Cell;
     tokenAmount: bigint;
     nftType: string;
@@ -730,7 +730,7 @@ export declare class Bridge implements Contract {
     send(provider: ContractProvider, via: Sender, args: {
         value: bigint;
         bounce?: boolean | null | undefined;
-    }, message: Excesses | "Deploy" | AddValidator | RewardValidator | HiFromDeployNFT721Storage | HiFromDeployNFT721Collection | Lock721 | ClaimNFT721): Promise<void>;
+    }, message: Excesses | "Deploy" | AddValidator | RewardValidator | HiFromDeployNFT721Storage | HiFromDeployNFT721Collection | OwnershipAssigned | ClaimNFT721): Promise<void>;
     getOriginal721Mapping(provider: ContractProvider, sourceNftContractAddress: Address, sourceChain: string): Promise<Address | null>;
     getDuplicate721Mapping(provider: ContractProvider, contractAddress: Address): Promise<Address | null>;
     getOriginalToDuplicate(provider: ContractProvider, sourceNftContractAddress: string, sourceChain: string): Promise<{
