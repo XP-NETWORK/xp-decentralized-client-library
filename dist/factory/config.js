@@ -49,7 +49,7 @@ var ChainFactoryConfigs;
                 tzktApi: "https://api.ghostnet.tzkt.io/",
             },
             secretParams: {
-                bridge: "secret1hvdnaj73pw37e6dagq77fc5l7v7qrkx9hde762",
+                bridge: "secret1elt03d87zqvuwv8567fmnpjpyh4rt9tgyutqx3",
                 bridgeCodeHash: "",
                 chainId: "pulsar-3",
                 provider: new secretjs_1.SecretNetworkClient({
@@ -67,7 +67,7 @@ var ChainFactoryConfigs;
                 chainId: "D",
             },
             tonParams: {
-                bridgeAddress: "EQBth6KbeHoQc61Zx7R5IUeEfiGdweRF4r1Svbd-BxiaQsui",
+                bridgeAddress: "EQA0yFT_USuA1OlkXPMGsgPqY3eA8h79yT1mwYH1KU5qB6p6",
                 client: new ton_1.TonClient({
                     endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
                 }),
