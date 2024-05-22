@@ -162,9 +162,10 @@ export function tonHandler({
       return nft.address.toString();
     },
     async getClaimData(txHash) {
+      console.log(txHash);
       const txs = await client.getTransactions(bridge.address, {
         hash: txHash,
-        limit: 100,
+        limit: 1,
       });
       if (!txs.length) {
         throw new Error("Transaction not found");
@@ -173,6 +174,7 @@ export function tonHandler({
         for (let i = 0; i < tx.outMessages.size; i++) {
           const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           const hash = txHash;
+          console.log(msg.body.asSlice().loadUint(32));
           if (msg.body.asSlice().loadUint(32) !== 4205190074) {
             continue;
           }
@@ -339,7 +341,7 @@ export function tonHandler({
       await nftItem.send(
         signer,
         {
-          value: toNano("0.8"),
+          value: toNano("2.0"),
           bounce: true,
         },
         {
@@ -351,18 +353,43 @@ export function tonHandler({
             .storeRef(beginCell().storeStringRefTail(to))
             .endCell(),
           custom_payload: null,
-          forward_amount: toNano("0.5"),
+          forward_amount: toNano("1.0"),
           new_owner: bridge.address,
           query_id: 42069n,
           response_destination: bridge.address,
         },
       );
 
+      //  let foundTx = false;
+      //  let hash = "";
+      //  let retries = 0;
+      //  while (!foundTx && retries < 20) {
+      //    await new Promise((e) => setTimeout(e, 4000));
+      //    const tx = (
+      //      await client.getTransactions(bridge.address, { limit: 1 })
+      //    )[0];
+      //    if (tx.hash().toString("base64") === lastBridgeTxHash) {
+      //      await new Promise((e) => setTimeout(e, 10000));
+      //      retries++;
+      //      continue;
+      //    }
+      //    hash = tx.hash().toString("base64");
+      //    foundTx = true;
+      //  }
+
       let foundTx = false;
       let hash = "";
       let retries = 0;
       while (!foundTx && retries < 10) {
         await new Promise((e) => setTimeout(e, 2000));
+        const latestTx = (
+          await client.getTransactions(bridge.address, { limit: 1 })
+        )[0];
+        if (latestTx.hash().toString("base64") === lastBridgeTxHash) {
+          await new Promise((e) => setTimeout(e, 10000));
+          retries++;
+          continue;
+        }
         const txs = await client.getTransactions(bridge.address, { limit: 2 });
         for (const tx of txs) {
           for (let i = 0; i < tx.outMessages.size; i++) {
