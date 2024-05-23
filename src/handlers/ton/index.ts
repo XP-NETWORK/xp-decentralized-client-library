@@ -426,12 +426,11 @@ export function tonHandler({
     },
     async approveNft(_signer, _tokenId, _contract) {},
     async mintNft(signer, ma) {
-      const prevHash = (
-        await client.getTransactions(ma.contract, { limit: 1 })
-      )[0]
+      const contract = Address.parse(ma.contract);
+      const prevHash = (await client.getTransactions(contract, { limit: 1 }))[0]
         .hash()
         .toString("base64");
-      const nft = client.open(TestnetNftCollection.fromAddress(ma.contract));
+      const nft = client.open(TestnetNftCollection.fromAddress(contract));
       await nft.send(
         signer,
         {
@@ -447,7 +446,7 @@ export function tonHandler({
       let foundTx = false;
       while (!foundTx) {
         await new Promise((e) => setTimeout(e, 2000));
-        const tx = (await client.getTransactions(ma.contract, { limit: 1 }))[0];
+        const tx = (await client.getTransactions(contract, { limit: 1 }))[0];
         if (tx.hash().toString("base64") === prevHash) {
           await new Promise((e) => setTimeout(e, 10000));
           continue;

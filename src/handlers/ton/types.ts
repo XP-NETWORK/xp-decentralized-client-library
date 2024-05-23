@@ -16,7 +16,7 @@ export type TonDeployArgs = {
   royalty_params: RoyaltyParams;
 };
 export type TonMintArgs = {
-  contract: Address;
+  contract: string;
   uri: string;
   owner: Address;
   token_id: bigint;
