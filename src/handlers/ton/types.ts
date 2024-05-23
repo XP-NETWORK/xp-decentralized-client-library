@@ -17,6 +17,9 @@ export type TonDeployArgs = {
 };
 export type TonMintArgs = {
   contract: Address;
+  uri: string;
+  owner: Address;
+  token_id: bigint;
 };
 
 export type TTonHandler = TSingularNftChain<

@@ -11,7 +11,7 @@ import {
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
-import { ExampleNFTCollection } from "./nftc";
+import { TestnetNftCollection } from "./nftc";
 import { TTonHandler, TTonParams } from "./types";
 
 export function raise(message: string): never {
@@ -141,7 +141,7 @@ export function tonHandler({
     },
     async deployCollection(signer, da) {
       const nft = client.open(
-        await ExampleNFTCollection.fromInit(
+        await TestnetNftCollection.fromInit(
           da.owner_address,
           da.collection_content,
           da.royalty_params,
@@ -158,11 +158,12 @@ export function tonHandler({
           queryId: 3424n,
         },
       );
-
+      while (!(await client.isContractDeployed(nft.address))) {
+        await new Promise((e) => setTimeout(e, 2000));
+      }
       return nft.address.toString();
     },
     async getClaimData(txHash) {
-      console.log(txHash);
       const txs = await client.getTransactions(bridge.address, {
         hash: txHash,
         limit: 1,
@@ -174,7 +175,6 @@ export function tonHandler({
         for (let i = 0; i < tx.outMessages.size; i++) {
           const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           const hash = txHash;
-          console.log(msg.body.asSlice().loadUint(32));
           if (msg.body.asSlice().loadUint(32) !== 4205190074) {
             continue;
           }
@@ -341,7 +341,7 @@ export function tonHandler({
       await nftItem.send(
         signer,
         {
-          value: toNano("2.0"),
+          value: toNano("1.5"),
           bounce: true,
         },
         {
@@ -398,7 +398,7 @@ export function tonHandler({
               await new Promise((e) => setTimeout(e, 10000));
               continue;
             }
-            if (msg.body.asSlice().loadUint(32) !== 3571773646) {
+            if (msg.body.asSlice().loadUint(32) !== 4205190074) {
               continue;
             }
             const log = loadLockedEvent(msg.body.asSlice());
@@ -426,14 +426,34 @@ export function tonHandler({
     },
     async approveNft(_signer, _tokenId, _contract) {},
     async mintNft(signer, ma) {
-      const nft = client.open(ExampleNFTCollection.fromAddress(ma.contract));
+      const prevHash = (
+        await client.getTransactions(ma.contract, { limit: 1 })
+      )[0]
+        .hash()
+        .toString("base64");
+      const nft = client.open(TestnetNftCollection.fromAddress(ma.contract));
       await nft.send(
         signer,
         {
-          value: toNano("0.1"),
+          value: toNano("0.4"),
         },
-        "Mint",
+        {
+          $$type: "Mint",
+          content: ma.uri,
+          owner: ma.owner,
+          token_id: ma.token_id,
+        },
       );
+      let foundTx = false;
+      while (!foundTx) {
+        await new Promise((e) => setTimeout(e, 2000));
+        const tx = (await client.getTransactions(ma.contract, { limit: 1 }))[0];
+        if (tx.hash().toString("base64") === prevHash) {
+          await new Promise((e) => setTimeout(e, 10000));
+          continue;
+        }
+        foundTx = true;
+      }
       return;
     },
     async nftData(tokenId, contract, _overrides) {
