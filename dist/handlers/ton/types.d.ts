@@ -11,6 +11,9 @@ export type TonDeployArgs = {
 };
 export type TonMintArgs = {
     contract: Address;
+    uri: string;
+    owner: Address;
+    token_id: bigint;
 };
 export type TTonHandler = TSingularNftChain<Sender, ClaimData, unknown, undefined, TonClient> & MintNft<Sender, TonMintArgs, never, undefined> & DeployCollection<Sender, TonDeployArgs, never, string> & ReadClaimed721Event;
 export type TTonParams = {

@@ -75,6 +75,43 @@ export declare function loadFactoryDeploy(slice: Slice): {
     queryId: bigint;
     cashback: Address;
 };
+export type LogEventMintRecord = {
+    $$type: "LogEventMintRecord";
+    minter: Address;
+    item_id: bigint;
+    generate_number: bigint;
+};
+export declare function storeLogEventMintRecord(src: LogEventMintRecord): (builder: Builder) => void;
+export declare function loadLogEventMintRecord(slice: Slice): {
+    $$type: "LogEventMintRecord";
+    minter: Address;
+    item_id: bigint;
+    generate_number: bigint;
+};
+export type GetRoyaltyParams = {
+    $$type: "GetRoyaltyParams";
+    query_id: bigint;
+};
+export declare function storeGetRoyaltyParams(src: GetRoyaltyParams): (builder: Builder) => void;
+export declare function loadGetRoyaltyParams(slice: Slice): {
+    $$type: "GetRoyaltyParams";
+    query_id: bigint;
+};
+export type ReportRoyaltyParams = {
+    $$type: "ReportRoyaltyParams";
+    query_id: bigint;
+    numerator: bigint;
+    denominator: bigint;
+    destination: Address;
+};
+export declare function storeReportRoyaltyParams(src: ReportRoyaltyParams): (builder: Builder) => void;
+export declare function loadReportRoyaltyParams(slice: Slice): {
+    $$type: "ReportRoyaltyParams";
+    query_id: bigint;
+    numerator: bigint;
+    denominator: bigint;
+    destination: Address;
+};
 export type CollectionData = {
     $$type: "CollectionData";
     next_item_index: bigint;
@@ -101,35 +138,11 @@ export declare function loadRoyaltyParams(slice: Slice): {
     denominator: bigint;
     destination: Address;
 };
-export type GetRoyaltyParams = {
-    $$type: "GetRoyaltyParams";
-    query_id: bigint;
-};
-export declare function storeGetRoyaltyParams(src: GetRoyaltyParams): (builder: Builder) => void;
-export declare function loadGetRoyaltyParams(slice: Slice): {
-    $$type: "GetRoyaltyParams";
-    query_id: bigint;
-};
-export type ReportRoyaltyParams = {
-    $$type: "ReportRoyaltyParams";
-    query_id: bigint;
-    numerator: bigint;
-    denominator: bigint;
-    destination: Address;
-};
-export declare function storeReportRoyaltyParams(src: ReportRoyaltyParams): (builder: Builder) => void;
-export declare function loadReportRoyaltyParams(slice: Slice): {
-    $$type: "ReportRoyaltyParams";
-    query_id: bigint;
-    numerator: bigint;
-    denominator: bigint;
-    destination: Address;
-};
 export type Transfer = {
     $$type: "Transfer";
     query_id: bigint;
     new_owner: Address;
-    response_destination: Address;
+    response_destination: Address | null;
     custom_payload: Cell | null;
     forward_amount: bigint;
     forward_payload: Cell;
@@ -139,7 +152,7 @@ export declare function loadTransfer(slice: Slice): {
     $$type: "Transfer";
     query_id: bigint;
     new_owner: Address;
-    response_destination: Address;
+    response_destination: Address | null;
     custom_payload: Cell | null;
     forward_amount: bigint;
     forward_payload: Cell;
@@ -178,40 +191,64 @@ export declare function loadGetStaticData(slice: Slice): {
 export type ReportStaticData = {
     $$type: "ReportStaticData";
     query_id: bigint;
-    index: bigint;
+    index_id: bigint;
     collection: Address;
 };
 export declare function storeReportStaticData(src: ReportStaticData): (builder: Builder) => void;
 export declare function loadReportStaticData(slice: Slice): {
     $$type: "ReportStaticData";
     query_id: bigint;
-    index: bigint;
+    index_id: bigint;
     collection: Address;
 };
-export type NftData = {
-    $$type: "NftData";
+export type GetNftData = {
+    $$type: "GetNftData";
     is_initialized: boolean;
     index: bigint;
     collection_address: Address;
     owner_address: Address;
     individual_content: Cell;
 };
-export declare function storeNftData(src: NftData): (builder: Builder) => void;
-export declare function loadNftData(slice: Slice): {
-    $$type: "NftData";
+export declare function storeGetNftData(src: GetNftData): (builder: Builder) => void;
+export declare function loadGetNftData(slice: Slice): {
+    $$type: "GetNftData";
     is_initialized: boolean;
     index: bigint;
     collection_address: Address;
     owner_address: Address;
     individual_content: Cell;
 };
-export declare class ExampleNFTItem implements Contract {
-    static init(collection_address: Address, index: bigint, owner: Address, individual_content: Cell): Promise<{
+export type MintOne = {
+    $$type: "MintOne";
+    new_owner: Address;
+    content: string;
+};
+export declare function storeMintOne(src: MintOne): (builder: Builder) => void;
+export declare function loadMintOne(slice: Slice): {
+    $$type: "MintOne";
+    new_owner: Address;
+    content: string;
+};
+export type Mint = {
+    $$type: "Mint";
+    token_id: bigint;
+    owner: Address;
+    content: string;
+};
+export declare function storeMint(src: Mint): (builder: Builder) => void;
+export declare function loadMint(slice: Slice): {
+    $$type: "Mint";
+    token_id: bigint;
+    owner: Address;
+    content: string;
+};
+export declare class TestnetNftItem implements Contract {
+    static init(collection_address: Address, item_index: bigint): Promise<{
         code: Cell;
         data: Cell;
     }>;
-    static fromInit(collection_address: Address, index: bigint, owner: Address, individual_content: Cell): Promise<ExampleNFTItem>;
-    static fromAddress(address: Address): ExampleNFTItem;
+    static fromInit(collection_address: Address, item_index: bigint): Promise<TestnetNftItem>;
+    static fromAddress(address: Address): TestnetNftItem;
     readonly address: Address;
     readonly init?: {
         code: Cell;
@@ -222,9 +259,9 @@ export declare class ExampleNFTItem implements Contract {
     send(provider: ContractProvider, via: Sender, args: {
         value: bigint;
         bounce?: boolean | null | undefined;
-    }, message: Transfer | GetStaticData): Promise<void>;
+    }, message: MintOne | Transfer | GetStaticData): Promise<void>;
     getGetNftData(provider: ContractProvider): Promise<{
-        $$type: "NftData";
+        $$type: "GetNftData";
         is_initialized: boolean;
         index: bigint;
         collection_address: Address;
