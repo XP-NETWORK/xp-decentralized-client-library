@@ -45,7 +45,7 @@ export function hederaHandler({
         claimData,
         sigs.map((e) => e.signature),
         {
-          value: BigInt(claimData.fee) * BigInt(2e10),
+          value: BigInt(claimData.fee) * BigInt(1e10),
           ...extraArgs,
         },
       );
