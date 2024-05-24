@@ -143,7 +143,10 @@ export function tonHandler({
       const nft = client.open(
         await TestnetNftCollection.fromInit(
           da.owner_address,
-          da.collection_content,
+          beginCell()
+            .storeInt(1, 8)
+            .storeStringTail(da.collection_meta_uri)
+            .endCell(),
           da.royalty_params,
         ),
       );
@@ -438,7 +441,7 @@ export function tonHandler({
         },
         {
           $$type: "Mint",
-          content: ma.uri,
+          content: beginCell().storeInt(1, 8).storeStringTail(ma.uri).endCell(),
           owner: ma.owner,
           token_id: ma.token_id,
         },
@@ -459,14 +462,22 @@ export function tonHandler({
       const collection = client.open(
         NftCollection.fromAddress(Address.parse(contract)),
       );
-      const royaltyParams = await collection.getRoyaltyParams();
+      const royaltyParams = await collection.getRoyaltyParams().catch((_) => {
+        return {
+          $$type: "RoyaltyParams" as const,
+          numerator: 0n,
+          denominator: 0n,
+          destination: bridge.address,
+        };
+      });
       const denom = 10000 / Number(royaltyParams.denominator);
       const royalty = Number(royaltyParams.numerator) * denom;
-      const collection_md_uri = (
+      const collection_md_slice = (
         await collection.getGetCollectionData()
-      ).collection_content
-        .asSlice()
-        .loadStringTail();
+      ).collection_content.asSlice();
+      collection_md_slice.loadInt(8);
+      const collection_md_uri = collection_md_slice.loadStringTail();
+
       const collection_md = await fetchHttpOrIpfs(collection_md_uri).catch(
         (_) => {
           return {
@@ -484,7 +495,10 @@ export function tonHandler({
       );
       const nftData = await nftItem.getGetNftData();
       const content = nftData.individual_content.asSlice();
-      content.loadUint(8);
+      const firstBit = content.preloadBits(8).toString();
+      if (firstBit === "01" || firstBit === "00") {
+        content.loadBits(8);
+      }
       const uri = content.loadStringTail();
       const nft_uri: string = uri.includes("://")
         ? uri
@@ -494,11 +508,11 @@ export function tonHandler({
           )}${uri}`;
       const md = await fetchHttpOrIpfs(nft_uri).catch((_) => {
         return {
-          name: "TTON",
+          name: undefined,
         };
       });
       return {
-        metadata: uri,
+        metadata: nft_uri,
         symbol: collection_md.name ?? "TTON",
         name: md.name ?? collection_md.name ?? "TTON",
         royalty: BigInt(royalty),

@@ -1,4 +1,4 @@
-import { Address, Cell, Sender } from "@ton/core";
+import { Address, Sender } from "@ton/core";
 import { TonClient } from "@ton/ton";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/ton/tonBridge";
@@ -12,7 +12,7 @@ import { RoyaltyParams } from "./nftc";
 
 export type TonDeployArgs = {
   owner_address: Address;
-  collection_content: Cell;
+  collection_meta_uri: string;
   royalty_params: RoyaltyParams;
 };
 export type TonMintArgs = {
