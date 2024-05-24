@@ -221,26 +221,26 @@ export declare function loadGetNftData(slice: Slice): {
 export type MintOne = {
     $$type: "MintOne";
     new_owner: Address;
-    content: string;
+    content: Cell;
 };
 export declare function storeMintOne(src: MintOne): (builder: Builder) => void;
 export declare function loadMintOne(slice: Slice): {
     $$type: "MintOne";
     new_owner: Address;
-    content: string;
+    content: Cell;
 };
 export type Mint = {
     $$type: "Mint";
     token_id: bigint;
     owner: Address;
-    content: string;
+    content: Cell;
 };
 export declare function storeMint(src: Mint): (builder: Builder) => void;
 export declare function loadMint(slice: Slice): {
     $$type: "Mint";
     token_id: bigint;
     owner: Address;
-    content: string;
+    content: Cell;
 };
 export declare class TestnetNftCollection implements Contract {
     static init(owner_address: Address, collection_content: Cell, royalty_params: RoyaltyParams): Promise<{
