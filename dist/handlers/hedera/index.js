@@ -33,7 +33,7 @@ function hederaHandler({ provider, royaltySalePrice, royaltyProxy, storage, iden
         async claimNft(wallet, claimData, sigs, extraArgs) {
             const contract = evm_1.Bridge__factory.connect(bridge, wallet);
             const ret = await contract.claimNFT721(claimData, sigs.map((e) => e.signature), {
-                value: BigInt(claimData.fee) * BigInt(2e10),
+                value: BigInt(claimData.fee) * BigInt(1e10),
                 ...extraArgs,
             });
             return {

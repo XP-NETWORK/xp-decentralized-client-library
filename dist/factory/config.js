@@ -35,7 +35,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             hederaParams: {
-                bridge: ethers_1.ethers.getAddress("0x9aa2F5D64FF55465B0724d2c445bcEbbb71b6354"),
+                bridge: ethers_1.ethers.getAddress("0x473D25d2f26d8288c15EBB608A11cb067a74A692"),
                 identifier: "HEDERA",
                 provider: new ethers_1.JsonRpcProvider("https://testnet.hashio.io/api"),
                 royaltySalePrice: 10000,
