@@ -1,11 +1,13 @@
 import { EventLog, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
+import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
 import {
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../../contractsTypes/evm";
 import { evmHandler } from "../evm";
+import { raise } from "../ton";
 import { THederaHandler, THederaParams } from "./types";
 
 export function hederaHandler({
@@ -38,6 +40,26 @@ export function hederaHandler({
         });
       console.log(mint);
       return mint;
+    },
+    async readClaimed721Event(hash) {
+      const receipt = await provider.getTransactionReceipt(hash);
+      if (!receipt) raise("Transaction not found");
+      const intf = HederaBridge__factory.createInterface();
+      const log = receipt.logs.find((e) =>
+        e.topics.includes(intf.getEvent("Claimed").topicHash),
+      );
+      if (!log) raise("Log not found");
+      const claimed = intf.parseLog({
+        data: log.data,
+        topics: log.topics as string[],
+      });
+      if (!claimed) raise("Failed to parse Log");
+      return {
+        nft_contract: claimed.args.nftContract,
+        source_chain: claimed.args.sourceChain,
+        token_id: claimed.args.emittedTokenId,
+        transaction_hash: claimed.args.transactionHash,
+      };
     },
     async claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
