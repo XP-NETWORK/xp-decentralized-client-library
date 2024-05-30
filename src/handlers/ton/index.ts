@@ -113,30 +113,32 @@ export function tonHandler({
       };
     },
     async readClaimed721Event(bridgeTxHash) {
-      const tx = await client.getTransactions(bridge.address, {
+      const txs = await client.getTransactions(bridge.address, {
         hash: bridgeTxHash,
-        limit: 2,
+        limit: 10,
       });
-      if (!tx.length) raise("Transaction not found");
-      const om = tx[1].outMessages;
-      const size = om.size;
-      for (let i = 0; i < size; i++) {
-        const msg = om.get(i) ?? raise("Unreachable");
-        if (msg.body.asSlice().loadUint(32) === 663924102) {
-          const {
-            newlyDeployCollection,
-            tokenId,
-            sourceChain,
-            transactionHash,
-          } = loadClaimedEvent(msg.body.asSlice());
-          return {
-            nft_contract: newlyDeployCollection.toString(),
-            source_chain: sourceChain,
-            token_id: tokenId.toString(),
-            transaction_hash: transactionHash,
-          };
+      if (!txs.length) raise("Transaction not found");
+      for (const tx of txs) {
+        const om = tx.outMessages;
+        for (let i = 0; i < tx.outMessagesCount; i++) {
+          const msg = om.get(i) ?? raise("Unreachable");
+          if (msg.body.asSlice().loadUint(32) === 663924102) {
+            const {
+              newlyDeployCollection,
+              tokenId,
+              sourceChain,
+              transactionHash,
+            } = loadClaimedEvent(msg.body.asSlice());
+            return {
+              nft_contract: newlyDeployCollection.toString(),
+              source_chain: sourceChain,
+              token_id: tokenId.toString(),
+              transaction_hash: transactionHash,
+            };
+          }
         }
       }
+
       throw new Error("Claimed event not found");
     },
     async deployCollection(signer, da) {
