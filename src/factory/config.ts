@@ -58,7 +58,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       hederaParams: {
-        bridge: ethers.getAddress("0xa8A738E62fdB7C88f6D121dB0b8E817304379543"),
+        bridge: ethers.getAddress("0x473D25d2f26d8288c15EBB608A11cb067a74A692"),
         identifier: "HEDERA",
         provider: new JsonRpcProvider("https://testnet.hashio.io/api"),
         royaltySalePrice: 10000,
@@ -93,7 +93,7 @@ export namespace ChainFactoryConfigs {
         chainId: "D",
       },
       tonParams: {
-        bridgeAddress: "EQCqCjXe8855lMAB8ua_VWLydVlx4URbBlkN4OrtM3jW5L12",
+        bridgeAddress: "kQDSeeEx6BZi1Iqp8sb3FqUGmwg7NTMG5NpBamJHKZj2J3Fc",
         client: new TonClient({
           endpoint:
             "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
