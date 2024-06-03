@@ -11,6 +11,7 @@ import {
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
+import { TNFTData } from "../types";
 import { TestnetNftCollection } from "./nftc";
 import { TTonHandler, TTonParams } from "./types";
 
@@ -171,7 +172,7 @@ export function tonHandler({
     async getClaimData(txHash) {
       const txs = await client.getTransactions(bridge.address, {
         hash: txHash,
-        limit: 1,
+        limit: 15,
       });
       if (!txs.length) {
         throw new Error("Transaction not found");
@@ -211,11 +212,20 @@ export function tonHandler({
             }
           };
 
-          const { royalty, name, symbol, metadata } = await this.nftData(
-            tokenId.toString(),
-            getSourceNftContractAddress(),
-            undefined,
-          );
+          let nft: TNFTData = {
+            metadata: "",
+            name: "",
+            royalty: 0n,
+            symbol: "",
+          };
+
+          try {
+            nft = await this.nftData(
+              tokenId.toString(),
+              getSourceNftContractAddress(),
+              undefined,
+            );
+          } catch (_) {}
 
           return {
             destinationChain: destinationChain.asSlice().loadStringRefTail(),
@@ -229,10 +239,10 @@ export function tonHandler({
             sourceChain: sourceChain.toString(),
             fee: fee.toString(),
             royaltyReceiver: royaltyReceiver.toString(),
-            metadata,
-            name,
-            symbol,
-            royalty: royalty.toString(),
+            metadata: nft.metadata,
+            name: nft.name,
+            symbol: nft.symbol,
+            royalty: nft.royalty.toString(),
             transactionHash: hash,
           };
         }
