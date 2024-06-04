@@ -13,6 +13,7 @@ import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
 import { TNFTData } from "../types";
 import { TestnetNftCollection } from "./nftc";
+import { buildJettonContent } from "./tep64";
 import { TTonHandler, TTonParams } from "./types";
 
 export function raise(message: string): never {
@@ -146,10 +147,7 @@ export function tonHandler({
       const nft = client.open(
         await TestnetNftCollection.fromInit(
           da.owner_address,
-          beginCell()
-            .storeInt(1, 8)
-            .storeStringTail(da.collection_meta_uri)
-            .endCell(),
+          buildJettonContent(da.collection_meta),
           da.royalty_params,
         ),
       );
@@ -302,16 +300,20 @@ export function tonHandler({
         data3: {
           $$type: "ClaimData3",
           fee: BigInt(input.fee),
-          metadata: input.metadata,
+          metadata: beginCell()
+            .storeInt(1, 8)
+            .storeStringTail(input.metadata)
+            .endCell(),
           royaltyReceiver: Address.parseFriendly(input.royaltyReceiver).address,
           sourceNftContractAddress: sourceNftContractAddress_,
         },
         data4: {
           $$type: "ClaimData4",
-          newContent: beginCell()
-            .storeInt(0x01, 8)
-            .storeStringRefTail(input.metadata)
-            .endCell(),
+          newContent: buildJettonContent({
+            name: input.name,
+            symbol: input.symbol,
+            description: "",
+          }),
           royalty: {
             $$type: "RoyaltyParams",
             denominator: 10000n,
