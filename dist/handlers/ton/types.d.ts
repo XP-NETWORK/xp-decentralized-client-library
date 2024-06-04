@@ -6,7 +6,12 @@ import { DeployCollection, MintNft, ReadClaimed721Event, TSingularNftChain } fro
 import { RoyaltyParams } from "./nftc";
 export type TonDeployArgs = {
     owner_address: Address;
-    collection_meta_uri: string;
+    collection_meta: {
+        name: string;
+        description: string;
+        image?: string;
+        symbol: string;
+    };
     royalty_params: RoyaltyParams;
 };
 export type TonMintArgs = {

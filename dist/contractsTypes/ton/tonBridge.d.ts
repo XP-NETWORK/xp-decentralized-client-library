@@ -107,6 +107,7 @@ export type DeployNFT721Collection = {
     destination_user_address: Address;
     source_chain: string;
     transaction_hash: string;
+    metadata: Cell;
 };
 export declare function storeDeployNFT721Collection(src: DeployNFT721Collection): (builder: Builder) => void;
 export declare function loadDeployNFT721Collection(slice: Slice): {
@@ -121,6 +122,7 @@ export declare function loadDeployNFT721Collection(slice: Slice): {
     destination_user_address: Address;
     source_chain: string;
     transaction_hash: string;
+    metadata: Cell;
 };
 export type CreatedCollection = {
     $$type: 'CreatedCollection';
@@ -317,11 +319,13 @@ export declare function loadHiFromDeployNFT721Collection(slice: Slice): {
 export type CollectionDeploy = {
     $$type: 'CollectionDeploy';
     newOwner: Address;
+    metadata: Cell;
 };
 export declare function storeCollectionDeploy(src: CollectionDeploy): (builder: Builder) => void;
 export declare function loadCollectionDeploy(slice: Slice): {
     $$type: "CollectionDeploy";
     newOwner: Address;
+    metadata: Cell;
 };
 export type StorageDeploy = {
     $$type: 'StorageDeploy';
@@ -347,6 +351,30 @@ export declare function loadStorageDeploy(slice: Slice): {
     sourceNftContractAddressLock: Cell;
     sourceChain: string;
     nftItemAddress: Address;
+};
+export type MintOne = {
+    $$type: 'MintOne';
+    new_owner: Address;
+    content: Cell;
+};
+export declare function storeMintOne(src: MintOne): (builder: Builder) => void;
+export declare function loadMintOne(slice: Slice): {
+    $$type: "MintOne";
+    new_owner: Address;
+    content: Cell;
+};
+export type Mint = {
+    $$type: 'Mint';
+    token_id: bigint;
+    owner: Address;
+    content: Cell;
+};
+export declare function storeMint(src: Mint): (builder: Builder) => void;
+export declare function loadMint(slice: Slice): {
+    $$type: "Mint";
+    token_id: bigint;
+    owner: Address;
+    content: Cell;
 };
 export type Validator = {
     $$type: 'Validator';
@@ -463,7 +491,7 @@ export type ClaimData3 = {
     fee: bigint;
     sourceNftContractAddress: Cell;
     royaltyReceiver: Address;
-    metadata: string;
+    metadata: Cell;
 };
 export declare function storeClaimData3(src: ClaimData3): (builder: Builder) => void;
 export declare function loadClaimData3(slice: Slice): {
@@ -471,7 +499,7 @@ export declare function loadClaimData3(slice: Slice): {
     fee: bigint;
     sourceNftContractAddress: Cell;
     royaltyReceiver: Address;
-    metadata: string;
+    metadata: Cell;
 };
 export type ClaimData4 = {
     $$type: 'ClaimData4';
@@ -520,7 +548,7 @@ export declare function loadClaimData(slice: Slice): {
         fee: bigint;
         sourceNftContractAddress: Cell;
         royaltyReceiver: Address;
-        metadata: string;
+        metadata: Cell;
     };
     data4: {
         $$type: "ClaimData4";
@@ -626,7 +654,7 @@ export declare function loadClaimNFT721(slice: Slice): {
             fee: bigint;
             sourceNftContractAddress: Cell;
             royaltyReceiver: Address;
-            metadata: string;
+            metadata: Cell;
         };
         data4: {
             $$type: "ClaimData4";
