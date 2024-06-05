@@ -93,7 +93,7 @@ export namespace ChainFactoryConfigs {
         chainId: "D",
       },
       tonParams: {
-        bridgeAddress: "kQALiR-bhbp9j0zbeoqsTtlHQcTProB6Q-GYagrmDK0TLlqw",
+        bridgeAddress: "kQA44UbG1OwwD3E-oScnetLJwWasDFuTSJb6hOHq8KvrudxM",
         client: new TonClient({
           endpoint:
             "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
