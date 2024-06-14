@@ -303,11 +303,13 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      const noncec = `@${tokenId}`;
+      const noncec = `@0${tokenId}`;
       const quantity = "@" + "01";
       const destination_address = `@${ba.hex()}`;
       const method = `@${Buffer.from("lock721").toString("hex")}`;
-      const token_id = `@${Buffer.from(tokenId.toString()).toString("hex")}`;
+      const token_id = `@${Buffer.from(`${sourceNft}-0${tokenId}`).toString(
+        "hex",
+      )}`;
       const destination_chain = `@${Buffer.from(destinationChain).toString(
         "hex",
       )}`;
@@ -337,6 +339,7 @@ export function multiversxHandler({
       };
     },
     async claimNft(signer, claimData, sig) {
+      console.log(await signer.getAddress());
       const userAddress = Address.fromString(await signer.getAddress());
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);
