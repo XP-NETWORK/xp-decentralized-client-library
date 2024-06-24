@@ -112,8 +112,8 @@ function multiversxHandler({ provider, gatewayURL, bridge, storage, chainId, }) 
                 Buffer.from(e.topics[0], "base64").toString("utf-8") ===
                     "Claimed721");
             return {
-                transaction_hash: Buffer.from(event.topics[3], "base64").toString("utf-8"),
-                nft_contract: Buffer.from(event.topics[2], "base64").toString("utf-8"),
+                transaction_hash: Buffer.from(event.topics[2], "base64").toString("utf-8"),
+                nft_contract: Buffer.from(event.topics[3], "base64").toString("utf-8"),
                 source_chain: Buffer.from(event.topics[1], "base64").toString("utf-8"),
                 token_id: Buffer.from(event.topics[4], "base64").toString("hex"),
             };
@@ -130,8 +130,8 @@ function multiversxHandler({ provider, gatewayURL, bridge, storage, chainId, }) 
                 Buffer.from(e.topics[0], "base64").toString("utf-8") ===
                     "Claimed1155");
             return {
-                transaction_hash: Buffer.from(event.topics[3], "base64").toString("utf-8"),
-                nft_contract: Buffer.from(event.topics[2], "base64").toString("utf-8"),
+                transaction_hash: Buffer.from(event.topics[2], "base64").toString("utf-8"),
+                nft_contract: Buffer.from(event.topics[3], "base64").toString("utf-8"),
                 source_chain: Buffer.from(event.topics[1], "base64").toString("utf-8"),
                 token_id: Buffer.from(event.topics[4], "base64").toString("hex"),
                 amount: BigInt(Buffer.from(event.topics[5], "base64").toString("hex")),
