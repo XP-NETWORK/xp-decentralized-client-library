@@ -84,7 +84,7 @@ export namespace ChainFactoryConfigs {
       },
       multiversxParams: {
         bridge:
-          "erd1qqqqqqqqqqqqqpgq9ln8vmv0wm4t72d8c2pu375szezwhx90sjrshceelc",
+          "erd1qqqqqqqqqqqqqpgqju4xpyzqhlpth298zyd23sx9ge628qhssjrspl5sye",
         gatewayURL: "https://devnet-gateway.multiversx.com",
         provider: new ProxyNetworkProvider(
           "https://devnet-gateway.multiversx.com",
