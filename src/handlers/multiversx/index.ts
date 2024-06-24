@@ -1,4 +1,8 @@
 import {
+  TransactionEventsParser,
+  findEventsByFirstTopic,
+} from "@multiversx/sdk-core";
+import {
   AbiRegistry,
   Account,
   Address,
@@ -19,6 +23,7 @@ import {
   TokenTransfer,
   Transaction,
   TransactionPayload,
+  TransactionsConverter,
   TypedValue,
   VariadicValue,
 } from "@multiversx/sdk-core/out";
@@ -29,6 +34,7 @@ import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
+import { TNFTData } from "../types";
 import {
   TMultiversXHandler,
   TMultiversXParams,
@@ -47,6 +53,11 @@ export function multiversxHandler({
     address: Address.fromString(bridge),
     abi: abiRegistry,
   });
+
+  const eventsParser = new TransactionEventsParser({
+    abi: abiRegistry,
+  });
+  const converter = new TransactionsConverter();
   const http = axios.create();
 
   const waitForTransaction = async (hash: string) => {
@@ -294,47 +305,39 @@ export function multiversxHandler({
     },
     async getClaimData(txHash) {
       await waitForTransaction(txHash);
-      const response = (
-        await axios.get(
-          `${gatewayURL.replace("gateway", "api")}/transactions/${txHash}`,
-        )
-      ).data;
-
-      const lockEvent = response.results.logs.find(
-        (e: { identifier: string }) =>
-          e.identifier === "lock721" || e.identifier === "lock1155",
+      const transactionOnNetworkMultisig =
+        await provider.getTransaction(txHash);
+      const transactionOutcomeMultisig =
+        converter.transactionOnNetworkToOutcome(transactionOnNetworkMultisig);
+      const [event] = findEventsByFirstTopic(
+        transactionOutcomeMultisig,
+        "Locked",
       );
-      const completed = response.results.logs.find(
-        (e: { identifier: string }) => e.identifier === "completedTxEvent",
-      );
-
-      if (!lockEvent || !completed) {
-        throw new Error("Invalid Lock Transaction");
-      }
-
-      const decodedLogs = decodeBase64Array(lockEvent.topics);
-      const tokenId = String(decodedLogs[1].charCodeAt(0));
-      const destinationChain = decodedLogs[2];
-      const destinationUserAddress = decodedLogs[3];
-      const sourceNftContractAddress = decodedLogs[4];
-      const tokenAmount = String(decodedLogs[5].charCodeAt(0));
-      const nftType = decodedLogs[6];
-      const sourceChain = decodedLogs[7];
+      const parsed = eventsParser.parseEvent({ event });
+      const destinationChain = parsed.destination_chain.toString("utf-8");
+      const sourceChain = parsed.chain.toString("utf-8");
+      const tokenId = parsed.token_id.toString();
+      const tokenAmount = parsed.token_amount.toString();
 
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      const metadata = await this.nftData(
-        tokenId,
-        sourceNftContractAddress,
-        undefined,
-      );
+      let metadata: TNFTData = {
+        metadata: "",
+        name: "",
+        royalty: 0n,
+        symbol: "",
+      };
+      if (sourceChain === "MULTIVERSX") {
+        metadata = await this.nftData(tokenId, tokenAmount);
+      }
       return {
         destinationChain,
-        destinationUserAddress,
+        destinationUserAddress:
+          parsed.destination_user_address.toString("utf-8"),
         tokenAmount,
         tokenId,
-        nftType,
-        sourceNftContractAddress,
+        nftType: parsed.nft_type.toString("utf-8"),
+        sourceNftContractAddress: parsed.source_nft_contract_address,
         sourceChain,
         transactionHash: txHash,
         fee: fee.toString(),
@@ -393,7 +396,6 @@ export function multiversxHandler({
       };
     },
     async claimNft(signer, claimData, sig) {
-      console.log(await signer.getAddress());
       const userAddress = Address.fromString(await signer.getAddress());
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);
@@ -539,12 +541,6 @@ export function multiversxHandler({
     },
   };
 }
-
-const decodeBase64Array = (encodedArray: string[]): string[] => {
-  return encodedArray.map((encodedString) => {
-    return Buffer.from(encodedString, "base64").toString("utf-8");
-  });
-};
 
 export function userSignerToSigner(us: UserSigner): TMultiversXSigner {
   return {
