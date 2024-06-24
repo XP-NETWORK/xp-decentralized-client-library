@@ -1,7 +1,7 @@
 import { Transaction } from "@multiversx/sdk-core/out";
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployCollection, MintNft, TSingularNftChain } from "../types";
+import { DeployCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TSingularNftChain } from "../types";
 export type TMultiversXSigner = {
     signTransaction(transaction: Transaction): Promise<Transaction>;
     getAddress: () => Promise<string>;
@@ -43,7 +43,7 @@ export type TMultiversXHandler = TSingularNftChain<TMultiversXSigner, TMultivers
     ticker: string;
 }, {
     gasLimit: number;
-}, string>;
+}, string> & ReadClaimed721Event & ReadClaimed1155Event;
 export type TMultiversXParams = {
     provider: INetworkProvider;
     gatewayURL: string;
