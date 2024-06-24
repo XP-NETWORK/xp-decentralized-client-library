@@ -60,7 +60,7 @@ var ChainFactoryConfigs;
                 nftCodeId: 7104,
             },
             multiversxParams: {
-                bridge: "erd1qqqqqqqqqqqqqpgqtsw8s3evjjyqqa2j2tfn9yvufqskdv236n9s2a06h9",
+                bridge: "erd1qqqqqqqqqqqqqpgqju4xpyzqhlpth298zyd23sx9ge628qhssjrspl5sye",
                 gatewayURL: "https://devnet-gateway.multiversx.com",
                 provider: new out_1.ProxyNetworkProvider("https://devnet-gateway.multiversx.com"),
                 storage,
