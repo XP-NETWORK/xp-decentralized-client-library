@@ -19,6 +19,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@aptos-labs/ts-sdk": "^1.22.2",
     "@cosmjs/amino": "^0.32.3",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@multiversx/sdk-core": "^13.2.1",
@@ -32,6 +33,7 @@
     "@ton/ton": "^13.9.0",
     "@tzkt/sdk-api": "^2.2.1",
     "@xp/cosmos-client": "git+https://github.com/XP-NETWORK/cosmos-client#bleeding-edge",
+    "aptos": "^1.21.0",
     "axios": "^1.6.7",
     "ethers": "^6.10.0",
     "secretjs": "^1.12.4-beta.0"
