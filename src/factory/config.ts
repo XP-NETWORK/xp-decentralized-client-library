@@ -1,9 +1,11 @@
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
+import { Network } from "aptos";
 import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
+import { TAptosParams } from "../handlers/aptos/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
@@ -22,6 +24,7 @@ export interface TChainParams {
   multiversxParams: TMultiversXParams;
   tonParams: TTonParams;
   terraParams: TCosmWasmParams;
+  aptosParams: TAptosParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -98,6 +101,12 @@ export namespace ChainFactoryConfigs {
           endpoint:
             "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
         }),
+        storage,
+      },
+      aptosParams: {
+        bridge:
+          "0xcd863684221790d5b8b9d37b1a7173590494cc888286f384d716cc35ac98f4f8",
+        network: Network.DEVNET,
         storage,
       },
       terraParams: {

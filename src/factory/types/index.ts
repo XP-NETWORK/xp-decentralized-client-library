@@ -1,3 +1,4 @@
+import { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
 import {
   TCosmWasmHandler,
   TCosmWasmParams,
@@ -19,6 +20,7 @@ export type TTezosMeta = [TTezosHandler, TTezosParams];
 export type TSecretMeta = [TSecretHandler, TSecretParams];
 export type TTonMeta = [TTonHandler, TTonParams];
 export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
+export type TAptosMeta = [TAptosHandler, TAptosParams];
 
 export type MetaMap = {
   BSC: TEvmMeta;
@@ -30,4 +32,5 @@ export type MetaMap = {
   SECRET: TSecretMeta;
   MULTIVERSX: TMultiversXMeta;
   TERRA: TCosmWasmMeta;
+  APTOS: TAptosMeta;
 };

@@ -5,6 +5,7 @@ import {
   TParamMap,
   TSupportedChain,
 } from "../factory/types/utils";
+import { aptosHandler } from "../handlers/aptos";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
@@ -24,6 +25,7 @@ export namespace Chain {
   export const TERRA = "TERRA";
   export const MATIC = "MATIC";
   export const HEDERA = "HEDERA";
+  export const APTOS = "APTOS";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -37,6 +39,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.SECRET, chainParams.secretParams);
   cToP.set(Chain.TON, chainParams.tonParams);
   cToP.set(Chain.TERRA, chainParams.terraParams);
+  cToP.set(Chain.APTOS, chainParams.aptosParams);
   return cToP;
 }
 
@@ -63,7 +66,7 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       const ogNftData = await sc.nftData(
         data.tokenId,
         data.sourceNftContractAddress,
-        {},
+        undefined,
       );
       return {
         ...data,
@@ -102,4 +105,7 @@ CHAIN_INFO.set(Chain.TEZOS, {
 });
 CHAIN_INFO.set(Chain.TERRA, {
   constructor: cosmWasmHandler,
+});
+CHAIN_INFO.set(Chain.APTOS, {
+  constructor: aptosHandler,
 });
