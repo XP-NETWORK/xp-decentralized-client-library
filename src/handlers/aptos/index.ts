@@ -1,9 +1,10 @@
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { HexString } from "aptos";
+import { TNFTData } from "../types";
 import { BridgeClient } from "./bridge-client";
 import { TAptosHandler, TAptosParams } from "./types";
 
-export function aptosHelper({
+export function aptosHandler({
   bridge,
   network,
   storage,
@@ -55,9 +56,9 @@ export function aptosHelper({
     getStorageContract() {
       return storage;
     },
-    async nftData(_tokenId, contract, _extraArgs) {
+    async nftData(tokenId, _contract, _extraArgs) {
       const data = await aptos.digitalAsset.getDigitalAssetData({
-        digitalAssetAddress: contract,
+        digitalAssetAddress: tokenId.replace("0x", ""),
       });
       return {
         metadata: data.token_uri,
@@ -66,8 +67,55 @@ export function aptosHelper({
         symbol: data.current_collection?.collection_name ?? "ANFT",
       };
     },
-    async getClaimData(_) {
-      throw new Error("Unimplemented");
+    async getClaimData(transactionHash) {
+      const tx = await aptos.waitForTransaction({ transactionHash });
+      const events = await aptos.getEvents({
+        options: {
+          where: {
+            transaction_version: {
+              _eq: tx.version,
+            },
+          },
+        },
+      });
+      const event = events.find((e) =>
+        e.type.includes("aptos_nft_bridge::LockedEvent"),
+      );
+      if (!event) throw new Error("Event not found");
+      const destinationChain = hexStringToUtf8(event.data.destination_chain);
+      const fee = await storage.chainFee(destinationChain);
+      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
+      let data: TNFTData = {
+        metadata: "",
+        name: "",
+        royalty: 0n,
+        symbol: "",
+      };
+      try {
+        data = await this.nftData(
+          hexStringToUtf8(event.data.source_nft_contract_address),
+          "",
+          undefined,
+        );
+      } catch (e) {}
+      return {
+        tokenAmount: event.data.token_amount,
+        sourceChain: hexStringToUtf8(event.data.self_chain),
+        sourceNftContractAddress: hexStringToUtf8(
+          event.data.source_nft_contract_address,
+        ),
+        tokenId: event.data.token_id,
+        destinationChain: hexStringToUtf8(event.data.destination_chain),
+        destinationUserAddress: event.data.destination_user_address,
+        nftType: hexStringToUtf8(event.data.nft_type),
+        fee: fee.toString(),
+        royaltyReceiver,
+        metadata: data.metadata,
+        name: data.name,
+        royalty: data.royalty.toString(),
+        transactionHash: transactionHash,
+        symbol: data.symbol,
+      };
     },
     async claimSft(signer, claimData, sigs) {
       const signatures = sigs.map((e) =>
@@ -139,4 +187,12 @@ export function aptosHelper({
       };
     },
   };
+}
+
+export function hexStringToUtf8(src: string): string {
+  let source = src;
+  if (source.startsWith("0x")) {
+    source = src.replace("0x", "");
+  }
+  return Buffer.from(source, "hex").toString("utf-8");
 }
