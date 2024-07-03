@@ -10,6 +10,7 @@ export declare namespace Chain {
     const TERRA = "TERRA";
     const MATIC = "MATIC";
     const HEDERA = "HEDERA";
+    const APTOS = "APTOS";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;

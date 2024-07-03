@@ -1,3 +1,4 @@
+import { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
 import { TCosmWasmHandler, TCosmWasmParams } from "../../handlers/cosmwasm/types";
 import { TEvmHandler, TEvmParams } from "../../handlers/evm/types";
 import { THederaHandler, THederaParams } from "../../handlers/hedera/types";
@@ -12,6 +13,7 @@ export type TTezosMeta = [TTezosHandler, TTezosParams];
 export type TSecretMeta = [TSecretHandler, TSecretParams];
 export type TTonMeta = [TTonHandler, TTonParams];
 export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
+export type TAptosMeta = [TAptosHandler, TAptosParams];
 export type MetaMap = {
     BSC: TEvmMeta;
     ETH: TEvmMeta;
@@ -22,5 +24,6 @@ export type MetaMap = {
     SECRET: TSecretMeta;
     MULTIVERSX: TMultiversXMeta;
     TERRA: TCosmWasmMeta;
+    APTOS: TAptosMeta;
 };
 //# sourceMappingURL=index.d.ts.map
