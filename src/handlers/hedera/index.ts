@@ -9,6 +9,11 @@ import {
 import { evmHandler } from "../evm";
 import { raise } from "../ton";
 import { THederaHandler, THederaParams } from "./types";
+import {
+  ContractExecuteTransaction,
+  ContractId,
+  ContractFunctionParameters,
+} from "@hashgraph/sdk";
 
 export function hederaHandler({
   provider,
@@ -67,7 +72,7 @@ export function hederaHandler({
         claimData,
         sigs.map((e) => e.signature),
         {
-          value: BigInt(claimData.fee) * BigInt(1e10),
+          value: BigInt(claimData.fee) * BigInt(2e10),
           ...extraArgs,
         },
       );
@@ -128,6 +133,26 @@ export function hederaHandler({
         royalty: royalty,
         metadata: metadata || "",
       };
+    },
+    async claimHashPackNft(wallet, claimData, sigs, extraArgs) {
+      console.log("bridge", bridge, claimData);
+      console.log("bridge", ContractId.fromString(bridge));
+
+      const sendHbarTx = await new ContractExecuteTransaction()
+        .setContractId(ContractId.fromString(bridge))
+        .setGas(extraArgs.gasLimit ? Number(extraArgs.gasLimit) : 1_500_000)
+        .setFunction(
+          "claimNFT721",
+          new ContractFunctionParameters()
+            // ._addParam("data", claimData as any)
+            .addStringArray(sigs.map((e) => e.signature)),
+        )
+        .freezeWithSigner(wallet);
+      const response = await sendHbarTx.executeWithSigner(wallet);
+
+      console.log(response);
+
+      return response.transactionHash.toString();
     },
   };
 }

@@ -19,7 +19,7 @@ import type {
   HederaBridgeInterface,
 } from "./HederaBridge";
 
-const _abi = [
+export const _abi = [
   {
     inputs: [
       {

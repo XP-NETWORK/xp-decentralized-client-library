@@ -21,6 +21,7 @@
   "dependencies": {
     "@cosmjs/amino": "^0.32.3",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
+    "@hashgraph/sdk": "^2.48.1",
     "@multiversx/sdk-core": "^13.2.1",
     "@multiversx/sdk-network-providers": "^2.2.1",
     "@multiversx/sdk-wallet": "^4.3.0",

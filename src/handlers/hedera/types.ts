@@ -1,3 +1,4 @@
+import { Signer as HSigner } from "@hashgraph/sdk";
 import {
   ContractTransactionResponse,
   Overrides,
@@ -14,7 +15,17 @@ import {
   ReadClaimed1155Event,
   TApproveNFT,
   TNftChain,
+  TSignerAndSignature,
 } from "../types";
+
+export type TClaimHashPackNft = {
+  claimHashPackNft: (
+    wallet: HSigner,
+    claimData: Bridge.ClaimDataStruct,
+    sigs: TSignerAndSignature[],
+    extraArgs: Overrides,
+  ) => Promise<string>;
+};
 
 export type HederaMintArgs = {
   contract: string;
@@ -45,7 +56,8 @@ export type THederaHandler = TNftChain<
     string
   > &
   ReadClaimed721Event &
-  ReadClaimed1155Event;
+  ReadClaimed1155Event &
+  TClaimHashPackNft;
 
 export type THederaParams = TEvmParams & {
   royaltySalePrice: number;
