@@ -197,5 +197,5 @@ const retryFn = async <T>(
 export function isHederaSigner(
   signer: HederaSigner | Signer,
 ): signer is HederaSigner {
-  return "getMirrorNetwork" in signer;
+  return "accountToSign" in signer;
 }
