@@ -1,4 +1,5 @@
-import { EventLog, ethers } from "ethers";
+import { Signer as HederaSigner } from "@hashgraph/sdk";
+import { EventLog, Signer, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
@@ -27,7 +28,6 @@ export function hederaHandler({
     identifier,
   });
   return {
-    ...web3Helper,
     async mintNft(signer, mintArgs, extraArgs) {
       const ihrc = IHRC__factory.connect(mintArgs.contract, signer);
       await ihrc.associate();
@@ -41,6 +41,11 @@ export function hederaHandler({
       console.log(mint);
       return mint;
     },
+    getClaimData: web3Helper.getClaimData,
+    getProvider: web3Helper.getProvider,
+    transform: web3Helper.transform,
+    getValidatorCount: web3Helper.getValidatorCount,
+    getStorageContract: web3Helper.getStorageContract,
     async readClaimed721Event(hash) {
       const receipt = await provider.getTransactionReceipt(hash);
       if (!receipt) raise("Transaction not found");
@@ -62,6 +67,9 @@ export function hederaHandler({
       };
     },
     async claimNft(wallet, claimData, sigs, extraArgs) {
+      if (isHederaSigner(wallet)) {
+        throw new Error("unimplemented");
+      }
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(
         claimData,
@@ -75,6 +83,24 @@ export function hederaHandler({
         ret: ret,
         hash: () => ret.hash,
       };
+    },
+    getBalance(signer) {
+      if (isHederaSigner(signer)) {
+        throw new Error("unimplemented");
+      }
+      return provider.getBalance(signer);
+    },
+    async approveNft(signer, tid, contract, extra) {
+      if (isHederaSigner(signer)) {
+        throw new Error("unimplemented");
+      }
+      return ERC721Royalty__factory.connect(contract, signer).approve(
+        bridge,
+        tid,
+        {
+          ...extra,
+        },
+      );
     },
     async deployCollection(signer, da, ga) {
       const rif = proxy.connect(signer);
@@ -92,6 +118,27 @@ export function hederaHandler({
       });
       const address = (ev as EventLog).args[0];
       return address;
+    },
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
+      if (isHederaSigner(signer)) {
+        throw new Error("unimplemented");
+      }
+      const contract = Bridge__factory.connect(bridge, signer);
+      const tx = await contract.lock721(
+        tokenId.toString(),
+        destinationChain,
+        to,
+        sourceNft,
+        {
+          ...extraArgs,
+        },
+      );
+      return {
+        ret: tx,
+        hash() {
+          return tx.hash;
+        },
+      };
     },
     async nftData(tokenId, contract, overrides) {
       const nft = ERC721Royalty__factory.connect(contract, provider);
@@ -146,3 +193,9 @@ const retryFn = async <T>(
     return await retryFn(func, ctx, retries - 1);
   }
 };
+
+export function isHederaSigner(
+  signer: HederaSigner | Signer,
+): signer is HederaSigner {
+  return "getMirrorNetwork" in signer;
+}
