@@ -22,7 +22,6 @@
     "@aptos-labs/ts-sdk": "^1.22.2",
     "@cosmjs/amino": "^0.32.3",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
-    "@hashgraph/sdk": "^2.48.1",
     "@multiversx/sdk-core": "^13.2.1",
     "@multiversx/sdk-network-providers": "^2.2.1",
     "@multiversx/sdk-wallet": "^4.3.0",
@@ -37,6 +36,7 @@
     "aptos": "^1.21.0",
     "axios": "^1.6.7",
     "ethers": "^6.10.0",
+    "hashconnect": "^3.0.13",
     "secretjs": "^1.12.4-beta.0"
   }
 }
