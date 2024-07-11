@@ -1,4 +1,9 @@
-import { Signer as HederaSigner } from "@hashgraph/sdk";
+import {
+  ContractExecuteTransaction,
+  ContractFunctionParameters,
+  ContractId,
+  Signer as HederaSigner,
+} from "@hashgraph/sdk";
 import { EventLog, Signer, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
@@ -68,7 +73,26 @@ export function hederaHandler({
     },
     async claimNft(wallet, claimData, sigs, extraArgs) {
       if (isHederaSigner(wallet)) {
-        throw new Error("unimplemented");
+        // throw new Error("unimplemented");
+        const tx = await new ContractExecuteTransaction()
+          .setContractId(ContractId.fromString(bridge))
+          .setGas(1_500_000)
+          .setFunction(
+            "claimNFT721",
+            new ContractFunctionParameters().addStringArray(
+              sigs.map((e) => e.signature),
+            ),
+          )
+          .freezeWithSigner(wallet);
+
+        const response = await tx.executeWithSigner(wallet);
+
+        return {
+          ret: response,
+          hash() {
+            return response.transactionHash.toString();
+          },
+        };
       }
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(

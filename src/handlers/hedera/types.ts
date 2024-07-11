@@ -1,4 +1,4 @@
-import { Signer as HederaSigner } from "@hashgraph/sdk";
+import { Signer as HederaSigner, TransactionResponse } from "@hashgraph/sdk";
 import {
   ContractTransactionResponse,
   Overrides,
@@ -25,7 +25,7 @@ export type THederaHandler = TSingularNftChain<
   Signer | HederaSigner,
   Bridge.ClaimDataStruct,
   Overrides,
-  ContractTransactionResponse,
+  ContractTransactionResponse | TransactionResponse,
   Provider
 > &
   MintNft<
