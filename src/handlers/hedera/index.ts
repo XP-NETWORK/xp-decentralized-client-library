@@ -1,9 +1,3 @@
-import {
-  ContractExecuteTransaction,
-  ContractFunctionParameters,
-  ContractId,
-  Signer as HederaSigner,
-} from "@hashgraph/sdk";
 import { EventLog, Signer, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
@@ -32,7 +26,11 @@ export function hederaHandler({
     storage,
     identifier,
   });
+  let hsdk: typeof import("@hashgraph/sdk") | undefined = undefined;
   return {
+    injectSDK(sdk) {
+      hsdk = sdk;
+    },
     async mintNft(signer, mintArgs, extraArgs) {
       const ihrc = IHRC__factory.connect(mintArgs.contract, signer);
       await ihrc.associate();
@@ -72,14 +70,15 @@ export function hederaHandler({
       };
     },
     async claimNft(wallet, claimData, sigs, extraArgs) {
-      if (isHederaSigner(wallet)) {
+      if (!isEvmSigner(wallet)) {
+        if (!hsdk) throw new Error("HSDK Not Injected");
         // throw new Error("unimplemented");
-        const tx = await new ContractExecuteTransaction()
-          .setContractId(ContractId.fromString(bridge))
+        const tx = await new hsdk.ContractExecuteTransaction()
+          .setContractId(hsdk.ContractId.fromString(bridge))
           .setGas(1_500_000)
           .setFunction(
             "claimNFT721",
-            new ContractFunctionParameters().addStringArray(
+            new hsdk.ContractFunctionParameters().addStringArray(
               sigs.map((e) => e.signature),
             ),
           )
@@ -109,13 +108,13 @@ export function hederaHandler({
       };
     },
     getBalance(signer) {
-      if (isHederaSigner(signer)) {
+      if (!isEvmSigner(signer)) {
         throw new Error("unimplemented");
       }
       return provider.getBalance(signer);
     },
     async approveNft(signer, tid, contract, extra) {
-      if (isHederaSigner(signer)) {
+      if (!isEvmSigner(signer)) {
         throw new Error("unimplemented");
       }
       return ERC721Royalty__factory.connect(contract, signer).approve(
@@ -144,7 +143,7 @@ export function hederaHandler({
       return address;
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
-      if (isHederaSigner(signer)) {
+      if (!isEvmSigner(signer)) {
         throw new Error("unimplemented");
       }
       const contract = Bridge__factory.connect(bridge, signer);
@@ -218,8 +217,9 @@ const retryFn = async <T>(
   }
 };
 
-export function isHederaSigner(
-  signer: HederaSigner | Signer,
-): signer is HederaSigner {
-  return "accountToSign" in signer;
+export function isEvmSigner(
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  signer: any,
+): signer is Signer {
+  return !("accountToSign" in signer);
 }

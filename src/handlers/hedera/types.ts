@@ -1,4 +1,7 @@
-import { Signer as HederaSigner, TransactionResponse } from "@hashgraph/sdk";
+import type {
+  Signer as HederaSigner,
+  TransactionResponse,
+} from "@hashgraph/sdk";
 import {
   ContractTransactionResponse,
   Overrides,
@@ -44,7 +47,9 @@ export type THederaHandler = TSingularNftChain<
     Overrides,
     string
   > &
-  ReadClaimed721Event;
+  ReadClaimed721Event & {
+    injectSDK: (hsdk: typeof import("@hashgraph/sdk")) => void;
+  };
 
 export type THederaParams = TEvmParams & {
   royaltySalePrice: number;
