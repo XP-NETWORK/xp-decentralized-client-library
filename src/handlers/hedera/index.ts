@@ -1,14 +1,18 @@
+import { Interface } from "@ethersproject/abi";
 import { EventLog, Signer, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
 import {
+  Bridge,
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../../contractsTypes/evm";
 import { evmHandler } from "../evm";
 import { raise } from "../ton";
 import { THederaHandler, THederaParams } from "./types";
+
+const abiInterface = new Interface(HederaBridge__factory.abi);
 
 export function hederaHandler({
   provider,
@@ -29,6 +33,7 @@ export function hederaHandler({
   let hsdk: typeof import("@hashgraph/sdk") | undefined = undefined;
   return {
     injectSDK(sdk) {
+      console.log("INJECTED");
       hsdk = sdk;
     },
     async mintNft(signer, mintArgs, extraArgs) {
@@ -72,20 +77,29 @@ export function hederaHandler({
     async claimNft(wallet, claimData, sigs, extraArgs) {
       if (!isEvmSigner(wallet)) {
         if (!hsdk) throw new Error("HSDK Not Injected");
-        // throw new Error("unimplemented");
-        const tx = await new hsdk.ContractExecuteTransaction()
-          .setContractId(hsdk.ContractId.fromString(bridge))
-          .setGas(1_500_000)
-          .setFunction(
-            "claimNFT721",
-            new hsdk.ContractFunctionParameters().addStringArray(
-              sigs.map((e) => e.signature),
-            ),
+        const paramClaimData: string[] = [];
+
+        const data = orderClaimData(claimData);
+
+        Object.keys(data).map((key: string) => {
+          paramClaimData.push(data[key as keyof typeof data].toString());
+        });
+
+        const functionCallAsUint8Array = encodeFunctionParameters(
+          "claimNFT721",
+          [paramClaimData, sigs.map((e) => e.signature)],
+        );
+
+        const tx = new hsdk.ContractExecuteTransaction()
+          .setContractId(hsdk.ContractId.fromString("0.0.4392930"))
+          .setGas(5_000_000)
+          .setPayableAmount(
+            hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber(),
           )
+          .setFunctionParameters(functionCallAsUint8Array)
           .freezeWithSigner(wallet);
 
-        const response = await tx.executeWithSigner(wallet);
-
+        const response = await (await tx).executeWithSigner(wallet);
         return {
           ret: response,
           hash() {
@@ -221,5 +235,39 @@ export function isEvmSigner(
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   signer: any,
 ): signer is Signer {
-  return !("accountToSign" in signer);
+  return !("hederaClient" in signer);
 }
+
+const encodeFunctionParameters = (
+  functionName: string,
+  parameterArray: string[][],
+) => {
+  // build the call parameters using ethers.js
+  // .slice(2) to remove leading '0x'
+  const functionCallAsHexString = abiInterface
+    .encodeFunctionData(functionName, parameterArray)
+    .slice(2);
+  // convert to a Uint8Array
+  return Buffer.from(functionCallAsHexString, "hex");
+};
+
+const orderClaimData = (
+  data: Bridge.ClaimDataStruct,
+): Bridge.ClaimDataStruct => {
+  return {
+    tokenId: data.tokenId,
+    sourceChain: data.sourceChain,
+    destinationChain: data.destinationChain,
+    destinationUserAddress: data.destinationUserAddress,
+    sourceNftContractAddress: data.sourceNftContractAddress,
+    name: data.name,
+    symbol: data.symbol,
+    royalty: data.royalty,
+    royaltyReceiver: data.royaltyReceiver,
+    metadata: data.metadata,
+    transactionHash: data.transactionHash,
+    tokenAmount: data.tokenAmount,
+    nftType: data.nftType,
+    fee: data.fee,
+  };
+};
