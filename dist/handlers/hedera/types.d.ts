@@ -1,4 +1,4 @@
-import type { Signer as HederaSigner, TransactionResponse } from "@hashgraph/sdk";
+import type { Signer as HederaSigner, TransactionResponseJSON } from "@hashgraph/sdk";
 import { ContractTransactionResponse, Overrides, Provider, Signer } from "ethers";
 import { Bridge } from "../../contractsTypes/evm";
 import { PayableOverrides } from "../../contractsTypes/evm/common";
@@ -8,13 +8,14 @@ export type HederaMintArgs = {
     contract: string;
     uri: string;
 };
-export type THederaHandler = TSingularNftChain<Signer | HederaSigner, Bridge.ClaimDataStruct, Overrides, ContractTransactionResponse | TransactionResponse, Provider> & MintNft<Signer, HederaMintArgs, PayableOverrides, ContractTransactionResponse> & TApproveNFT<Signer, PayableOverrides, ContractTransactionResponse> & DeployCollection<Signer, {
+export type THederaHandler = TSingularNftChain<Signer | HederaSigner, Bridge.ClaimDataStruct, Overrides, ContractTransactionResponse | TransactionResponseJSON, Provider> & MintNft<Signer, HederaMintArgs, PayableOverrides, ContractTransactionResponse> & TApproveNFT<Signer, PayableOverrides, ContractTransactionResponse | TransactionResponseJSON> & DeployCollection<Signer, {
     name: string;
     symbol: string;
 }, Overrides, string> & ReadClaimed721Event & {
     injectSDK: (hsdk: typeof import("@hashgraph/sdk")) => void;
 };
 export type THederaParams = TEvmParams & {
+    bridgeContractId: string;
     royaltySalePrice: number;
     royaltyProxy: string;
 };

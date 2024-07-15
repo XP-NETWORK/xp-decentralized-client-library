@@ -49,6 +49,7 @@ export declare namespace ChainFactoryConfigs {
         };
         hederaParams: {
             bridge: string;
+            bridgeContractId: string;
             identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
