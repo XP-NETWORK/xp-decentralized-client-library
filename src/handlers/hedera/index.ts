@@ -21,6 +21,7 @@ export function hederaHandler({
   storage,
   identifier,
   bridge,
+  bridgeContractId,
 }: THederaParams): THederaHandler {
   const proxy = ContractProxy__factory.connect(royaltyProxy, provider);
   const web3Helper = evmHandler({
@@ -90,8 +91,8 @@ export function hederaHandler({
           [paramClaimData, sigs.map((e) => e.signature)],
         );
 
-        const tx = new hsdk.ContractExecuteTransaction()
-          .setContractId(hsdk.ContractId.fromString("0.0.4392930"))
+        const tx = await new hsdk.ContractExecuteTransaction()
+          .setContractId(hsdk.ContractId.fromString(bridgeContractId))
           .setGas(5_000_000)
           .setPayableAmount(
             hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber(),
@@ -99,11 +100,17 @@ export function hederaHandler({
           .setFunctionParameters(functionCallAsUint8Array)
           .freezeWithSigner(wallet);
 
-        const response = await (await tx).executeWithSigner(wallet);
+        const response = await tx.executeWithSigner(wallet);
+
+        const receipt = await response.getReceiptWithSigner(wallet);
+
+        if (receipt.status.toString() !== "SUCCESS") {
+          throw new Error(receipt.status.toString());
+        }
         return {
-          ret: response,
+          ret: response.toJSON(),
           hash() {
-            return response.transactionHash.toString();
+            return response.toJSON().transactionHash;
           },
         };
       }
@@ -129,7 +136,31 @@ export function hederaHandler({
     },
     async approveNft(signer, tid, contract, extra) {
       if (!isEvmSigner(signer)) {
-        throw new Error("unimplemented");
+        // throw new Error("unimplemented");
+        if (!hsdk) throw new Error("HSDK Not Injected");
+        console.log("hedera approve", tid, contract);
+
+        const transaction = await new hsdk.ContractExecuteTransaction()
+          .setContractId(hsdk.ContractId.fromEvmAddress(0, 0, contract))
+          .setGas(1_000_000)
+          .setMaxTransactionFee(new hsdk.Hbar(10))
+          //.setPayableAmount(new hashSDK.Hbar(5))
+          .setFunction(
+            "approve",
+            new hsdk.ContractFunctionParameters()
+              .addAddress(bridge)
+              .addUint256(Number(tid)),
+          )
+          .freezeWithSigner(signer);
+
+        const response = await transaction.executeWithSigner(signer);
+        const receipt = await response.getReceiptWithSigner(signer);
+
+        if (receipt.status.toString() !== "SUCCESS") {
+          throw new Error(receipt.status.toString());
+        }
+
+        return response.toJSON();
       }
       return ERC721Royalty__factory.connect(contract, signer).approve(
         bridge,
@@ -158,7 +189,35 @@ export function hederaHandler({
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
       if (!isEvmSigner(signer)) {
-        throw new Error("unimplemented");
+        if (!hsdk) throw new Error("HSDK Not Injected");
+
+        const functionCallAsUint8Array = encodeFunctionParameters("lock721", [
+          tokenId.toString(),
+          destinationChain,
+          to,
+          sourceNft,
+        ]);
+
+        const tx = await new hsdk.ContractExecuteTransaction()
+          .setContractId(hsdk.ContractId.fromString(bridgeContractId))
+          .setGas(5_000_000)
+          .setFunctionParameters(functionCallAsUint8Array)
+          .freezeWithSigner(signer);
+
+        const response = await tx.executeWithSigner(signer);
+
+        const receipt = await response.getReceiptWithSigner(signer);
+
+        if (receipt.status.toString() !== "SUCCESS") {
+          throw new Error(receipt.status.toString());
+        }
+
+        return {
+          ret: response.toJSON(),
+          hash() {
+            return response.toJSON().transactionHash;
+          },
+        };
       }
       const contract = Bridge__factory.connect(bridge, signer);
       const tx = await contract.lock721(
@@ -240,7 +299,7 @@ export function isEvmSigner(
 
 const encodeFunctionParameters = (
   functionName: string,
-  parameterArray: string[][],
+  parameterArray: string[][] | string[],
 ) => {
   // build the call parameters using ethers.js
   // .slice(2) to remove leading '0x'

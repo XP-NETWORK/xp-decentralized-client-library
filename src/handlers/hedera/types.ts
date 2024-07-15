@@ -1,6 +1,6 @@
 import type {
   Signer as HederaSigner,
-  TransactionResponse,
+  TransactionResponseJSON,
 } from "@hashgraph/sdk";
 import {
   ContractTransactionResponse,
@@ -28,7 +28,7 @@ export type THederaHandler = TSingularNftChain<
   Signer | HederaSigner,
   Bridge.ClaimDataStruct,
   Overrides,
-  ContractTransactionResponse | TransactionResponse,
+  ContractTransactionResponse | TransactionResponseJSON,
   Provider
 > &
   MintNft<
@@ -37,7 +37,11 @@ export type THederaHandler = TSingularNftChain<
     PayableOverrides,
     ContractTransactionResponse
   > &
-  TApproveNFT<Signer, PayableOverrides, ContractTransactionResponse> &
+  TApproveNFT<
+    Signer,
+    PayableOverrides,
+    ContractTransactionResponse | TransactionResponseJSON
+  > &
   DeployCollection<
     Signer,
     {
@@ -52,6 +56,7 @@ export type THederaHandler = TSingularNftChain<
   };
 
 export type THederaParams = TEvmParams & {
+  bridgeContractId: string;
   royaltySalePrice: number;
   royaltyProxy: string;
 };
