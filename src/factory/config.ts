@@ -121,4 +121,39 @@ export namespace ChainFactoryConfigs {
       },
     } satisfies Partial<TChainParams>;
   }
+
+  export function MainNet() {
+    const optimism = new JsonRpcProvider(
+      "https://optimism-mainnet.public.blastapi.io",
+    );
+    const storage = BridgeStorage__factory.connect(
+      "0x463E4A5eA947D9DFC250687E469AA487cbD8e1A7",
+      optimism,
+    );
+    return {
+      bscParams: {
+        identifier: "BSC",
+        provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
+        bridge: ethers.getAddress("0xdb3ae6531D405D341d7b25597A64082D7ed05a07"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      maticParams: {
+        identifier: "MATIC",
+        provider: new JsonRpcProvider("https://polygon-pokt.nodies.app"),
+        bridge: ethers.getAddress("0xBd68244C35E660A328266c9cc1411a69992D022D"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      hederaParams: {
+        bridge: ethers.getAddress("0x463e4a5ea947d9dfc250687e469aa487cbd8e1a7"),
+        bridgeContractId: "0.0.6406398",
+        identifier: "HEDERA",
+        provider: new JsonRpcProvider("https://mainnet.hashio.io/api"),
+        royaltySalePrice: 10000,
+        storage,
+        royaltyProxy: "0x97fec8ed7203ea3ce58e2a4f44056fd954a35be4",
+      },
+    } satisfies Partial<TChainParams>;
+  }
 }

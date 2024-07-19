@@ -34,7 +34,7 @@ export function hederaHandler({
   let hsdk: typeof import("@hashgraph/sdk") | undefined = undefined;
   return {
     injectSDK(sdk) {
-      console.log("INJECTED");
+      console.log("INJECTED", sdk);
       hsdk = sdk;
     },
     async mintNft(signer, mintArgs, extraArgs) {
@@ -78,6 +78,23 @@ export function hederaHandler({
     async claimNft(wallet, claimData, sigs, extraArgs) {
       if (!isEvmSigner(wallet)) {
         if (!hsdk) throw new Error("HSDK Not Injected");
+
+        const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
+          .setAccountId(wallet.getAccountId())
+          .setMaxAutomaticTokenAssociations(1)
+          .freezeWithSigner(wallet);
+
+        const txResponse = await accountUpdateTx.executeWithSigner(wallet);
+        const res = await txResponse.getReceiptWithSigner(wallet);
+
+        if (res.status.toString() !== "SUCCESS") {
+          throw new Error(
+            `Error·in·token·association:·${res.status.toString()}`,
+          );
+        }
+
+        await new Promise((r) => setTimeout(r, 5000));
+
         const paramClaimData: string[] = [];
 
         const data = orderClaimData(claimData);
@@ -93,7 +110,7 @@ export function hederaHandler({
 
         const tx = await new hsdk.ContractExecuteTransaction()
           .setContractId(hsdk.ContractId.fromString(bridgeContractId))
-          .setGas(5_000_000)
+          .setGas(15_000_000)
           .setPayableAmount(
             hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber(),
           )
@@ -294,7 +311,7 @@ export function isEvmSigner(
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   signer: any,
 ): signer is Signer {
-  return !("hederaClient" in signer);
+  return !("hederaClient" || "hashconnect" in signer);
 }
 
 const encodeFunctionParameters = (
