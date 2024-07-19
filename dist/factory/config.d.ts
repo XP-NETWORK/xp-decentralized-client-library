@@ -96,5 +96,30 @@ export declare namespace ChainFactoryConfigs {
             nftCodeId: number;
         };
     };
+    function MainNet(): {
+        bscParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        maticParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        hederaParams: {
+            bridge: string;
+            bridgeContractId: string;
+            identifier: string;
+            provider: JsonRpcProvider;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+            royaltyProxy: string;
+        };
+    };
 }
 //# sourceMappingURL=config.d.ts.map
