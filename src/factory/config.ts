@@ -127,27 +127,27 @@ export namespace ChainFactoryConfigs {
       "https://optimism-mainnet.public.blastapi.io",
     );
     const storage = BridgeStorage__factory.connect(
-      "0x463E4A5eA947D9DFC250687E469AA487cbD8e1A7",
+      "0xD23dAaF329d55c673b6Fc749FF557BF3B107b70F",
       optimism,
     );
     return {
       bscParams: {
         identifier: "BSC",
         provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
-        bridge: ethers.getAddress("0xdb3ae6531D405D341d7b25597A64082D7ed05a07"),
+        bridge: ethers.getAddress("0xA8802be1Bd39888EBD38b236e2A4fAd4d8e76a1d"),
         royaltySalePrice: 10000,
         storage,
       },
       maticParams: {
         identifier: "MATIC",
         provider: new JsonRpcProvider("https://polygon-pokt.nodies.app"),
-        bridge: ethers.getAddress("0xBd68244C35E660A328266c9cc1411a69992D022D"),
+        bridge: ethers.getAddress("0x45681560bBe70E63dDA3bd3e2015dCb4879ba0c9"),
         royaltySalePrice: 10000,
         storage,
       },
       hederaParams: {
-        bridge: ethers.getAddress("0x463e4a5ea947d9dfc250687e469aa487cbd8e1a7"),
-        bridgeContractId: "0.0.6406398",
+        bridge: ethers.getAddress("0xb502540e05cc488a40974fbae9db8450b9b9a5c3"),
+        bridgeContractId: "0.0.6417509",
         identifier: "HEDERA",
         provider: new JsonRpcProvider("https://mainnet.hashio.io/api"),
         royaltySalePrice: 10000,

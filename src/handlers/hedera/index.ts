@@ -81,7 +81,7 @@ export function hederaHandler({
 
         const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
           .setAccountId(wallet.getAccountId())
-          .setMaxAutomaticTokenAssociations(1)
+          .setMaxAutomaticTokenAssociations(5)
           .freezeWithSigner(wallet);
 
         const txResponse = await accountUpdateTx.executeWithSigner(wallet);
