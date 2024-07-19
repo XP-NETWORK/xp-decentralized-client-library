@@ -91,12 +91,18 @@ export function hederaHandler({
           [paramClaimData, sigs.map((e) => e.signature)],
         );
 
+        const fee = hsdk.Hbar.fromTinybars(
+          claimData.fee.toString(),
+        ).toBigNumber();
+        const costOfTokenCreation = hsdk.Hbar.fromString(
+          "20",
+          hsdk.HbarUnit.Hbar,
+        ).toBigNumber();
+
         const tx = await new hsdk.ContractExecuteTransaction()
           .setContractId(hsdk.ContractId.fromString(bridgeContractId))
           .setGas(5_000_000)
-          .setPayableAmount(
-            hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber(),
-          )
+          .setPayableAmount(fee.plus(costOfTokenCreation))
           .setFunctionParameters(functionCallAsUint8Array)
           .freezeWithSigner(wallet);
 
@@ -119,7 +125,7 @@ export function hederaHandler({
         claimData,
         sigs.map((e) => e.signature),
         {
-          value: BigInt(claimData.fee) * BigInt(1e10),
+          value: BigInt(claimData.fee) * BigInt(1e10) + BigInt(20e18),
           ...extraArgs,
         },
       );
