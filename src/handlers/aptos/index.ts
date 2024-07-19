@@ -1,5 +1,6 @@
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { HexString } from "aptos";
+import { raise } from "../ton";
 import { TNFTData } from "../types";
 import { BridgeClient } from "./bridge-client";
 import { TAptosHandler, TAptosParams } from "./types";
@@ -18,6 +19,60 @@ export function aptosHandler({
       const bd = await bc.getBridgeData();
       if (!bd) throw new Error("Failed to fetch bridge data");
       return bd.validators.data.length;
+    },
+    async deployCollection(signer, da) {
+      const transaction = await aptos.createCollectionTransaction({
+        creator: signer,
+        description: `Testnet Collection: ${da.name}(${da.symbol}) by XP Network.`,
+        name: da.name,
+        uri: "https://xp.network",
+      });
+      const response = await aptos.signAndSubmitTransaction({
+        signer,
+        transaction,
+      });
+      const tx = await aptos.waitForTransaction({
+        transactionHash: response.hash,
+        options: {
+          checkSuccess: true,
+        },
+      });
+      const alicesCollection = await aptos.getCollectionData({
+        creatorAddress: signer.accountAddress,
+        collectionName: da.name,
+        minimumLedgerVersion: BigInt(tx.version),
+      });
+      return alicesCollection.collection_id;
+    },
+    async mintNft(signer, ma) {
+      const transaction = await aptos.mintDigitalAssetTransaction({
+        collection: ma.contract,
+        creator: signer,
+        name: ma.name,
+        uri: ma.uri,
+        description: "Test Asset for XP Network",
+      });
+      const response = await aptos.signAndSubmitTransaction({
+        signer,
+        transaction,
+      });
+      const tx = await aptos.waitForTransaction({
+        transactionHash: response.hash,
+        options: {
+          checkSuccess: true,
+        },
+      });
+      const assets = await aptos.getOwnedDigitalAssets({
+        ownerAddress: signer.accountAddress,
+        minimumLedgerVersion: BigInt(tx.version),
+      });
+      return (
+        assets.find(
+          (e) =>
+            e.current_token_data?.collection_id === ma.contract &&
+            e.current_token_data.token_name === ma.name,
+        )?.token_data_id ?? raise("Failed to send tx")
+      );
     },
     transform(input) {
       return {
