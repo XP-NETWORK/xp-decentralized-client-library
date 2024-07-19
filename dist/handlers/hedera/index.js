@@ -70,7 +70,7 @@ function hederaHandler({ provider, royaltySalePrice, royaltyProxy, storage, iden
                     throw new Error("HSDK Not Injected");
                 const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
                     .setAccountId(wallet.getAccountId())
-                    .setMaxAutomaticTokenAssociations(1)
+                    .setMaxAutomaticTokenAssociations(5)
                     .freezeWithSigner(wallet);
                 const txResponse = await accountUpdateTx.executeWithSigner(wallet);
                 const res = await txResponse.getReceiptWithSigner(wallet);
