@@ -77,6 +77,42 @@ export function hederaHandler({
         transaction_hash: claimed.args.transactionHash,
       };
     },
+    async associateTokens(wallet) {
+      if (!isEvmSigner(wallet)) {
+        if (!hsdk) throw new Error("HSDK Not Injected");
+
+        let autoAssociatedTokenCount = 0;
+
+        try {
+          autoAssociatedTokenCount = (
+            await axios.get(
+              `${mirrorNodeApi}/v1/accounts/${wallet
+                .getAccountId()
+                .toString()}`,
+            )
+          ).data.max_automatic_token_associations;
+        } catch (ex) {
+          console.log("Error fetching associated token accounts", ex);
+        }
+
+        const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
+          .setAccountId(wallet.getAccountId())
+          .setMaxAutomaticTokenAssociations(autoAssociatedTokenCount + 1)
+          .freezeWithSigner(wallet);
+
+        const txResponse = await accountUpdateTx.executeWithSigner(wallet);
+        const res = await txResponse.getReceiptWithSigner(wallet);
+
+        if (res.status.toString() !== "SUCCESS") {
+          throw new Error(
+            `Error·in·token·association:·${res.status.toString()}`,
+          );
+        }
+
+        return res;
+      }
+      throw new Error("unimplemented");
+    },
     async claimNft(wallet, claimData, sigs, extraArgs) {
       if (!isEvmSigner(wallet)) {
         if (!hsdk) throw new Error("HSDK Not Injected");

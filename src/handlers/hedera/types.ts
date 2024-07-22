@@ -1,5 +1,6 @@
 import type {
   Signer as HederaSigner,
+  TransactionReceipt,
   TransactionResponseJSON,
 } from "@hashgraph/sdk";
 import {
@@ -53,6 +54,8 @@ export type THederaHandler = TSingularNftChain<
   > &
   ReadClaimed721Event & {
     injectSDK: (hsdk: typeof import("@hashgraph/sdk")) => void;
+  } & {
+    associateTokens: (wallet: HederaSigner) => Promise<TransactionReceipt>;
   };
 
 export type THederaParams = TEvmParams & {
