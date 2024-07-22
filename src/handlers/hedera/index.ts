@@ -1,4 +1,5 @@
 import { Interface } from "@ethersproject/abi";
+import axios from "axios";
 import { EventLog, Signer, ethers } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
@@ -22,6 +23,7 @@ export function hederaHandler({
   identifier,
   bridge,
   bridgeContractId,
+  mirrorNodeApi,
 }: THederaParams): THederaHandler {
   const proxy = ContractProxy__factory.connect(royaltyProxy, provider);
   const web3Helper = evmHandler({
@@ -79,9 +81,23 @@ export function hederaHandler({
       if (!isEvmSigner(wallet)) {
         if (!hsdk) throw new Error("HSDK Not Injected");
 
+        let autoAssociatedTokenCount = 0;
+
+        try {
+          autoAssociatedTokenCount = (
+            await axios.get(
+              `${mirrorNodeApi}/v1/accounts/${wallet
+                .getAccountId()
+                .toString()}`,
+            )
+          ).data.max_automatic_token_associations;
+        } catch (ex) {
+          console.log("Error fetching associated token accounts", ex);
+        }
+
         const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
           .setAccountId(wallet.getAccountId())
-          .setMaxAutomaticTokenAssociations(5)
+          .setMaxAutomaticTokenAssociations(autoAssociatedTokenCount + 1)
           .freezeWithSigner(wallet);
 
         const txResponse = await accountUpdateTx.executeWithSigner(wallet);
