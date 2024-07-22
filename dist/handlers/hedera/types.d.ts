@@ -1,4 +1,4 @@
-import type { Signer as HederaSigner, TransactionResponseJSON } from "@hashgraph/sdk";
+import type { Signer as HederaSigner, TransactionReceipt, TransactionResponseJSON } from "@hashgraph/sdk";
 import { ContractTransactionResponse, Overrides, Provider, Signer } from "ethers";
 import { Bridge } from "../../contractsTypes/evm";
 import { PayableOverrides } from "../../contractsTypes/evm/common";
@@ -13,6 +13,8 @@ export type THederaHandler = TSingularNftChain<Signer | HederaSigner, Bridge.Cla
     symbol: string;
 }, Overrides, string> & ReadClaimed721Event & {
     injectSDK: (hsdk: typeof import("@hashgraph/sdk")) => void;
+} & {
+    associateTokens: (wallet: HederaSigner) => Promise<TransactionReceipt>;
 };
 export type THederaParams = TEvmParams & {
     bridgeContractId: string;
