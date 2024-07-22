@@ -18,5 +18,6 @@ export type THederaParams = TEvmParams & {
     bridgeContractId: string;
     royaltySalePrice: number;
     royaltyProxy: string;
+    mirrorNodeApi: string;
 };
 //# sourceMappingURL=types.d.ts.map

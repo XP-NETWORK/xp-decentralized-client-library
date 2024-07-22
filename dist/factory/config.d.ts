@@ -55,6 +55,7 @@ export declare namespace ChainFactoryConfigs {
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
             royaltyProxy: string;
+            mirrorNodeApi: string;
         };
         tezosParams: {
             bridge: string;
@@ -119,6 +120,7 @@ export declare namespace ChainFactoryConfigs {
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
             royaltyProxy: string;
+            mirrorNodeApi: string;
         };
     };
 }
