@@ -69,7 +69,7 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
         royaltyProxy: "0xFdDEEbDf5F2e959A1637Cb130cE753d42083a2EA",
-        mirrorNodeApi: "https://testnet.mirrornode.hedera.com/api/",
+        mirrorNodeApi: "https://testnet.mirrornode.hedera.com/api",
       },
       tezosParams: {
         identifier: Chain.TEZOS,
@@ -161,7 +161,7 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
         royaltyProxy: "0x97fec8ed7203ea3ce58e2a4f44056fd954a35be4",
-        mirrorNodeApi: "https://mainnet.mirrornode.hedera.com/api/",
+        mirrorNodeApi: "https://mainnet.mirrornode.hedera.com/api",
       },
     } satisfies Partial<TChainParams>;
   }

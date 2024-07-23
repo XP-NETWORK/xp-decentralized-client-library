@@ -95,6 +95,8 @@ export function hederaHandler({
           console.log("Error fetching associated token accounts", ex);
         }
 
+        console.log("autoAssociatedTokenCount", autoAssociatedTokenCount + 1);
+
         const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
           .setAccountId(wallet.getAccountId())
           .setMaxAutomaticTokenAssociations(autoAssociatedTokenCount + 1)
@@ -134,7 +136,7 @@ export function hederaHandler({
           claimData.fee.toString(),
         ).toBigNumber();
         const costOfTokenCreation = hsdk.Hbar.fromString(
-          "20",
+          "30",
           hsdk.HbarUnit.Hbar,
         ).toBigNumber();
 
