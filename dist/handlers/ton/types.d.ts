@@ -25,5 +25,6 @@ export type TTonParams = {
     client: TonClient;
     bridgeAddress: string;
     storage: BridgeStorage;
+    identifier: string;
 };
 //# sourceMappingURL=types.d.ts.map

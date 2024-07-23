@@ -12,13 +12,15 @@ export type ValidatorAddressAndChainTypeStructOutput = [
     chainType: string;
 };
 export interface ERC20StakingInterface extends Interface {
-    getFunction(nameOrSignature: "ERC20Token" | "stakeERC20" | "stakingAmount" | "stakingBalances"): FunctionFragment;
+    getFunction(nameOrSignature: "ERC20Token" | "addNewChains" | "stakeERC20" | "stakingAmount" | "stakingBalances"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "Staked"): EventFragment;
     encodeFunctionData(functionFragment: "ERC20Token", values?: undefined): string;
+    encodeFunctionData(functionFragment: "addNewChains", values: [ValidatorAddressAndChainTypeStruct[]]): string;
     encodeFunctionData(functionFragment: "stakeERC20", values: [ValidatorAddressAndChainTypeStruct[]]): string;
     encodeFunctionData(functionFragment: "stakingAmount", values?: undefined): string;
     encodeFunctionData(functionFragment: "stakingBalances", values: [AddressLike]): string;
     decodeFunctionResult(functionFragment: "ERC20Token", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "addNewChains", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "stakeERC20", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "stakingAmount", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "stakingBalances", data: BytesLike): Result;
@@ -55,6 +57,11 @@ export interface ERC20Staking extends BaseContract {
     listeners(eventName?: string): Promise<Array<Listener>>;
     removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
     ERC20Token: TypedContractMethod<[], [string], "view">;
+    addNewChains: TypedContractMethod<[
+        _validatorAddressAndChainType: ValidatorAddressAndChainTypeStruct[]
+    ], [
+        void
+    ], "nonpayable">;
     stakeERC20: TypedContractMethod<[
         _validatorAddressAndChainType: ValidatorAddressAndChainTypeStruct[]
     ], [
@@ -64,6 +71,11 @@ export interface ERC20Staking extends BaseContract {
     stakingBalances: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
     getFunction(nameOrSignature: "ERC20Token"): TypedContractMethod<[], [string], "view">;
+    getFunction(nameOrSignature: "addNewChains"): TypedContractMethod<[
+        _validatorAddressAndChainType: ValidatorAddressAndChainTypeStruct[]
+    ], [
+        void
+    ], "nonpayable">;
     getFunction(nameOrSignature: "stakeERC20"): TypedContractMethod<[
         _validatorAddressAndChainType: ValidatorAddressAndChainTypeStruct[]
     ], [

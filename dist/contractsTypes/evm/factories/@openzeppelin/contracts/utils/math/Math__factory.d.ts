@@ -14,7 +14,7 @@ export declare class Math__factory extends ContractFactory {
         deploymentTransaction(): ContractTransactionResponse;
     }>;
     connect(runner: ContractRunner | null): Math__factory;
-    static readonly bytecode = "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea264697066735822122047aa2cc6204c3d1cfcab94664806ca09318c45bc568dd3986c5387020d2bcf9064736f6c63430008150033";
+    static readonly bytecode = "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220c2b4102621ba49da049aae8b30d669226ec9deb34e61340c6eeaa723040d40bd64736f6c63430008150033";
     static readonly abi: readonly [{
         readonly inputs: readonly [];
         readonly name: "MathOverflowedMulDiv";

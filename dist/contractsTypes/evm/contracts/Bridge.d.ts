@@ -27,6 +27,7 @@ export declare namespace Bridge {
         tokenAmount: BigNumberish;
         nftType: string;
         fee: BigNumberish;
+        lockTxChain: string;
     };
     type ClaimDataStructOutput = [
         tokenId: bigint,
@@ -42,7 +43,8 @@ export declare namespace Bridge {
         transactionHash: string,
         tokenAmount: bigint,
         nftType: string,
-        fee: bigint
+        fee: bigint,
+        lockTxChain: string
     ] & {
         tokenId: bigint;
         sourceChain: string;
@@ -58,6 +60,7 @@ export declare namespace Bridge {
         tokenAmount: bigint;
         nftType: string;
         fee: bigint;
+        lockTxChain: string;
     };
 }
 export interface BridgeInterface extends Interface {
@@ -66,7 +69,7 @@ export interface BridgeInterface extends Interface {
     encodeFunctionData(functionFragment: "addValidator", values: [AddressLike, SignerAndSignatureStruct[]]): string;
     encodeFunctionData(functionFragment: "claimNFT1155", values: [Bridge.ClaimDataStruct, BytesLike[]]): string;
     encodeFunctionData(functionFragment: "claimNFT721", values: [Bridge.ClaimDataStruct, BytesLike[]]): string;
-    encodeFunctionData(functionFragment: "claimValidatorRewards", values: [AddressLike, BytesLike[]]): string;
+    encodeFunctionData(functionFragment: "claimValidatorRewards", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "collectionDeployer", values?: undefined): string;
     encodeFunctionData(functionFragment: "duplicateStorageMapping1155", values: [string, string]): string;
     encodeFunctionData(functionFragment: "duplicateStorageMapping721", values: [string, string]): string;
@@ -113,6 +116,7 @@ export declare namespace AddNewValidatorEvent {
 }
 export declare namespace Claim1155Event {
     type InputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: AddressLike,
@@ -120,6 +124,7 @@ export declare namespace Claim1155Event {
         amount: BigNumberish
     ];
     type OutputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: string,
@@ -127,6 +132,7 @@ export declare namespace Claim1155Event {
         amount: bigint
     ];
     interface OutputObject {
+        lockTxChain: string;
         sourceChain: string;
         transactionHash: string;
         nftContract: string;
@@ -140,18 +146,21 @@ export declare namespace Claim1155Event {
 }
 export declare namespace Claimed721Event {
     type InputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: AddressLike,
         tokenId: BigNumberish
     ];
     type OutputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: string,
         tokenId: bigint
     ];
     interface OutputObject {
+        lockTxChain: string;
         sourceChain: string;
         transactionHash: string;
         nftContract: string;
@@ -291,8 +300,7 @@ export interface Bridge extends BaseContract {
         void
     ], "payable">;
     claimValidatorRewards: TypedContractMethod<[
-        _validator: AddressLike,
-        signatures: BytesLike[]
+        _validator: AddressLike
     ], [
         void
     ], "nonpayable">;
@@ -387,12 +395,7 @@ export interface Bridge extends BaseContract {
     ], [
         void
     ], "payable">;
-    getFunction(nameOrSignature: "claimValidatorRewards"): TypedContractMethod<[
-        _validator: AddressLike,
-        signatures: BytesLike[]
-    ], [
-        void
-    ], "nonpayable">;
+    getFunction(nameOrSignature: "claimValidatorRewards"): TypedContractMethod<[_validator: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "collectionDeployer"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "duplicateStorageMapping1155"): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
     getFunction(nameOrSignature: "duplicateStorageMapping721"): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
@@ -456,9 +459,9 @@ export interface Bridge extends BaseContract {
     filters: {
         "AddNewValidator(address)": TypedContractEvent<AddNewValidatorEvent.InputTuple, AddNewValidatorEvent.OutputTuple, AddNewValidatorEvent.OutputObject>;
         AddNewValidator: TypedContractEvent<AddNewValidatorEvent.InputTuple, AddNewValidatorEvent.OutputTuple, AddNewValidatorEvent.OutputObject>;
-        "Claim1155(string,string,address,uint256,uint256)": TypedContractEvent<Claim1155Event.InputTuple, Claim1155Event.OutputTuple, Claim1155Event.OutputObject>;
+        "Claim1155(string,string,string,address,uint256,uint256)": TypedContractEvent<Claim1155Event.InputTuple, Claim1155Event.OutputTuple, Claim1155Event.OutputObject>;
         Claim1155: TypedContractEvent<Claim1155Event.InputTuple, Claim1155Event.OutputTuple, Claim1155Event.OutputObject>;
-        "Claimed721(string,string,address,uint256)": TypedContractEvent<Claimed721Event.InputTuple, Claimed721Event.OutputTuple, Claimed721Event.OutputObject>;
+        "Claimed721(string,string,string,address,uint256)": TypedContractEvent<Claimed721Event.InputTuple, Claimed721Event.OutputTuple, Claimed721Event.OutputObject>;
         Claimed721: TypedContractEvent<Claimed721Event.InputTuple, Claimed721Event.OutputTuple, Claimed721Event.OutputObject>;
         "Locked(uint256,string,string,string,uint256,string,string)": TypedContractEvent<LockedEvent.InputTuple, LockedEvent.OutputTuple, LockedEvent.OutputObject>;
         Locked: TypedContractEvent<LockedEvent.InputTuple, LockedEvent.OutputTuple, LockedEvent.OutputObject>;

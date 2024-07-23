@@ -39,7 +39,7 @@ export declare class IERC721Royalty__factory {
             readonly name: "";
             readonly type: "address";
         }];
-        readonly stateMutability: "view";
+        readonly stateMutability: "nonpayable";
         readonly type: "function";
     }, {
         readonly inputs: readonly [{
@@ -61,7 +61,7 @@ export declare class IERC721Royalty__factory {
             readonly name: "royaltyAmount";
             readonly type: "uint256";
         }];
-        readonly stateMutability: "view";
+        readonly stateMutability: "nonpayable";
         readonly type: "function";
     }];
     static createInterface(): IERC721RoyaltyInterface;

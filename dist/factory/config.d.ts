@@ -48,9 +48,9 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         hederaParams: {
+            identifier: string;
             bridge: string;
             bridgeContractId: string;
-            identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
@@ -58,12 +58,14 @@ export declare namespace ChainFactoryConfigs {
             mirrorNodeApi: string;
         };
         tezosParams: {
+            identifier: string;
             bridge: string;
             Tezos: TezosToolkit;
             storage: import("../contractsTypes/evm").BridgeStorage;
             tzktApi: string;
         };
         secretParams: {
+            identifier: string;
             bridge: string;
             bridgeCodeHash: string;
             chainId: string;
@@ -72,6 +74,7 @@ export declare namespace ChainFactoryConfigs {
             nftCodeId: number;
         };
         multiversxParams: {
+            identifier: string;
             bridge: string;
             gatewayURL: string;
             provider: ProxyNetworkProvider;
@@ -79,16 +82,19 @@ export declare namespace ChainFactoryConfigs {
             chainId: string;
         };
         tonParams: {
+            identifier: string;
             bridgeAddress: string;
             client: TonClient;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         aptosParams: {
+            identifier: string;
             bridge: string;
             network: Network.DEVNET;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         terraParams: {
+            identifier: string;
             bridge: string;
             chainId: string;
             rpc: string;
@@ -113,9 +119,9 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         hederaParams: {
+            identifier: string;
             bridge: string;
             bridgeContractId: string;
-            identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;

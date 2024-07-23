@@ -1,2 +1,2 @@
-export type { ECDSA } from './ECDSA';
+export type { ECDSA } from "./ECDSA";
 //# sourceMappingURL=index.d.ts.map

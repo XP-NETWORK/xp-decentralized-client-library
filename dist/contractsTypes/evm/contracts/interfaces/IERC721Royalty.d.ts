@@ -31,7 +31,7 @@ export interface IERC721Royalty extends BaseContract {
     ], [
         void
     ], "nonpayable">;
-    ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    ownerOf: TypedContractMethod<[tokenId: BigNumberish], [string], "nonpayable">;
     royaltyInfo: TypedContractMethod<[
         tokenId: BigNumberish,
         salePrice: BigNumberish
@@ -40,7 +40,7 @@ export interface IERC721Royalty extends BaseContract {
             receiver: string;
             royaltyAmount: bigint;
         }
-    ], "view">;
+    ], "nonpayable">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
     getFunction(nameOrSignature: "mint"): TypedContractMethod<[
         to: AddressLike,
@@ -51,7 +51,7 @@ export interface IERC721Royalty extends BaseContract {
     ], [
         void
     ], "nonpayable">;
-    getFunction(nameOrSignature: "ownerOf"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+    getFunction(nameOrSignature: "ownerOf"): TypedContractMethod<[tokenId: BigNumberish], [string], "nonpayable">;
     getFunction(nameOrSignature: "royaltyInfo"): TypedContractMethod<[
         tokenId: BigNumberish,
         salePrice: BigNumberish
@@ -60,7 +60,7 @@ export interface IERC721Royalty extends BaseContract {
             receiver: string;
             royaltyAmount: bigint;
         }
-    ], "view">;
+    ], "nonpayable">;
     filters: {};
 }
 //# sourceMappingURL=IERC721Royalty.d.ts.map

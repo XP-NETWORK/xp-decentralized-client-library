@@ -27,6 +27,7 @@ export declare namespace HederaBridge {
         tokenAmount: BigNumberish;
         nftType: string;
         fee: BigNumberish;
+        lockTxChain: string;
     };
     type ClaimDataStructOutput = [
         tokenId: bigint,
@@ -42,7 +43,8 @@ export declare namespace HederaBridge {
         transactionHash: string,
         tokenAmount: bigint,
         nftType: string,
-        fee: bigint
+        fee: bigint,
+        lockTxChain: string
     ] & {
         tokenId: bigint;
         sourceChain: string;
@@ -58,6 +60,7 @@ export declare namespace HederaBridge {
         tokenAmount: bigint;
         nftType: string;
         fee: bigint;
+        lockTxChain: string;
     };
 }
 export interface HederaBridgeInterface extends Interface {

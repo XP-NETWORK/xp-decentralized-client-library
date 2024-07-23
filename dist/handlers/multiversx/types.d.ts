@@ -50,5 +50,6 @@ export type TMultiversXParams = {
     bridge: string;
     storage: BridgeStorage;
     chainId: string;
+    identifier: string;
 };
 //# sourceMappingURL=types.d.ts.map

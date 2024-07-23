@@ -37,5 +37,6 @@ export type TTezosParams = {
     bridge: string;
     storage: BridgeStorage;
     tzktApi: string;
+    identifier: string;
 };
 //# sourceMappingURL=types.d.ts.map
