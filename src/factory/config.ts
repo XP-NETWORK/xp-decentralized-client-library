@@ -13,6 +13,7 @@ import { TMultiversXParams } from "../handlers/multiversx/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
 import { TTonParams } from "../handlers/ton/types";
+import { Chain } from "./factory";
 
 export interface TChainParams {
   bscParams: TEvmParams;
@@ -36,14 +37,14 @@ export namespace ChainFactoryConfigs {
     );
     return {
       bscParams: {
-        identifier: "BSC",
+        identifier: Chain.BSC,
         provider: new JsonRpcProvider("https://bsc-testnet.publicnode.com"),
         bridge: ethers.getAddress("0xCa5c7090Fa1F3C0939E226ec827Ae140494d81F4"),
         royaltySalePrice: 10000,
         storage,
       },
       ethParams: {
-        identifier: "ETH",
+        identifier: Chain.ETH,
         provider: new JsonRpcProvider(
           "https://ethereum-sepolia.publicnode.com",
         ),
@@ -52,7 +53,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       maticParams: {
-        identifier: "MATIC",
+        identifier: Chain.MATIC,
         provider: new JsonRpcProvider(
           "https://polygon-amoy-bor-rpc.publicnode.com",
         ),
@@ -61,9 +62,9 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       hederaParams: {
+        identifier: Chain.HEDERA,
         bridge: ethers.getAddress("0x473D25d2f26d8288c15EBB608A11cb067a74A692"),
         bridgeContractId: "0.0.4392930",
-        identifier: "HEDERA",
         provider: new JsonRpcProvider("https://testnet.hashio.io/api"),
         royaltySalePrice: 10000,
         storage,
@@ -71,12 +72,14 @@ export namespace ChainFactoryConfigs {
         mirrorNodeApi: "https://testnet.mirrornode.hedera.com/api/",
       },
       tezosParams: {
+        identifier: Chain.TEZOS,
         bridge: "KT18pSSB3f9H3xtHzBfMCjTdPja82nqpAm66",
         Tezos: new TezosToolkit("https://ghostnet.smartpy.io"),
         storage,
         tzktApi: "https://api.ghostnet.tzkt.io/",
       },
       secretParams: {
+        identifier: Chain.SECRET,
         bridge: "secret1elt03d87zqvuwv8567fmnpjpyh4rt9tgyutqx3",
         bridgeCodeHash: "",
         chainId: "pulsar-3",
@@ -88,6 +91,7 @@ export namespace ChainFactoryConfigs {
         nftCodeId: 7104,
       },
       multiversxParams: {
+        identifier: Chain.MULTIVERSX,
         bridge:
           "erd1qqqqqqqqqqqqqpgqju4xpyzqhlpth298zyd23sx9ge628qhssjrspl5sye",
         gatewayURL: "https://devnet-gateway.multiversx.com",
@@ -98,6 +102,7 @@ export namespace ChainFactoryConfigs {
         chainId: "D",
       },
       tonParams: {
+        identifier: Chain.TON,
         bridgeAddress: "kQA44UbG1OwwD3E-oScnetLJwWasDFuTSJb6hOHq8KvrudxM",
         client: new TonClient({
           endpoint:
@@ -106,12 +111,14 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       aptosParams: {
+        identifier: Chain.APTOS,
         bridge:
           "0xcd863684221790d5b8b9d37b1a7173590494cc888286f384d716cc35ac98f4f8",
         network: Network.DEVNET,
         storage,
       },
       terraParams: {
+        identifier: Chain.TERRA,
         bridge:
           "terra1jdek24uwru97s8c48smzx035tmw55yqxzrc2sy7flepr980rx7hsrnyl03",
         chainId: "pisco-1",
@@ -133,23 +140,23 @@ export namespace ChainFactoryConfigs {
     );
     return {
       bscParams: {
-        identifier: "BSC",
+        identifier: Chain.BSC,
         provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
         bridge: ethers.getAddress("0xA8802be1Bd39888EBD38b236e2A4fAd4d8e76a1d"),
         royaltySalePrice: 10000,
         storage,
       },
       maticParams: {
-        identifier: "MATIC",
+        identifier: Chain.MATIC,
         provider: new JsonRpcProvider("https://polygon-pokt.nodies.app"),
         bridge: ethers.getAddress("0x45681560bBe70E63dDA3bd3e2015dCb4879ba0c9"),
         royaltySalePrice: 10000,
         storage,
       },
       hederaParams: {
+        identifier: Chain.HEDERA,
         bridge: ethers.getAddress("0xb502540e05cc488a40974fbae9db8450b9b9a5c3"),
         bridgeContractId: "0.0.6417509",
-        identifier: "HEDERA",
         provider: new JsonRpcProvider("https://mainnet.hashio.io/api"),
         royaltySalePrice: 10000,
         storage,

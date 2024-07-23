@@ -47,6 +47,7 @@ export function multiversxHandler({
   bridge,
   storage,
   chainId,
+  identifier,
 }: TMultiversXParams): TMultiversXHandler {
   const abiRegistry = AbiRegistry.create(multiversXBridgeABI);
   const multiversXBridgeContract = new SmartContract({
@@ -346,6 +347,7 @@ export function multiversxHandler({
         name: metadata.name,
         symbol: metadata.symbol,
         royalty: metadata.royalty.toString(),
+        lockTxChain: identifier,
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {

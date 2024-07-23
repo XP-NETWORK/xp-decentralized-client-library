@@ -74,4 +74,5 @@ export type TMultiversXParams = {
   bridge: string;
   storage: BridgeStorage;
   chainId: string;
+  identifier: string;
 };

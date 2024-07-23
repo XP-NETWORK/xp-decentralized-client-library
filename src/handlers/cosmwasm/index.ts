@@ -14,6 +14,7 @@ export async function cosmWasmHandler({
   nftCodeId,
   storage,
   chainId,
+  identifier,
 }: TCosmWasmParams): Promise<TCosmWasmHandler> {
   const provider = await CosmWasmClient.connect(rpc);
 
@@ -251,6 +252,7 @@ export async function cosmWasmHandler({
         symbol: nft.symbol,
         royalty: nft.royalty.toString(),
         transactionHash: txHash,
+        lockTxChain: identifier,
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {

@@ -13,6 +13,7 @@ export type TICPParams = {
   agent: HttpAgent;
   bridge: Principal;
   storage: BridgeStorage;
+  identifier: string;
 };
 
 export type TICPMintArgs = {

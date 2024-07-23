@@ -11,6 +11,7 @@ export function secretHandler({
   storage,
   bridgeCodeHash,
   nftCodeId,
+  identifier,
 }: TSecretParams): TSecretHandler {
   return {
     getProvider() {
@@ -188,6 +189,7 @@ export function secretHandler({
         symbol: nft.symbol,
         royalty: nft.royalty.toString(),
         transactionHash: txHash,
+        lockTxChain: identifier,
       };
     },
     async claimSft(signer, claimData, sigs, extraArgs) {

@@ -30,7 +30,7 @@ export type SignerAndSignatureStruct = {
 
 export type SignerAndSignatureStructOutput = [
   signerAddress: string,
-  signature: string,
+  signature: string
 ] & { signerAddress: string; signature: string };
 
 export declare namespace Bridge {
@@ -49,6 +49,7 @@ export declare namespace Bridge {
     tokenAmount: BigNumberish;
     nftType: string;
     fee: BigNumberish;
+    lockTxChain: string;
   };
 
   export type ClaimDataStructOutput = [
@@ -66,6 +67,7 @@ export declare namespace Bridge {
     tokenAmount: bigint,
     nftType: string,
     fee: bigint,
+    lockTxChain: string
   ] & {
     tokenId: bigint;
     sourceChain: string;
@@ -81,6 +83,7 @@ export declare namespace Bridge {
     tokenAmount: bigint;
     nftType: string;
     fee: bigint;
+    lockTxChain: string;
   };
 }
 
@@ -104,7 +107,7 @@ export interface BridgeInterface extends Interface {
       | "storageDeployer"
       | "uniqueIdentifier"
       | "validators"
-      | "validatorsCount",
+      | "validatorsCount"
   ): FunctionFragment;
 
   getEvent(
@@ -116,138 +119,138 @@ export interface BridgeInterface extends Interface {
       | "LogHash"
       | "RewardValidator"
       | "UnLock1155"
-      | "UnLock721",
+      | "UnLock721"
   ): EventFragment;
 
   encodeFunctionData(
     functionFragment: "addValidator",
-    values: [AddressLike, SignerAndSignatureStruct[]],
+    values: [AddressLike, SignerAndSignatureStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "claimNFT1155",
-    values: [Bridge.ClaimDataStruct, BytesLike[]],
+    values: [Bridge.ClaimDataStruct, BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: "claimNFT721",
-    values: [Bridge.ClaimDataStruct, BytesLike[]],
+    values: [Bridge.ClaimDataStruct, BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: "claimValidatorRewards",
-    values: [AddressLike, BytesLike[]],
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "collectionDeployer",
-    values?: undefined,
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "duplicateStorageMapping1155",
-    values: [string, string],
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "duplicateStorageMapping721",
-    values: [string, string],
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "duplicateToOriginalMapping",
-    values: [AddressLike, string],
+    values: [AddressLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "lock1155",
-    values: [BigNumberish, string, string, AddressLike, BigNumberish],
+    values: [BigNumberish, string, string, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "lock721",
-    values: [BigNumberish, string, string, AddressLike],
+    values: [BigNumberish, string, string, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "originalStorageMapping1155",
-    values: [string, string],
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "originalStorageMapping721",
-    values: [string, string],
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "originalToDuplicateMapping",
-    values: [string, string],
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "selfChain", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "storageDeployer",
-    values?: undefined,
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "uniqueIdentifier",
-    values: [BytesLike],
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "validators",
-    values: [AddressLike],
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "validatorsCount",
-    values?: undefined,
+    values?: undefined
   ): string;
 
   decodeFunctionResult(
     functionFragment: "addValidator",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimNFT1155",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimNFT721",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "claimValidatorRewards",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "collectionDeployer",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "duplicateStorageMapping1155",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "duplicateStorageMapping721",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "duplicateToOriginalMapping",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "lock1155", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lock721", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "originalStorageMapping1155",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "originalStorageMapping721",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "originalToDuplicateMapping",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "selfChain", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "storageDeployer",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "uniqueIdentifier",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "validators", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "validatorsCount",
-    data: BytesLike,
+    data: BytesLike
   ): Result;
 }
 
@@ -265,20 +268,23 @@ export namespace AddNewValidatorEvent {
 
 export namespace Claim1155Event {
   export type InputTuple = [
+    lockTxChain: string,
     sourceChain: string,
     transactionHash: string,
     nftContract: AddressLike,
     tokenId: BigNumberish,
-    amount: BigNumberish,
+    amount: BigNumberish
   ];
   export type OutputTuple = [
+    lockTxChain: string,
     sourceChain: string,
     transactionHash: string,
     nftContract: string,
     tokenId: bigint,
-    amount: bigint,
+    amount: bigint
   ];
   export interface OutputObject {
+    lockTxChain: string;
     sourceChain: string;
     transactionHash: string;
     nftContract: string;
@@ -293,18 +299,21 @@ export namespace Claim1155Event {
 
 export namespace Claimed721Event {
   export type InputTuple = [
+    lockTxChain: string,
     sourceChain: string,
     transactionHash: string,
     nftContract: AddressLike,
-    tokenId: BigNumberish,
+    tokenId: BigNumberish
   ];
   export type OutputTuple = [
+    lockTxChain: string,
     sourceChain: string,
     transactionHash: string,
     nftContract: string,
-    tokenId: bigint,
+    tokenId: bigint
   ];
   export interface OutputObject {
+    lockTxChain: string;
     sourceChain: string;
     transactionHash: string;
     nftContract: string;
@@ -324,7 +333,7 @@ export namespace LockedEvent {
     sourceNftContractAddress: string,
     tokenAmount: BigNumberish,
     nftType: string,
-    sourceChain: string,
+    sourceChain: string
   ];
   export type OutputTuple = [
     tokenId: bigint,
@@ -333,7 +342,7 @@ export namespace LockedEvent {
     sourceNftContractAddress: string,
     tokenAmount: bigint,
     nftType: string,
-    sourceChain: string,
+    sourceChain: string
   ];
   export interface OutputObject {
     tokenId: bigint;
@@ -380,13 +389,13 @@ export namespace UnLock1155Event {
     to: AddressLike,
     tokenId: BigNumberish,
     contractAddr: AddressLike,
-    amount: BigNumberish,
+    amount: BigNumberish
   ];
   export type OutputTuple = [
     to: string,
     tokenId: bigint,
     contractAddr: string,
-    amount: bigint,
+    amount: bigint
   ];
   export interface OutputObject {
     to: string;
@@ -404,7 +413,7 @@ export namespace UnLock721Event {
   export type InputTuple = [
     to: AddressLike,
     tokenId: BigNumberish,
-    contractAddr: AddressLike,
+    contractAddr: AddressLike
   ];
   export type OutputTuple = [to: string, tokenId: bigint, contractAddr: string];
   export interface OutputObject {
@@ -427,38 +436,38 @@ export interface Bridge extends BaseContract {
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
   queryFilter<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
   on<TCEvent extends TypedContractEvent>(
     event: TCEvent,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
 
   once<TCEvent extends TypedContractEvent>(
     event: TCEvent,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
-    listener: TypedListener<TCEvent>,
+    listener: TypedListener<TCEvent>
   ): Promise<this>;
 
   listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
+    event: TCEvent
   ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent,
+    event?: TCEvent
   ): Promise<this>;
 
   addValidator: TypedContractMethod<
@@ -480,7 +489,7 @@ export interface Bridge extends BaseContract {
   >;
 
   claimValidatorRewards: TypedContractMethod<
-    [_validator: AddressLike, signatures: BytesLike[]],
+    [_validator: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -511,7 +520,7 @@ export interface Bridge extends BaseContract {
       destinationChain: string,
       destinationUserAddress: string,
       sourceNftContractAddress: AddressLike,
-      tokenAmount: BigNumberish,
+      tokenAmount: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -522,7 +531,7 @@ export interface Bridge extends BaseContract {
       tokenId: BigNumberish,
       destinationChain: string,
       destinationUserAddress: string,
-      sourceNftContractAddress: AddressLike,
+      sourceNftContractAddress: AddressLike
     ],
     [void],
     "nonpayable"
@@ -561,162 +570,158 @@ export interface Bridge extends BaseContract {
   validatorsCount: TypedContractMethod<[], [bigint], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment,
+    key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "addValidator",
+    nameOrSignature: "addValidator"
   ): TypedContractMethod<
     [_validator: AddressLike, signatures: SignerAndSignatureStruct[]],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "claimNFT1155",
+    nameOrSignature: "claimNFT1155"
   ): TypedContractMethod<
     [data: Bridge.ClaimDataStruct, signatures: BytesLike[]],
     [void],
     "payable"
   >;
   getFunction(
-    nameOrSignature: "claimNFT721",
+    nameOrSignature: "claimNFT721"
   ): TypedContractMethod<
     [data: Bridge.ClaimDataStruct, signatures: BytesLike[]],
     [void],
     "payable"
   >;
   getFunction(
-    nameOrSignature: "claimValidatorRewards",
-  ): TypedContractMethod<
-    [_validator: AddressLike, signatures: BytesLike[]],
-    [void],
-    "nonpayable"
-  >;
+    nameOrSignature: "claimValidatorRewards"
+  ): TypedContractMethod<[_validator: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "collectionDeployer",
+    nameOrSignature: "collectionDeployer"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "duplicateStorageMapping1155",
+    nameOrSignature: "duplicateStorageMapping1155"
   ): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
   getFunction(
-    nameOrSignature: "duplicateStorageMapping721",
+    nameOrSignature: "duplicateStorageMapping721"
   ): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
   getFunction(
-    nameOrSignature: "duplicateToOriginalMapping",
+    nameOrSignature: "duplicateToOriginalMapping"
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: string],
     [[string, string] & { chain: string; contractAddress: string }],
     "view"
   >;
   getFunction(
-    nameOrSignature: "lock1155",
+    nameOrSignature: "lock1155"
   ): TypedContractMethod<
     [
       tokenId: BigNumberish,
       destinationChain: string,
       destinationUserAddress: string,
       sourceNftContractAddress: AddressLike,
-      tokenAmount: BigNumberish,
+      tokenAmount: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "lock721",
+    nameOrSignature: "lock721"
   ): TypedContractMethod<
     [
       tokenId: BigNumberish,
       destinationChain: string,
       destinationUserAddress: string,
-      sourceNftContractAddress: AddressLike,
+      sourceNftContractAddress: AddressLike
     ],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "originalStorageMapping1155",
+    nameOrSignature: "originalStorageMapping1155"
   ): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
   getFunction(
-    nameOrSignature: "originalStorageMapping721",
+    nameOrSignature: "originalStorageMapping721"
   ): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
   getFunction(
-    nameOrSignature: "originalToDuplicateMapping",
+    nameOrSignature: "originalToDuplicateMapping"
   ): TypedContractMethod<
     [arg0: string, arg1: string],
     [[string, string] & { chain: string; contractAddress: string }],
     "view"
   >;
   getFunction(
-    nameOrSignature: "selfChain",
+    nameOrSignature: "selfChain"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "storageDeployer",
+    nameOrSignature: "storageDeployer"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "uniqueIdentifier",
+    nameOrSignature: "uniqueIdentifier"
   ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
   getFunction(
-    nameOrSignature: "validators",
+    nameOrSignature: "validators"
   ): TypedContractMethod<
     [arg0: AddressLike],
     [[boolean, bigint] & { added: boolean; pendingReward: bigint }],
     "view"
   >;
   getFunction(
-    nameOrSignature: "validatorsCount",
+    nameOrSignature: "validatorsCount"
   ): TypedContractMethod<[], [bigint], "view">;
 
   getEvent(
-    key: "AddNewValidator",
+    key: "AddNewValidator"
   ): TypedContractEvent<
     AddNewValidatorEvent.InputTuple,
     AddNewValidatorEvent.OutputTuple,
     AddNewValidatorEvent.OutputObject
   >;
   getEvent(
-    key: "Claim1155",
+    key: "Claim1155"
   ): TypedContractEvent<
     Claim1155Event.InputTuple,
     Claim1155Event.OutputTuple,
     Claim1155Event.OutputObject
   >;
   getEvent(
-    key: "Claimed721",
+    key: "Claimed721"
   ): TypedContractEvent<
     Claimed721Event.InputTuple,
     Claimed721Event.OutputTuple,
     Claimed721Event.OutputObject
   >;
   getEvent(
-    key: "Locked",
+    key: "Locked"
   ): TypedContractEvent<
     LockedEvent.InputTuple,
     LockedEvent.OutputTuple,
     LockedEvent.OutputObject
   >;
   getEvent(
-    key: "LogHash",
+    key: "LogHash"
   ): TypedContractEvent<
     LogHashEvent.InputTuple,
     LogHashEvent.OutputTuple,
     LogHashEvent.OutputObject
   >;
   getEvent(
-    key: "RewardValidator",
+    key: "RewardValidator"
   ): TypedContractEvent<
     RewardValidatorEvent.InputTuple,
     RewardValidatorEvent.OutputTuple,
     RewardValidatorEvent.OutputObject
   >;
   getEvent(
-    key: "UnLock1155",
+    key: "UnLock1155"
   ): TypedContractEvent<
     UnLock1155Event.InputTuple,
     UnLock1155Event.OutputTuple,
     UnLock1155Event.OutputObject
   >;
   getEvent(
-    key: "UnLock721",
+    key: "UnLock721"
   ): TypedContractEvent<
     UnLock721Event.InputTuple,
     UnLock721Event.OutputTuple,
@@ -735,7 +740,7 @@ export interface Bridge extends BaseContract {
       AddNewValidatorEvent.OutputObject
     >;
 
-    "Claim1155(string,string,address,uint256,uint256)": TypedContractEvent<
+    "Claim1155(string,string,string,address,uint256,uint256)": TypedContractEvent<
       Claim1155Event.InputTuple,
       Claim1155Event.OutputTuple,
       Claim1155Event.OutputObject
@@ -746,7 +751,7 @@ export interface Bridge extends BaseContract {
       Claim1155Event.OutputObject
     >;
 
-    "Claimed721(string,string,address,uint256)": TypedContractEvent<
+    "Claimed721(string,string,string,address,uint256)": TypedContractEvent<
       Claimed721Event.InputTuple,
       Claimed721Event.OutputTuple,
       Claimed721Event.OutputObject

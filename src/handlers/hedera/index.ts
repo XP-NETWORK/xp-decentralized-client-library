@@ -373,5 +373,6 @@ const orderClaimData = (
     tokenAmount: data.tokenAmount,
     nftType: data.nftType,
     fee: data.fee,
+    lockTxChain: data.lockTxChain,
   };
 };

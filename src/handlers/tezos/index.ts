@@ -38,6 +38,7 @@ export function tezosHandler({
   bridge,
   storage,
   tzktApi,
+  identifier,
 }: TTezosParams): TTezosHandler {
   api.defaults.baseUrl = tzktApi;
   async function withContract(
@@ -263,6 +264,7 @@ export function tezosHandler({
         symbol: nft.symbol,
         royalty: nft.royalty.toString(),
         metadata: nft.metadata,
+        lockTxChain: identifier,
       };
     },
     async mintNft(signer, ma, gasArgs) {

@@ -17,6 +17,7 @@ export type TCosmWasmParams = {
   storage: BridgeStorage;
   denom: string;
   nftCodeId: number;
+  identifier: string;
 };
 
 export type TCosmWasmClaimArgs = ClaimData;

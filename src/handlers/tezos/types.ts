@@ -72,4 +72,5 @@ export type TTezosParams = {
   bridge: string;
   storage: BridgeStorage;
   tzktApi: string;
+  identifier: string;
 };

@@ -81,12 +81,12 @@ export class INFTCollectionDeployer__factory {
   }
   static connect(
     address: string,
-    runner?: ContractRunner | null,
+    runner?: ContractRunner | null
   ): INFTCollectionDeployer {
     return new Contract(
       address,
       _abi,
-      runner,
+      runner
     ) as unknown as INFTCollectionDeployer;
   }
 }

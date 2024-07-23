@@ -55,4 +55,5 @@ export type TSecretParams = {
   bridgeCodeHash: string;
   storage: BridgeStorage;
   nftCodeId: number;
+  identifier: string;
 };

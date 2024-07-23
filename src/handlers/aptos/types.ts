@@ -24,4 +24,5 @@ export type TAptosParams = {
   bridge: string;
   network: Network;
   storage: BridgeStorage;
+  identifier: string;
 };

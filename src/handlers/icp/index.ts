@@ -19,6 +19,7 @@ export async function icpHandler({
   agent,
   bridge,
   storage,
+  identifier,
 }: TICPParams): Promise<TICPHandler> {
   const ledger = LedgerCanister.create({ agent });
   const bc = createActor(bridge);
@@ -151,6 +152,7 @@ export async function icpHandler({
         metadata: nft.metadata,
         name: nft.name,
         symbol: nft.symbol,
+        lockTxChain: identifier,
       };
     },
     getStorageContract() {

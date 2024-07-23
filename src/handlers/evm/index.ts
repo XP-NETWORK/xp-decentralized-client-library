@@ -11,6 +11,7 @@ export function evmHandler({
   bridge,
   royaltySalePrice,
   storage,
+  identifier,
 }: TEvmParams): TEvmHandler {
   return {
     async claimNft(wallet, claimData, sigs, extraArgs) {
@@ -157,6 +158,7 @@ export function evmHandler({
         name: data.name,
         symbol: data.symbol,
         royalty: data.royalty.toString(),
+        lockTxChain: identifier,
       };
     },
     getBalance(signer) {

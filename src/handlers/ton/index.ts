@@ -24,6 +24,7 @@ export function tonHandler({
   client,
   bridgeAddress,
   storage,
+  identifier,
 }: TTonParams): TTonHandler {
   const http = axios.create();
 
@@ -242,6 +243,7 @@ export function tonHandler({
             symbol: nft.symbol,
             royalty: nft.royalty.toString(),
             transactionHash: hash,
+            lockTxChain: identifier,
           };
         }
       }

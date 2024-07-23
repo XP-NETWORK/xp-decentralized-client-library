@@ -9,6 +9,7 @@ export function aptosHandler({
   bridge,
   network,
   storage,
+  identifier,
 }: TAptosParams): TAptosHandler {
   const config = new AptosConfig({ network });
   const aptos = new Aptos(config);
@@ -170,6 +171,7 @@ export function aptosHandler({
         royalty: data.royalty.toString(),
         transactionHash: transactionHash,
         symbol: data.symbol,
+        lockTxChain: identifier,
       };
     },
     async claimSft(signer, claimData, sigs) {
