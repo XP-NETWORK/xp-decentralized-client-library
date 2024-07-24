@@ -342,7 +342,7 @@ export function isEvmSigner(
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   signer: any,
 ): signer is Signer {
-  return !("hederaClient" || "hashconnect" in signer);
+  return !("hederaClient" in signer || "hashconnect" in signer);
 }
 
 const encodeFunctionParameters = (
