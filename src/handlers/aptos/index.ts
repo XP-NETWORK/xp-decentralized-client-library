@@ -76,25 +76,26 @@ export function aptosHandler({
       );
     },
     transform(input) {
+      const cleanHexAddress = input.sourceNftContractAddress.startsWith("0x")
+        ? input.sourceNftContractAddress.slice(2)
+        : input.sourceNftContractAddress;
+
       return {
-        amount: Number(input.tokenAmount),
-        collection: input.sourceNftContractAddress,
-        description: input.sourceNftContractAddress,
-        destinationChain: Buffer.from(input.destinationChain),
-        fee: Number(input.fee),
-        metadata: input.metadata,
-        uri: input.metadata,
-        royaltyPayeeAddress: HexString.ensure(input.royaltyReceiver),
-        royaltyPointsNumerator: Number(input.royalty),
-        royaltyPointsDenominator: 10000,
-        sourceChain: Buffer.from(input.sourceChain),
-        nftType: Buffer.from(input.nftType),
+        destinationUserAddress: HexString.ensure(input.destinationUserAddress),
+        name: input.name,
         symbol: input.symbol,
-        iconUri: input.metadata,
-        projectUri: input.metadata,
-        tokenId: input.tokenId,
+        amount: Number(input.tokenAmount),
+        royaltyPercentage: Number(input.royalty),
+        royaltyPayeeAddress: HexString.ensure(input.royaltyReceiver),
+        fee: Number(input.fee),
+        sourceChain: Buffer.from(input.sourceChain),
+        destinationChain: Buffer.from(input.destinationChain),
+        sourceNftContractAddress: hexStringToUint8Array(cleanHexAddress),
         transactionHash: Buffer.from(input.transactionHash),
-        sourceNftContractAddress: Buffer.from(input.sourceNftContractAddress),
+        tokenId: Number(input.tokenId),
+        nftType: Buffer.from(input.nftType),
+        metadata: input.metadata,
+        lockTxChain: Buffer.from(input.lockTxChain),
       };
     },
     approveNft() {
@@ -149,7 +150,7 @@ export function aptosHandler({
       };
       try {
         data = await this.nftData(
-          hexStringToUtf8(event.data.source_nft_contract_address),
+          hexStringToUtf8(event.data.collection_address),
           "",
           undefined,
         );
@@ -158,7 +159,7 @@ export function aptosHandler({
         tokenAmount: event.data.token_amount,
         sourceChain: hexStringToUtf8(event.data.self_chain),
         sourceNftContractAddress: hexStringToUtf8(
-          event.data.source_nft_contract_address,
+          event.data.collection_address,
         ),
         tokenId: event.data.token_id,
         destinationChain: hexStringToUtf8(event.data.destination_chain),
@@ -210,14 +211,13 @@ export function aptosHandler({
         ret: response,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, _, tokenId) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
       const lock = await bc.lock721(
         signer,
-        sourceNft,
-        tokenId.toString(),
+        HexString.ensure(tokenId.toString()), // ?We need to provide tokenAddress here.
         Buffer.from(destinationChain),
-        0,
-        Buffer.from(sourceNft),
+        to,
+        HexString.ensure(sourceNft),
       );
       return {
         hash() {
@@ -226,15 +226,14 @@ export function aptosHandler({
         ret: lock,
       };
     },
-    async lockSft(signer, sourceNft, destinationChain, _, tokenId, amount) {
+    async lockSft(signer, sourceNft, destinationChain, to, tokenId, amount) {
       const lock = await bc.lock1155(
         signer,
-        sourceNft,
-        tokenId.toString(),
-        Number(amount),
+        HexString.ensure(tokenId.toString()), // ?We need to provide tokenAddress here.
         Buffer.from(destinationChain),
-        0,
-        Buffer.from(sourceNft),
+        to,
+        HexString.ensure(sourceNft),
+        Number(amount),
       );
       return {
         hash() {
@@ -253,3 +252,9 @@ export function hexStringToUtf8(src: string): string {
   }
   return Buffer.from(source, "hex").toString("utf-8");
 }
+
+const hexStringToUint8Array = (hexString: string): Uint8Array => {
+  return new Uint8Array(
+    hexString.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) ?? [],
+  );
+};

@@ -42,7 +42,7 @@ enum CONTRACT_ERROR_CODES {
 
 const CHAIN_ID = "APTOS";
 
-const CLAIM_FEE_5_APT = 5 * 10 ** 8;
+const CLAIM_FEE_20_APT = 20 * 10 ** 8;
 const CLAIM_FEE_POINT_1_APT = 0.1 * 10 ** 8;
 
 export {
@@ -52,6 +52,6 @@ export {
   CHAIN_ID,
   MINT_MODULE,
   MINT_FUNCTIONS,
-  CLAIM_FEE_5_APT,
+  CLAIM_FEE_20_APT,
   CLAIM_FEE_POINT_1_APT,
 };
