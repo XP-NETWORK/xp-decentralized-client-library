@@ -226,6 +226,7 @@ export async function icpHandler({
         token_amount: BigInt(input.tokenAmount),
         token_id: BigInt(input.tokenId),
         transaction_hash: input.transactionHash,
+        lock_tx_chain: input.lockTxChain,
       };
     },
   };
