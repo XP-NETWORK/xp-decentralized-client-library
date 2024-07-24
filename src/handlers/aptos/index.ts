@@ -96,8 +96,6 @@ export function aptosHandler({
         nftType: Buffer.from(input.nftType),
         metadata: input.metadata,
         lockTxChain: Buffer.from(input.lockTxChain),
-        signatures: [], // TODO: Implement this
-        publicKeys: [], // TODO: Implement this
       };
     },
     approveNft() {

@@ -34,8 +34,6 @@ export type TClaimData = {
   royaltyPercentage: number;
   royaltyPayeeAddress: HexString;
   fee: number;
-  signatures: Uint8Array[];
-  publicKeys: Uint8Array[];
   sourceChain: Uint8Array;
   destinationChain: Uint8Array;
   sourceNftContractAddress: Uint8Array;
