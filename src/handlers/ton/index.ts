@@ -323,6 +323,7 @@ export function tonHandler({
             numerator: BigInt(input.royalty),
           },
           transactionHash: input.transactionHash,
+          lockTxChain: input.lockTxChain,
         },
       };
     },
