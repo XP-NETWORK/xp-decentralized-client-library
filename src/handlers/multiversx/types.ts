@@ -31,6 +31,7 @@ export type TMultiversXClaimArgs = {
   nftType: string;
   fee: string;
   metadata: string;
+  lockTxChain: string;
 };
 
 /**

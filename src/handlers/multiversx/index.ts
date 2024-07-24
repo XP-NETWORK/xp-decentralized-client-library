@@ -301,6 +301,7 @@ export function multiversxHandler({
         tokenAmount: input.tokenAmount,
         tokenId: input.tokenId,
         transactionHash: input.transactionHash,
+        lockTxChain: input.lockTxChain,
       };
     },
     async approveNft(_signer, _tokenId, _contract) {
@@ -456,6 +457,11 @@ export function multiversxHandler({
           new BytesType(),
         ),
         new FieldDefinition("fee", "attributes of the nft", new BigUIntType()),
+        new FieldDefinition(
+          "lock_tx_chain",
+          "Chain identifier on which nft was locked",
+          new BytesType(),
+        ),
       ]);
 
       const claimDataArgs = new Struct(structClaimData, [
@@ -501,6 +507,10 @@ export function multiversxHandler({
         new Field(new BigUIntValue(claimData.tokenAmount), "token_amount"),
         new Field(new BytesValue(Buffer.from(claimData.nftType)), "nft_type"),
         new Field(new BigUIntValue(claimData.fee), "fee"),
+        new Field(
+          new BytesValue(Buffer.from(claimData.lockTxChain)),
+          "lock_tx_chain",
+        ),
       ]);
       const data = [
         claimDataArgs,
