@@ -96,8 +96,8 @@ export function aptosHandler({
         nftType: Buffer.from(input.nftType),
         metadata: input.metadata,
         lockTxChain: Buffer.from(input.lockTxChain),
-        signatures: [],
-        publicKeys: [],
+        signatures: [], // TODO: Implement this
+        publicKeys: [], // TODO: Implement this
       };
     },
     approveNft() {
@@ -152,7 +152,7 @@ export function aptosHandler({
       };
       try {
         data = await this.nftData(
-          hexStringToUtf8(event.data.source_nft_contract_address),
+          hexStringToUtf8(event.data.collection_address),
           "",
           undefined,
         );
@@ -161,7 +161,7 @@ export function aptosHandler({
         tokenAmount: event.data.token_amount,
         sourceChain: hexStringToUtf8(event.data.self_chain),
         sourceNftContractAddress: hexStringToUtf8(
-          event.data.source_nft_contract_address,
+          event.data.collection_address,
         ),
         tokenId: event.data.token_id,
         destinationChain: hexStringToUtf8(event.data.destination_chain),
@@ -216,7 +216,7 @@ export function aptosHandler({
     async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
       const lock = await bc.lock721(
         signer,
-        HexString.ensure(tokenId.toString()),
+        HexString.ensure(tokenId.toString()), // ?We need to provide tokenAddress here.
         Buffer.from(destinationChain),
         to,
         HexString.ensure(sourceNft),
@@ -231,7 +231,7 @@ export function aptosHandler({
     async lockSft(signer, sourceNft, destinationChain, to, tokenId, amount) {
       const lock = await bc.lock1155(
         signer,
-        HexString.ensure(tokenId.toString()),
+        HexString.ensure(tokenId.toString()), // ?We need to provide tokenAddress here.
         Buffer.from(destinationChain),
         to,
         HexString.ensure(sourceNft),
