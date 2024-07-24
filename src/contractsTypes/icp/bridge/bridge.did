@@ -1,9 +1,11 @@
 type XPBridge = 
  service {
+   acceptCycles: () -> ();
    add_validator: (record {
                      text;
                      principal;
                    }, vec SignerAndSignature) -> ();
+   availableCycles: () -> (nat) query;
    claim_nft: (ClaimData, vec SignerAndSignature) -> (text);
    claim_validator_rewards: (text, vec SignerAndSignature) -> ();
    get_claimed_data: (text) -> (opt ClaimedEvent) query;
@@ -29,6 +31,7 @@ type LockedEvent =
  };
 type ClaimedEvent = 
  record {
+   lock_tx_chain: text;
    nft_contract: principal;
    source_chain: text;
    token_id: nat;
@@ -39,6 +42,7 @@ type ClaimData =
    destination_chain: text;
    destination_user_address: principal;
    fee: nat64;
+   lock_tx_chain: text;
    metadata: text;
    name: text;
    nft_type: text;

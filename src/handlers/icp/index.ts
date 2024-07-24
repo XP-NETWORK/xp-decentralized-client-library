@@ -205,6 +205,7 @@ export async function icpHandler({
         source_chain: ev.source_chain,
         token_id: ev.token_id.toString(),
         transaction_hash: ev.transaction_hash.toString(),
+        lock_tx_chain: ev.lock_tx_chain,
       };
     },
     transform(input) {

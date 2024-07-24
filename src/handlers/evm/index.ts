@@ -54,6 +54,7 @@ export function evmHandler({
         source_chain: claimed.args.sourceChain,
         token_id: claimed.args.tokenId,
         transaction_hash: claimed.args.transactionHash,
+        lock_tx_chain: claimed.args.lockTxChain,
       };
     },
     async readClaimed1155Event(hash) {
@@ -82,6 +83,7 @@ export function evmHandler({
         token_id: claimed.args.tokenId,
         transaction_hash: claimed.args.transactionHash,
         amount: claimed.args.amount,
+        lock_tx_chain: claimed.args.lockTxChain,
       };
     },
     async deployCollection(signer, da, ga) {

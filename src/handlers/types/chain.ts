@@ -127,6 +127,7 @@ export type TNFTData = {
 };
 
 export type Claimed721Event = {
+  lock_tx_chain: string;
   transaction_hash: string;
   source_chain: string;
   token_id: string;

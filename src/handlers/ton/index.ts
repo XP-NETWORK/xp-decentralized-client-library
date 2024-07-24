@@ -131,12 +131,14 @@ export function tonHandler({
               tokenId,
               sourceChain,
               transactionHash,
+              lockTxChain,
             } = loadClaimedEvent(msg.body.asSlice());
             return {
               nft_contract: newlyDeployCollection.toString(),
               source_chain: sourceChain,
               token_id: tokenId.toString(),
               transaction_hash: transactionHash,
+              lock_tx_chain: lockTxChain,
             };
           }
         }

@@ -297,8 +297,14 @@ export function secretHandler({
           ?.attributes.find((item) => item.key === eventId) ??
         raise("Log not found");
 
-      const { amount, nft_contract, source_chain, transaction_hash, token_id } =
-        JSON.parse(log.value);
+      const {
+        amount,
+        nft_contract,
+        source_chain,
+        transaction_hash,
+        token_id,
+        lock_tx_chain,
+      } = JSON.parse(log.value);
 
       return {
         amount: BigInt(amount),
@@ -306,6 +312,7 @@ export function secretHandler({
         source_chain,
         token_id,
         transaction_hash,
+        lock_tx_chain,
       };
     },
     async readClaimed721Event(txHash) {
@@ -321,14 +328,20 @@ export function secretHandler({
           ?.attributes.find((item) => item.key === eventId) ??
         raise("Log not found");
 
-      const { nft_contract, source_chain, transaction_hash, token_id } =
-        JSON.parse(log.value);
+      const {
+        nft_contract,
+        source_chain,
+        transaction_hash,
+        token_id,
+        lock_tx_chain,
+      } = JSON.parse(log.value);
 
       return {
         nft_contract,
         source_chain,
         token_id,
         transaction_hash,
+        lock_tx_chain,
       };
     },
     async approveNft(signer, tokenId, contract, extraArgs) {

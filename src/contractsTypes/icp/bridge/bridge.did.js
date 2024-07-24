@@ -6,6 +6,7 @@ export const idlFactory = ({ IDL }) => {
   const ClaimData = IDL.Record({
     'fee' : IDL.Nat64,
     'source_chain' : IDL.Text,
+    'lock_tx_chain' : IDL.Text,
     'transaction_hash' : IDL.Text,
     'token_amount' : IDL.Nat,
     'destination_chain' : IDL.Text,
@@ -21,6 +22,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const ClaimedEvent = IDL.Record({
     'source_chain' : IDL.Text,
+    'lock_tx_chain' : IDL.Text,
     'transaction_hash' : IDL.Text,
     'token_id' : IDL.Nat,
     'nft_contract' : IDL.Principal,
@@ -35,11 +37,13 @@ export const idlFactory = ({ IDL }) => {
     'destination_user_address' : IDL.Text,
   });
   const XPBridge = IDL.Service({
+    'acceptCycles' : IDL.Func([], [], []),
     'add_validator' : IDL.Func(
         [IDL.Tuple(IDL.Text, IDL.Principal), IDL.Vec(SignerAndSignature)],
         [],
         [],
       ),
+    'availableCycles' : IDL.Func([], [IDL.Nat], ['query']),
     'claim_nft' : IDL.Func(
         [ClaimData, IDL.Vec(SignerAndSignature)],
         [IDL.Text],

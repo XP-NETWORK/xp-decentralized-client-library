@@ -75,6 +75,7 @@ export function hederaHandler({
         source_chain: claimed.args.sourceChain,
         token_id: claimed.args.emittedTokenId,
         transaction_hash: claimed.args.transactionHash,
+        lock_tx_chain: claimed.args.lockTxChain,
       };
     },
     async associateTokens(wallet) {

@@ -105,6 +105,7 @@ export async function cosmWasmHandler({
         source_chain: data.source_chain,
         transaction_hash: data.transaction_hash,
         token_id: data.token_id,
+        lock_tx_chain: data.lock_tx_chain,
       };
     },
     getProvider() {

@@ -423,6 +423,7 @@ export function tezosHandler({
         transaction_hash: data.tx_hash,
         token_id: data.token_id,
         source_chain: data.source_chain,
+        lock_tx_chain: data.lock_tx_chain,
       };
     },
     async nftData(tokenId, contract) {

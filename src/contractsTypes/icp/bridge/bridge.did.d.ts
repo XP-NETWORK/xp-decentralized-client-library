@@ -5,6 +5,7 @@ import type { IDL } from '@dfinity/candid';
 export interface ClaimData {
   'fee' : bigint,
   'source_chain' : string,
+  'lock_tx_chain' : string,
   'transaction_hash' : string,
   'token_amount' : bigint,
   'destination_chain' : string,
@@ -20,6 +21,7 @@ export interface ClaimData {
 }
 export interface ClaimedEvent {
   'source_chain' : string,
+  'lock_tx_chain' : string,
   'transaction_hash' : string,
   'token_id' : bigint,
   'nft_contract' : Principal,
@@ -35,10 +37,12 @@ export interface LockedEvent {
 }
 export interface SignerAndSignature { 'signature' : string, 'signer' : string }
 export interface XPBridge {
+  'acceptCycles' : ActorMethod<[], undefined>,
   'add_validator' : ActorMethod<
     [[string, Principal], Array<SignerAndSignature>],
     undefined
   >,
+  'availableCycles' : ActorMethod<[], bigint>,
   'claim_nft' : ActorMethod<[ClaimData, Array<SignerAndSignature>], string>,
   'claim_validator_rewards' : ActorMethod<
     [string, Array<SignerAndSignature>],
