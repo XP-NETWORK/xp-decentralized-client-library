@@ -1,6 +1,6 @@
-import { Cell, Slice, Address, Builder, Dictionary, ContractProvider, Sender, Contract, ContractABI } from '@ton/core';
+import { Cell, Slice, Address, Builder, Dictionary, ContractProvider, Sender, Contract, ContractABI } from "@ton/core";
 export type StateInit = {
-    $$type: 'StateInit';
+    $$type: "StateInit";
     code: Cell;
     data: Cell;
 };
@@ -11,7 +11,7 @@ export declare function loadStateInit(slice: Slice): {
     data: Cell;
 };
 export type Context = {
-    $$type: 'Context';
+    $$type: "Context";
     bounced: boolean;
     sender: Address;
     value: bigint;
@@ -26,7 +26,7 @@ export declare function loadContext(slice: Slice): {
     raw: Cell;
 };
 export type SendParameters = {
-    $$type: 'SendParameters';
+    $$type: "SendParameters";
     bounce: boolean;
     to: Address;
     value: bigint;
@@ -47,7 +47,7 @@ export declare function loadSendParameters(slice: Slice): {
     data: Cell | null;
 };
 export type Deploy = {
-    $$type: 'Deploy';
+    $$type: "Deploy";
     queryId: bigint;
 };
 export declare function storeDeploy(src: Deploy): (builder: Builder) => void;
@@ -56,7 +56,7 @@ export declare function loadDeploy(slice: Slice): {
     queryId: bigint;
 };
 export type DeployOk = {
-    $$type: 'DeployOk';
+    $$type: "DeployOk";
     queryId: bigint;
 };
 export declare function storeDeployOk(src: DeployOk): (builder: Builder) => void;
@@ -65,7 +65,7 @@ export declare function loadDeployOk(slice: Slice): {
     queryId: bigint;
 };
 export type FactoryDeploy = {
-    $$type: 'FactoryDeploy';
+    $$type: "FactoryDeploy";
     queryId: bigint;
     cashback: Address;
 };
@@ -76,7 +76,7 @@ export declare function loadFactoryDeploy(slice: Slice): {
     cashback: Address;
 };
 export type DeployNFT721Storage = {
-    $$type: 'DeployNFT721Storage';
+    $$type: "DeployNFT721Storage";
     collectionAddress: Address;
     isOriginal: boolean;
     key: bigint;
@@ -101,13 +101,15 @@ export declare function loadDeployNFT721Storage(slice: Slice): {
     nftItemAddress: Address;
 };
 export type DeployNFT721Collection = {
-    $$type: 'DeployNFT721Collection';
+    $$type: "DeployNFT721Collection";
     collection_content: Cell;
     royalty_params: RoyaltyParams;
     destination_user_address: Address;
     source_chain: string;
     transaction_hash: string;
     metadata: Cell;
+    token_id: bigint;
+    lockTxChain: string;
 };
 export declare function storeDeployNFT721Collection(src: DeployNFT721Collection): (builder: Builder) => void;
 export declare function loadDeployNFT721Collection(slice: Slice): {
@@ -123,9 +125,11 @@ export declare function loadDeployNFT721Collection(slice: Slice): {
     source_chain: string;
     transaction_hash: string;
     metadata: Cell;
+    token_id: bigint;
+    lockTxChain: string;
 };
 export type CreatedCollection = {
-    $$type: 'CreatedCollection';
+    $$type: "CreatedCollection";
     collectionAddress: Address;
 };
 export declare function storeCreatedCollection(src: CreatedCollection): (builder: Builder) => void;
@@ -134,7 +138,7 @@ export declare function loadCreatedCollection(slice: Slice): {
     collectionAddress: Address;
 };
 export type UnlockToken = {
-    $$type: 'UnlockToken';
+    $$type: "UnlockToken";
     to: Address;
     token_id: bigint;
 };
@@ -145,7 +149,7 @@ export declare function loadUnlockToken(slice: Slice): {
     token_id: bigint;
 };
 export type GetRoyaltyParams = {
-    $$type: 'GetRoyaltyParams';
+    $$type: "GetRoyaltyParams";
     query_id: bigint;
 };
 export declare function storeGetRoyaltyParams(src: GetRoyaltyParams): (builder: Builder) => void;
@@ -154,7 +158,7 @@ export declare function loadGetRoyaltyParams(slice: Slice): {
     query_id: bigint;
 };
 export type ReportRoyaltyParams = {
-    $$type: 'ReportRoyaltyParams';
+    $$type: "ReportRoyaltyParams";
     query_id: bigint;
     numerator: bigint;
     denominator: bigint;
@@ -169,7 +173,7 @@ export declare function loadReportRoyaltyParams(slice: Slice): {
     destination: Address;
 };
 export type CollectionData = {
-    $$type: 'CollectionData';
+    $$type: "CollectionData";
     next_item_index: bigint;
     collection_content: Cell;
     owner_address: Address;
@@ -182,7 +186,7 @@ export declare function loadCollectionData(slice: Slice): {
     owner_address: Address;
 };
 export type RoyaltyParams = {
-    $$type: 'RoyaltyParams';
+    $$type: "RoyaltyParams";
     numerator: bigint;
     denominator: bigint;
     destination: Address;
@@ -195,7 +199,7 @@ export declare function loadRoyaltyParams(slice: Slice): {
     destination: Address;
 };
 export type Transfer = {
-    $$type: 'Transfer';
+    $$type: "Transfer";
     query_id: bigint;
     new_owner: Address;
     response_destination: Address;
@@ -214,7 +218,7 @@ export declare function loadTransfer(slice: Slice): {
     forward_payload: Cell;
 };
 export type OwnershipAssigned = {
-    $$type: 'OwnershipAssigned';
+    $$type: "OwnershipAssigned";
     query_id: bigint;
     prev_owner: Address;
     forward_payload: Cell;
@@ -227,7 +231,7 @@ export declare function loadOwnershipAssigned(slice: Slice): {
     forward_payload: Cell;
 };
 export type Excesses = {
-    $$type: 'Excesses';
+    $$type: "Excesses";
     query_id: bigint;
 };
 export declare function storeExcesses(src: Excesses): (builder: Builder) => void;
@@ -236,7 +240,7 @@ export declare function loadExcesses(slice: Slice): {
     query_id: bigint;
 };
 export type GetStaticData = {
-    $$type: 'GetStaticData';
+    $$type: "GetStaticData";
     query_id: bigint;
 };
 export declare function storeGetStaticData(src: GetStaticData): (builder: Builder) => void;
@@ -245,7 +249,7 @@ export declare function loadGetStaticData(slice: Slice): {
     query_id: bigint;
 };
 export type ReportStaticData = {
-    $$type: 'ReportStaticData';
+    $$type: "ReportStaticData";
     query_id: bigint;
     index_id: bigint;
     collection: Address;
@@ -258,7 +262,7 @@ export declare function loadReportStaticData(slice: Slice): {
     collection: Address;
 };
 export type GetNftData = {
-    $$type: 'GetNftData';
+    $$type: "GetNftData";
     is_initialized: boolean;
     index: bigint;
     collection_address: Address;
@@ -275,7 +279,7 @@ export declare function loadGetNftData(slice: Slice): {
     individual_content: Cell;
 };
 export type HiFromDeployNFT721Storage = {
-    $$type: 'HiFromDeployNFT721Storage';
+    $$type: "HiFromDeployNFT721Storage";
     sourceNftContractAddress: Address;
     storageAddress: Address;
     isOriginal: boolean;
@@ -302,11 +306,12 @@ export declare function loadHiFromDeployNFT721Storage(slice: Slice): {
     nftItemAddress: Address;
 };
 export type HiFromDeployNFT721Collection = {
-    $$type: 'HiFromDeployNFT721Collection';
+    $$type: "HiFromDeployNFT721Collection";
     tokenId: bigint;
     newlyDeployCollection: Address;
     sourceChain: string;
     transactionHash: string;
+    lockTxChain: string;
 };
 export declare function storeHiFromDeployNFT721Collection(src: HiFromDeployNFT721Collection): (builder: Builder) => void;
 export declare function loadHiFromDeployNFT721Collection(slice: Slice): {
@@ -315,20 +320,23 @@ export declare function loadHiFromDeployNFT721Collection(slice: Slice): {
     newlyDeployCollection: Address;
     sourceChain: string;
     transactionHash: string;
+    lockTxChain: string;
 };
 export type CollectionDeploy = {
-    $$type: 'CollectionDeploy';
+    $$type: "CollectionDeploy";
     newOwner: Address;
     metadata: Cell;
+    token_id: bigint;
 };
 export declare function storeCollectionDeploy(src: CollectionDeploy): (builder: Builder) => void;
 export declare function loadCollectionDeploy(slice: Slice): {
     $$type: "CollectionDeploy";
     newOwner: Address;
     metadata: Cell;
+    token_id: bigint;
 };
 export type StorageDeploy = {
-    $$type: 'StorageDeploy';
+    $$type: "StorageDeploy";
     sourceNftContractAddress: Address;
     isOriginal: boolean;
     key: bigint;
@@ -353,7 +361,7 @@ export declare function loadStorageDeploy(slice: Slice): {
     nftItemAddress: Address;
 };
 export type MintOne = {
-    $$type: 'MintOne';
+    $$type: "MintOne";
     new_owner: Address;
     content: Cell;
 };
@@ -364,7 +372,7 @@ export declare function loadMintOne(slice: Slice): {
     content: Cell;
 };
 export type Mint = {
-    $$type: 'Mint';
+    $$type: "Mint";
     token_id: bigint;
     owner: Address;
     content: Cell;
@@ -377,7 +385,7 @@ export declare function loadMint(slice: Slice): {
     content: Cell;
 };
 export type Validator = {
-    $$type: 'Validator';
+    $$type: "Validator";
     address: Address;
     added: boolean;
     pendingRewards: bigint;
@@ -390,7 +398,7 @@ export declare function loadValidator(slice: Slice): {
     pendingRewards: bigint;
 };
 export type SignerAndSignature = {
-    $$type: 'SignerAndSignature';
+    $$type: "SignerAndSignature";
     signature: Cell;
     key: bigint;
 };
@@ -401,7 +409,7 @@ export declare function loadSignerAndSignature(slice: Slice): {
     key: bigint;
 };
 export type NewValidator = {
-    $$type: 'NewValidator';
+    $$type: "NewValidator";
     key: bigint;
 };
 export declare function storeNewValidator(src: NewValidator): (builder: Builder) => void;
@@ -410,7 +418,7 @@ export declare function loadNewValidator(slice: Slice): {
     key: bigint;
 };
 export type ValidatorsToRewards = {
-    $$type: 'ValidatorsToRewards';
+    $$type: "ValidatorsToRewards";
     addresses: Dictionary<bigint, Address>;
     publicKeys: Dictionary<bigint, bigint>;
     len: bigint;
@@ -423,7 +431,7 @@ export declare function loadValidatorsToRewards(slice: Slice): {
     len: bigint;
 };
 export type DuplicateToOriginalContractInfo = {
-    $$type: 'DuplicateToOriginalContractInfo';
+    $$type: "DuplicateToOriginalContractInfo";
     keyChain: string;
     chain: string;
     contractAddress: Cell;
@@ -440,7 +448,7 @@ export declare function loadDuplicateToOriginalContractInfo(slice: Slice): {
     collectionContent: Cell;
 };
 export type OriginalToDuplicateContractInfo = {
-    $$type: 'OriginalToDuplicateContractInfo';
+    $$type: "OriginalToDuplicateContractInfo";
     keyChain: string;
     chain: string;
     contractAddress: Address;
@@ -457,7 +465,7 @@ export declare function loadOriginalToDuplicateContractInfo(slice: Slice): {
     collectionContent: Cell;
 };
 export type ClaimData1 = {
-    $$type: 'ClaimData1';
+    $$type: "ClaimData1";
     tokenId: bigint;
     sourceChain: string;
     destinationChain: string;
@@ -474,7 +482,7 @@ export declare function loadClaimData1(slice: Slice): {
     tokenAmount: bigint;
 };
 export type ClaimData2 = {
-    $$type: 'ClaimData2';
+    $$type: "ClaimData2";
     name: string;
     symbol: string;
     nftType: string;
@@ -487,7 +495,7 @@ export declare function loadClaimData2(slice: Slice): {
     nftType: string;
 };
 export type ClaimData3 = {
-    $$type: 'ClaimData3';
+    $$type: "ClaimData3";
     fee: bigint;
     sourceNftContractAddress: Cell;
     royaltyReceiver: Address;
@@ -502,10 +510,11 @@ export declare function loadClaimData3(slice: Slice): {
     metadata: Cell;
 };
 export type ClaimData4 = {
-    $$type: 'ClaimData4';
+    $$type: "ClaimData4";
     newContent: Cell;
     transactionHash: string;
     royalty: RoyaltyParams;
+    lockTxChain: string;
 };
 export declare function storeClaimData4(src: ClaimData4): (builder: Builder) => void;
 export declare function loadClaimData4(slice: Slice): {
@@ -518,9 +527,10 @@ export declare function loadClaimData4(slice: Slice): {
         denominator: bigint;
         destination: Address;
     };
+    lockTxChain: string;
 };
 export type ClaimData = {
-    $$type: 'ClaimData';
+    $$type: "ClaimData";
     data1: ClaimData1;
     data2: ClaimData2;
     data3: ClaimData3;
@@ -560,10 +570,11 @@ export declare function loadClaimData(slice: Slice): {
             denominator: bigint;
             destination: Address;
         };
+        lockTxChain: string;
     };
 };
 export type Token = {
-    $$type: 'Token';
+    $$type: "Token";
     tokenId: bigint;
     chain: string;
     contractAddress: Cell;
@@ -576,7 +587,7 @@ export declare function loadToken(slice: Slice): {
     contractAddress: Cell;
 };
 export type AddValidator = {
-    $$type: 'AddValidator';
+    $$type: "AddValidator";
     newValidatorPublicKey: NewValidator;
     newValidatorAddress: Address;
     sigs: Dictionary<bigint, SignerAndSignature>;
@@ -594,7 +605,7 @@ export declare function loadAddValidator(slice: Slice): {
     len: bigint;
 };
 export type RewardValidator = {
-    $$type: 'RewardValidator';
+    $$type: "RewardValidator";
     validator: NewValidator;
     sigs: Dictionary<bigint, SignerAndSignature>;
     len: bigint;
@@ -610,7 +621,7 @@ export declare function loadRewardValidator(slice: Slice): {
     len: bigint;
 };
 export type Lock721 = {
-    $$type: 'Lock721';
+    $$type: "Lock721";
     tokenId: bigint;
     destinationChain: Cell;
     destinationUserAddress: Cell;
@@ -625,7 +636,7 @@ export declare function loadLock721(slice: Slice): {
     sourceNftContractAddress: Address;
 };
 export type ClaimNFT721 = {
-    $$type: 'ClaimNFT721';
+    $$type: "ClaimNFT721";
     data: ClaimData;
     signatures: Dictionary<bigint, SignerAndSignature>;
     len: bigint;
@@ -666,13 +677,14 @@ export declare function loadClaimNFT721(slice: Slice): {
                 denominator: bigint;
                 destination: Address;
             };
+            lockTxChain: string;
         };
     };
     signatures: Dictionary<bigint, SignerAndSignature>;
     len: bigint;
 };
 export type StakeEvent = {
-    $$type: 'StakeEvent';
+    $$type: "StakeEvent";
     amount: bigint;
     asd: string;
 };
@@ -683,7 +695,7 @@ export declare function loadStakeEvent(slice: Slice): {
     asd: string;
 };
 export type AddNewValidatorEvent = {
-    $$type: 'AddNewValidatorEvent';
+    $$type: "AddNewValidatorEvent";
     validator: bigint;
 };
 export declare function storeAddNewValidatorEvent(src: AddNewValidatorEvent): (builder: Builder) => void;
@@ -692,7 +704,7 @@ export declare function loadAddNewValidatorEvent(slice: Slice): {
     validator: bigint;
 };
 export type RewardValidatorEvent = {
-    $$type: 'RewardValidatorEvent';
+    $$type: "RewardValidatorEvent";
     validator: bigint;
 };
 export declare function storeRewardValidatorEvent(src: RewardValidatorEvent): (builder: Builder) => void;
@@ -701,7 +713,7 @@ export declare function loadRewardValidatorEvent(slice: Slice): {
     validator: bigint;
 };
 export type LockedEvent = {
-    $$type: 'LockedEvent';
+    $$type: "LockedEvent";
     tokenId: bigint;
     destinationChain: Cell;
     destinationUserAddress: Cell;
@@ -722,7 +734,7 @@ export declare function loadLockedEvent(slice: Slice): {
     sourceChain: string;
 };
 export type UnLock721Event = {
-    $$type: 'UnLock721Event';
+    $$type: "UnLock721Event";
     to: Address;
     tokenId: bigint;
     contractAddress: Address;
@@ -735,7 +747,8 @@ export declare function loadUnLock721Event(slice: Slice): {
     contractAddress: Address;
 };
 export type ClaimedEvent = {
-    $$type: 'ClaimedEvent';
+    $$type: "ClaimedEvent";
+    lockTxChain: string;
     tokenId: bigint;
     newlyDeployCollection: Address;
     sourceChain: string;
@@ -744,6 +757,7 @@ export type ClaimedEvent = {
 export declare function storeClaimedEvent(src: ClaimedEvent): (builder: Builder) => void;
 export declare function loadClaimedEvent(slice: Slice): {
     $$type: "ClaimedEvent";
+    lockTxChain: string;
     tokenId: bigint;
     newlyDeployCollection: Address;
     sourceChain: string;
@@ -766,7 +780,7 @@ export declare class Bridge implements Contract {
     send(provider: ContractProvider, via: Sender, args: {
         value: bigint;
         bounce?: boolean | null | undefined;
-    }, message: Excesses | 'Deploy' | AddValidator | RewardValidator | HiFromDeployNFT721Storage | HiFromDeployNFT721Collection | OwnershipAssigned | ClaimNFT721): Promise<void>;
+    }, message: Excesses | "Deploy" | AddValidator | RewardValidator | HiFromDeployNFT721Storage | HiFromDeployNFT721Collection | OwnershipAssigned | ClaimNFT721 | null): Promise<void>;
     getOriginal721Mapping(provider: ContractProvider, sourceNftContractAddress: Address, sourceChain: string): Promise<Address | null>;
     getDuplicate721Mapping(provider: ContractProvider, contractAddress: Address): Promise<Address | null>;
     getOriginalToDuplicate(provider: ContractProvider, sourceNftContractAddress: string, sourceChain: string): Promise<{
