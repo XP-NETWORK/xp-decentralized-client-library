@@ -48,8 +48,12 @@ export function tonHandler({
   );
 
   async function getLastBridgeTxHashInBase64() {
-    const txns = await client.getTransactions(bridge.address, { limit: 1 });
-    return txns[0].hash().toString("base64");
+    try {
+      const txns = await client.getTransactions(bridge.address, { limit: 1 });
+      return txns[0].hash().toString("base64");
+    } catch (ex) {
+      return "null";
+    }
   }
 
   return {
