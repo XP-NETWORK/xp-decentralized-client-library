@@ -1,3 +1,4 @@
+import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
 import { TAptosParams } from "../handlers/aptos/types";
@@ -52,6 +53,13 @@ export declare namespace ChainFactoryConfigs {
             provider: JsonRpcProvider;
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        tezosParams: {
+            bridge: string;
+            identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+            Tezos: TezosToolkit;
+            tzktApi: string;
         };
     };
     function MainNet(): {
