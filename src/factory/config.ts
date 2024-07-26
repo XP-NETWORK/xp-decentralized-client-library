@@ -1,3 +1,4 @@
+import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
@@ -69,6 +70,13 @@ export namespace ChainFactoryConfigs {
         ),
         royaltySalePrice: 10000,
         storage,
+      },
+      tezosParams: {
+        bridge: "KT1UGfH2Hk2MVKt8ADqqkRqcGZussRnfpahV",
+        identifier: "TEZOS",
+        storage,
+        Tezos: new TezosToolkit("https://ghostnet.smartpy.io"),
+        tzktApi: "https://api.ghostnet.tzkt.io/",
       },
     } satisfies Partial<TChainParams>;
   }
