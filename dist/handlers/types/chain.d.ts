@@ -23,7 +23,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockNft: (signer: Signer, sourceNft: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, extraArgs?: ExtraArgs) => Promise<{
+    lockNft: (signer: Signer, sourceNft: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, metaDataUri: string, extraArgs?: ExtraArgs) => Promise<{
         ret: RetTx;
         hash: () => string;
     }>;
@@ -182,7 +182,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, extraArgs?: ExtraArgs) => Promise<{
+    lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, metaDataUri: string, extraArgs?: ExtraArgs) => Promise<{
         tx: RetTx;
         hash: () => string;
     }>;

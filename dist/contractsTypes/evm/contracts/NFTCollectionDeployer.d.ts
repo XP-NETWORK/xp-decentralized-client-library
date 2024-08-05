@@ -1,12 +1,14 @@
 import type { BaseContract, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface NFTCollectionDeployerInterface extends Interface {
-    getFunction(nameOrSignature: "deployNFT1155Collection" | "deployNFT721Collection" | "owner" | "setOwner"): FunctionFragment;
+    getFunction(nameOrSignature: "bridge" | "deployNFT1155Collection" | "deployNFT721Collection" | "owner" | "setOwner"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "CreatedCollection"): EventFragment;
+    encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
     encodeFunctionData(functionFragment: "deployNFT1155Collection", values?: undefined): string;
     encodeFunctionData(functionFragment: "deployNFT721Collection", values: [string, string]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-    encodeFunctionData(functionFragment: "setOwner", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "setOwner", values: [AddressLike, AddressLike]): string;
+    decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deployNFT1155Collection", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deployNFT721Collection", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -36,6 +38,7 @@ export interface NFTCollectionDeployer extends BaseContract {
     listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
     listeners(eventName?: string): Promise<Array<Listener>>;
     removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+    bridge: TypedContractMethod<[], [string], "view">;
     deployNFT1155Collection: TypedContractMethod<[], [string], "nonpayable">;
     deployNFT721Collection: TypedContractMethod<[
         name: string,
@@ -44,8 +47,14 @@ export interface NFTCollectionDeployer extends BaseContract {
         string
     ], "nonpayable">;
     owner: TypedContractMethod<[], [string], "view">;
-    setOwner: TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+    setOwner: TypedContractMethod<[
+        _owner: AddressLike,
+        _bridge: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+    getFunction(nameOrSignature: "bridge"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "deployNFT1155Collection"): TypedContractMethod<[], [string], "nonpayable">;
     getFunction(nameOrSignature: "deployNFT721Collection"): TypedContractMethod<[
         name: string,
@@ -54,7 +63,12 @@ export interface NFTCollectionDeployer extends BaseContract {
         string
     ], "nonpayable">;
     getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
-    getFunction(nameOrSignature: "setOwner"): TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "setOwner"): TypedContractMethod<[
+        _owner: AddressLike,
+        _bridge: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     getEvent(key: "CreatedCollection"): TypedContractEvent<CreatedCollectionEvent.InputTuple, CreatedCollectionEvent.OutputTuple, CreatedCollectionEvent.OutputObject>;
     filters: {
         "CreatedCollection(address)": TypedContractEvent<CreatedCollectionEvent.InputTuple, CreatedCollectionEvent.OutputTuple, CreatedCollectionEvent.OutputObject>;

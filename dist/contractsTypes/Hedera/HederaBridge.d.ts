@@ -70,11 +70,11 @@ export interface HederaBridgeInterface extends Interface {
     encodeFunctionData(functionFragment: "MAX_INT", values?: undefined): string;
     encodeFunctionData(functionFragment: "addValidator", values: [AddressLike, SignerAndSignatureStruct[]]): string;
     encodeFunctionData(functionFragment: "claimNFT721", values: [HederaBridge.ClaimDataStruct, BytesLike[]]): string;
-    encodeFunctionData(functionFragment: "claimValidatorRewards", values: [AddressLike, BytesLike[]]): string;
+    encodeFunctionData(functionFragment: "claimValidatorRewards", values: [AddressLike]): string;
     encodeFunctionData(functionFragment: "duplicateStorageMapping721", values: [string, string]): string;
     encodeFunctionData(functionFragment: "duplicateToOriginalMapping", values: [AddressLike, string]): string;
     encodeFunctionData(functionFragment: "keyToValue", values: [string, string, BigNumberish]): string;
-    encodeFunctionData(functionFragment: "lock721", values: [BigNumberish, string, string, AddressLike]): string;
+    encodeFunctionData(functionFragment: "lock721", values: [BigNumberish, string, string, AddressLike, string]): string;
     encodeFunctionData(functionFragment: "originalStorageMapping721", values: [string, string]): string;
     encodeFunctionData(functionFragment: "originalToDuplicateMapping", values: [string, string]): string;
     encodeFunctionData(functionFragment: "redirectForToken", values: [AddressLike, BytesLike]): string;
@@ -132,18 +132,21 @@ export declare namespace CallResponseEventEvent {
 }
 export declare namespace ClaimedEvent {
     type InputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: AddressLike,
         emittedTokenId: BigNumberish
     ];
     type OutputTuple = [
+        lockTxChain: string,
         sourceChain: string,
         transactionHash: string,
         nftContract: string,
         emittedTokenId: bigint
     ];
     interface OutputObject {
+        lockTxChain: string;
         sourceChain: string;
         transactionHash: string;
         nftContract: string;
@@ -162,7 +165,8 @@ export declare namespace LockedEvent {
         sourceNftContractAddress: string,
         tokenAmount: BigNumberish,
         nftType: string,
-        sourceChain: string
+        sourceChain: string,
+        metaDataUri: string
     ];
     type OutputTuple = [
         tokenId: bigint,
@@ -171,7 +175,8 @@ export declare namespace LockedEvent {
         sourceNftContractAddress: string,
         tokenAmount: bigint,
         nftType: string,
-        sourceChain: string
+        sourceChain: string,
+        metaDataUri: string
     ];
     interface OutputObject {
         tokenId: bigint;
@@ -181,6 +186,7 @@ export declare namespace LockedEvent {
         tokenAmount: bigint;
         nftType: string;
         sourceChain: string;
+        metaDataUri: string;
     }
     type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
     type Filter = TypedDeferredTopicFilter<Event>;
@@ -255,8 +261,7 @@ export interface HederaBridge extends BaseContract {
         void
     ], "payable">;
     claimValidatorRewards: TypedContractMethod<[
-        _validator: AddressLike,
-        signatures: BytesLike[]
+        _validator: AddressLike
     ], [
         void
     ], "nonpayable">;
@@ -296,7 +301,8 @@ export interface HederaBridge extends BaseContract {
         tokenId: BigNumberish,
         destinationChain: string,
         destinationUserAddress: string,
-        sourceNftContractAddress: AddressLike
+        sourceNftContractAddress: AddressLike,
+        metaDataUri: string
     ], [
         void
     ], "nonpayable">;
@@ -384,12 +390,7 @@ export interface HederaBridge extends BaseContract {
     ], [
         void
     ], "payable">;
-    getFunction(nameOrSignature: "claimValidatorRewards"): TypedContractMethod<[
-        _validator: AddressLike,
-        signatures: BytesLike[]
-    ], [
-        void
-    ], "nonpayable">;
+    getFunction(nameOrSignature: "claimValidatorRewards"): TypedContractMethod<[_validator: AddressLike], [void], "nonpayable">;
     getFunction(nameOrSignature: "duplicateStorageMapping721"): TypedContractMethod<[arg0: string, arg1: string], [string], "view">;
     getFunction(nameOrSignature: "duplicateToOriginalMapping"): TypedContractMethod<[
         arg0: AddressLike,
@@ -421,7 +422,8 @@ export interface HederaBridge extends BaseContract {
         tokenId: BigNumberish,
         destinationChain: string,
         destinationUserAddress: string,
-        sourceNftContractAddress: AddressLike
+        sourceNftContractAddress: AddressLike,
+        metaDataUri: string
     ], [
         void
     ], "nonpayable">;
@@ -501,9 +503,9 @@ export interface HederaBridge extends BaseContract {
         AddNewValidator: TypedContractEvent<AddNewValidatorEvent.InputTuple, AddNewValidatorEvent.OutputTuple, AddNewValidatorEvent.OutputObject>;
         "CallResponseEvent(bool,bytes)": TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
         CallResponseEvent: TypedContractEvent<CallResponseEventEvent.InputTuple, CallResponseEventEvent.OutputTuple, CallResponseEventEvent.OutputObject>;
-        "Claimed(string,string,address,uint256)": TypedContractEvent<ClaimedEvent.InputTuple, ClaimedEvent.OutputTuple, ClaimedEvent.OutputObject>;
+        "Claimed(string,string,string,address,uint256)": TypedContractEvent<ClaimedEvent.InputTuple, ClaimedEvent.OutputTuple, ClaimedEvent.OutputObject>;
         Claimed: TypedContractEvent<ClaimedEvent.InputTuple, ClaimedEvent.OutputTuple, ClaimedEvent.OutputObject>;
-        "Locked(uint256,string,string,string,uint256,string,string)": TypedContractEvent<LockedEvent.InputTuple, LockedEvent.OutputTuple, LockedEvent.OutputObject>;
+        "Locked(uint256,string,string,string,uint256,string,string,string)": TypedContractEvent<LockedEvent.InputTuple, LockedEvent.OutputTuple, LockedEvent.OutputObject>;
         Locked: TypedContractEvent<LockedEvent.InputTuple, LockedEvent.OutputTuple, LockedEvent.OutputObject>;
         "LogHash(bytes32,bytes[])": TypedContractEvent<LogHashEvent.InputTuple, LogHashEvent.OutputTuple, LogHashEvent.OutputObject>;
         LogHash: TypedContractEvent<LogHashEvent.InputTuple, LogHashEvent.OutputTuple, LogHashEvent.OutputObject>;

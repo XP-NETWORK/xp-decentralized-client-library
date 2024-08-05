@@ -67,6 +67,7 @@ export type { ERC20Token } from "./contracts/ERC20Token";
 export { ERC20Token__factory } from "./factories/contracts/ERC20Token__factory";
 export type { ERC721Royalty } from "./contracts/ERC721Royalty";
 export { ERC721Royalty__factory } from "./factories/contracts/ERC721Royalty__factory";
+export type { IERC1155Royalty } from "./contracts/interfaces/IERC1155Royalty";
 export { IERC1155Royalty__factory } from "./factories/contracts/interfaces/IERC1155Royalty__factory";
 export type { INFTCollectionDeployer } from "./contracts/interfaces/INFTCollectionDeployer";
 export { INFTCollectionDeployer__factory } from "./factories/contracts/interfaces/INFTCollectionDeployer__factory";

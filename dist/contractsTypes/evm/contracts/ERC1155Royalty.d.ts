@@ -1,10 +1,11 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface ERC1155RoyaltyInterface extends Interface {
-    getFunction(nameOrSignature: "balanceOf" | "balanceOfBatch" | "isApprovedForAll" | "mint" | "owner" | "renounceOwnership" | "royaltyInfo" | "safeBatchTransferFrom" | "safeTransferFrom" | "setApprovalForAll" | "setTokenURI" | "supportsInterface" | "transferOwnership" | "uri"): FunctionFragment;
+    getFunction(nameOrSignature: "balanceOf" | "balanceOfBatch" | "bridge" | "isApprovedForAll" | "mint" | "owner" | "renounceOwnership" | "royaltyInfo" | "safeBatchTransferFrom" | "safeTransferFrom" | "setApprovalForAll" | "setTokenURI" | "supportsInterface" | "transferOwnership" | "uri"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "ApprovalForAll" | "OwnershipTransferred" | "TransferBatch" | "TransferSingle" | "URI"): EventFragment;
     encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "balanceOfBatch", values: [AddressLike[], BigNumberish[]]): string;
+    encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
     encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "mint", values: [
         AddressLike,
@@ -32,6 +33,7 @@ export interface ERC1155RoyaltyInterface extends Interface {
     encodeFunctionData(functionFragment: "uri", values: [BigNumberish]): string;
     decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "balanceOfBatch", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "isApprovedForAll", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -169,6 +171,7 @@ export interface ERC1155Royalty extends BaseContract {
     ], [
         bigint[]
     ], "view">;
+    bridge: TypedContractMethod<[], [string], "view">;
     isApprovedForAll: TypedContractMethod<[
         account: AddressLike,
         operator: AddressLike
@@ -250,6 +253,7 @@ export interface ERC1155Royalty extends BaseContract {
     ], [
         bigint[]
     ], "view">;
+    getFunction(nameOrSignature: "bridge"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "isApprovedForAll"): TypedContractMethod<[
         account: AddressLike,
         operator: AddressLike

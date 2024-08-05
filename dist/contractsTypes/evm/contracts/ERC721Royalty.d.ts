@@ -1,10 +1,11 @@
 import type { BaseContract, BigNumberish, BytesLike, FunctionFragment, Result, Interface, EventFragment, AddressLike, ContractRunner, ContractMethod, Listener } from "ethers";
 import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, TypedLogDescription, TypedListener, TypedContractMethod } from "../common";
 export interface ERC721RoyaltyInterface extends Interface {
-    getFunction(nameOrSignature: "approve" | "balanceOf" | "getApproved" | "isApprovedForAll" | "mint" | "name" | "owner" | "ownerOf" | "renounceOwnership" | "royaltyInfo" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership"): FunctionFragment;
+    getFunction(nameOrSignature: "approve" | "balanceOf" | "bridge" | "getApproved" | "isApprovedForAll" | "mint" | "name" | "owner" | "ownerOf" | "renounceOwnership" | "royaltyInfo" | "safeTransferFrom(address,address,uint256)" | "safeTransferFrom(address,address,uint256,bytes)" | "setApprovalForAll" | "supportsInterface" | "symbol" | "tokenURI" | "transferFrom" | "transferOwnership"): FunctionFragment;
     getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "BatchMetadataUpdate" | "MetadataUpdate" | "OwnershipTransferred" | "Transfer"): EventFragment;
     encodeFunctionData(functionFragment: "approve", values: [AddressLike, BigNumberish]): string;
     encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
     encodeFunctionData(functionFragment: "getApproved", values: [BigNumberish]): string;
     encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
     encodeFunctionData(functionFragment: "mint", values: [AddressLike, BigNumberish, BigNumberish, AddressLike, string]): string;
@@ -23,6 +24,7 @@ export interface ERC721RoyaltyInterface extends Interface {
     encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
     decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "getApproved", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "isApprovedForAll", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -153,6 +155,7 @@ export interface ERC721Royalty extends BaseContract {
         void
     ], "nonpayable">;
     balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+    bridge: TypedContractMethod<[], [string], "view">;
     getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
     isApprovedForAll: TypedContractMethod<[
         owner: AddressLike,
@@ -230,6 +233,7 @@ export interface ERC721Royalty extends BaseContract {
         void
     ], "nonpayable">;
     getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+    getFunction(nameOrSignature: "bridge"): TypedContractMethod<[], [string], "view">;
     getFunction(nameOrSignature: "getApproved"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
     getFunction(nameOrSignature: "isApprovedForAll"): TypedContractMethod<[
         owner: AddressLike,

@@ -5,7 +5,7 @@ export interface INFTCollectionDeployerInterface extends Interface {
     encodeFunctionData(functionFragment: "deployNFT1155Collection", values?: undefined): string;
     encodeFunctionData(functionFragment: "deployNFT721Collection", values: [string, string]): string;
     encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-    encodeFunctionData(functionFragment: "setOwner", values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: "setOwner", values: [AddressLike, AddressLike]): string;
     decodeFunctionResult(functionFragment: "deployNFT1155Collection", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "deployNFT721Collection", data: BytesLike): Result;
     decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -32,7 +32,12 @@ export interface INFTCollectionDeployer extends BaseContract {
         string
     ], "nonpayable">;
     owner: TypedContractMethod<[], [string], "view">;
-    setOwner: TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+    setOwner: TypedContractMethod<[
+        _owner: AddressLike,
+        _bridge: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
     getFunction(nameOrSignature: "deployNFT1155Collection"): TypedContractMethod<[], [string], "nonpayable">;
     getFunction(nameOrSignature: "deployNFT721Collection"): TypedContractMethod<[
@@ -42,7 +47,12 @@ export interface INFTCollectionDeployer extends BaseContract {
         string
     ], "nonpayable">;
     getFunction(nameOrSignature: "owner"): TypedContractMethod<[], [string], "view">;
-    getFunction(nameOrSignature: "setOwner"): TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+    getFunction(nameOrSignature: "setOwner"): TypedContractMethod<[
+        _owner: AddressLike,
+        _bridge: AddressLike
+    ], [
+        void
+    ], "nonpayable">;
     filters: {};
 }
 //# sourceMappingURL=INFTCollectionDeployer.d.ts.map
