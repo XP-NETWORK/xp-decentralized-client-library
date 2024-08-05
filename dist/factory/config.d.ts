@@ -87,6 +87,12 @@ export declare namespace ChainFactoryConfigs {
             royaltyProxy: string;
             mirrorNodeApi: string;
         };
+        tonParams: {
+            identifier: string;
+            bridgeAddress: string;
+            client: TonClient;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
