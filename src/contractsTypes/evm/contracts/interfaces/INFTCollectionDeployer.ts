@@ -40,7 +40,7 @@ export interface INFTCollectionDeployerInterface extends Interface {
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setOwner",
-    values: [AddressLike]
+    values: [AddressLike, AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -108,7 +108,11 @@ export interface INFTCollectionDeployer extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
-  setOwner: TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+  setOwner: TypedContractMethod<
+    [_owner: AddressLike, _bridge: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -129,7 +133,11 @@ export interface INFTCollectionDeployer extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "setOwner"
-  ): TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_owner: AddressLike, _bridge: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   filters: {};
 }

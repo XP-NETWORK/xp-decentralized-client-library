@@ -91,6 +91,8 @@ export interface BridgeInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "addValidator"
+      | "blackListValidator"
+      | "blackListedValidators"
       | "claimNFT1155"
       | "claimNFT721"
       | "claimValidatorRewards"
@@ -113,6 +115,7 @@ export interface BridgeInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "AddNewValidator"
+      | "BlackListValidator"
       | "Claim1155"
       | "Claimed721"
       | "Locked"
@@ -125,6 +128,14 @@ export interface BridgeInterface extends Interface {
   encodeFunctionData(
     functionFragment: "addValidator",
     values: [AddressLike, SignerAndSignatureStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blackListValidator",
+    values: [AddressLike, SignerAndSignatureStruct[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blackListedValidators",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimNFT1155",
@@ -156,11 +167,11 @@ export interface BridgeInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "lock1155",
-    values: [BigNumberish, string, string, AddressLike, BigNumberish]
+    values: [BigNumberish, string, string, AddressLike, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "lock721",
-    values: [BigNumberish, string, string, AddressLike]
+    values: [BigNumberish, string, string, AddressLike, string]
   ): string;
   encodeFunctionData(
     functionFragment: "originalStorageMapping1155",
@@ -194,6 +205,14 @@ export interface BridgeInterface extends Interface {
 
   decodeFunctionResult(
     functionFragment: "addValidator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "blackListValidator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "blackListedValidators",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -255,6 +274,18 @@ export interface BridgeInterface extends Interface {
 }
 
 export namespace AddNewValidatorEvent {
+  export type InputTuple = [_validator: AddressLike];
+  export type OutputTuple = [_validator: string];
+  export interface OutputObject {
+    _validator: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace BlackListValidatorEvent {
   export type InputTuple = [_validator: AddressLike];
   export type OutputTuple = [_validator: string];
   export interface OutputObject {
@@ -333,7 +364,8 @@ export namespace LockedEvent {
     sourceNftContractAddress: string,
     tokenAmount: BigNumberish,
     nftType: string,
-    sourceChain: string
+    sourceChain: string,
+    metaDataUri: string
   ];
   export type OutputTuple = [
     tokenId: bigint,
@@ -342,7 +374,8 @@ export namespace LockedEvent {
     sourceNftContractAddress: string,
     tokenAmount: bigint,
     nftType: string,
-    sourceChain: string
+    sourceChain: string,
+    metaDataUri: string
   ];
   export interface OutputObject {
     tokenId: bigint;
@@ -352,6 +385,7 @@ export namespace LockedEvent {
     tokenAmount: bigint;
     nftType: string;
     sourceChain: string;
+    metaDataUri: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -476,6 +510,18 @@ export interface Bridge extends BaseContract {
     "nonpayable"
   >;
 
+  blackListValidator: TypedContractMethod<
+    [_validator: AddressLike, signatures: SignerAndSignatureStruct[]],
+    [void],
+    "nonpayable"
+  >;
+
+  blackListedValidators: TypedContractMethod<
+    [arg0: AddressLike],
+    [boolean],
+    "view"
+  >;
+
   claimNFT1155: TypedContractMethod<
     [data: Bridge.ClaimDataStruct, signatures: BytesLike[]],
     [void],
@@ -520,7 +566,8 @@ export interface Bridge extends BaseContract {
       destinationChain: string,
       destinationUserAddress: string,
       sourceNftContractAddress: AddressLike,
-      tokenAmount: BigNumberish
+      tokenAmount: BigNumberish,
+      metaDataUri: string
     ],
     [void],
     "nonpayable"
@@ -531,7 +578,8 @@ export interface Bridge extends BaseContract {
       tokenId: BigNumberish,
       destinationChain: string,
       destinationUserAddress: string,
-      sourceNftContractAddress: AddressLike
+      sourceNftContractAddress: AddressLike,
+      metaDataUri: string
     ],
     [void],
     "nonpayable"
@@ -581,6 +629,16 @@ export interface Bridge extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "blackListValidator"
+  ): TypedContractMethod<
+    [_validator: AddressLike, signatures: SignerAndSignatureStruct[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "blackListedValidators"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
     nameOrSignature: "claimNFT1155"
   ): TypedContractMethod<
     [data: Bridge.ClaimDataStruct, signatures: BytesLike[]],
@@ -621,7 +679,8 @@ export interface Bridge extends BaseContract {
       destinationChain: string,
       destinationUserAddress: string,
       sourceNftContractAddress: AddressLike,
-      tokenAmount: BigNumberish
+      tokenAmount: BigNumberish,
+      metaDataUri: string
     ],
     [void],
     "nonpayable"
@@ -633,7 +692,8 @@ export interface Bridge extends BaseContract {
       tokenId: BigNumberish,
       destinationChain: string,
       destinationUserAddress: string,
-      sourceNftContractAddress: AddressLike
+      sourceNftContractAddress: AddressLike,
+      metaDataUri: string
     ],
     [void],
     "nonpayable"
@@ -677,6 +737,13 @@ export interface Bridge extends BaseContract {
     AddNewValidatorEvent.InputTuple,
     AddNewValidatorEvent.OutputTuple,
     AddNewValidatorEvent.OutputObject
+  >;
+  getEvent(
+    key: "BlackListValidator"
+  ): TypedContractEvent<
+    BlackListValidatorEvent.InputTuple,
+    BlackListValidatorEvent.OutputTuple,
+    BlackListValidatorEvent.OutputObject
   >;
   getEvent(
     key: "Claim1155"
@@ -740,6 +807,17 @@ export interface Bridge extends BaseContract {
       AddNewValidatorEvent.OutputObject
     >;
 
+    "BlackListValidator(address)": TypedContractEvent<
+      BlackListValidatorEvent.InputTuple,
+      BlackListValidatorEvent.OutputTuple,
+      BlackListValidatorEvent.OutputObject
+    >;
+    BlackListValidator: TypedContractEvent<
+      BlackListValidatorEvent.InputTuple,
+      BlackListValidatorEvent.OutputTuple,
+      BlackListValidatorEvent.OutputObject
+    >;
+
     "Claim1155(string,string,string,address,uint256,uint256)": TypedContractEvent<
       Claim1155Event.InputTuple,
       Claim1155Event.OutputTuple,
@@ -762,7 +840,7 @@ export interface Bridge extends BaseContract {
       Claimed721Event.OutputObject
     >;
 
-    "Locked(uint256,string,string,string,uint256,string,string)": TypedContractEvent<
+    "Locked(uint256,string,string,string,uint256,string,string,string)": TypedContractEvent<
       LockedEvent.InputTuple,
       LockedEvent.OutputTuple,
       LockedEvent.OutputObject

@@ -25,6 +25,7 @@ import type {
 export interface NFTCollectionDeployerInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "bridge"
       | "deployNFT1155Collection"
       | "deployNFT721Collection"
       | "owner"
@@ -33,6 +34,7 @@ export interface NFTCollectionDeployerInterface extends Interface {
 
   getEvent(nameOrSignatureOrTopic: "CreatedCollection"): EventFragment;
 
+  encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "deployNFT1155Collection",
     values?: undefined
@@ -44,9 +46,10 @@ export interface NFTCollectionDeployerInterface extends Interface {
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setOwner",
-    values: [AddressLike]
+    values: [AddressLike, AddressLike]
   ): string;
 
+  decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "deployNFT1155Collection",
     data: BytesLike
@@ -114,6 +117,8 @@ export interface NFTCollectionDeployer extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  bridge: TypedContractMethod<[], [string], "view">;
+
   deployNFT1155Collection: TypedContractMethod<[], [string], "nonpayable">;
 
   deployNFT721Collection: TypedContractMethod<
@@ -124,12 +129,19 @@ export interface NFTCollectionDeployer extends BaseContract {
 
   owner: TypedContractMethod<[], [string], "view">;
 
-  setOwner: TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+  setOwner: TypedContractMethod<
+    [_owner: AddressLike, _bridge: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "bridge"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "deployNFT1155Collection"
   ): TypedContractMethod<[], [string], "nonpayable">;
@@ -145,7 +157,11 @@ export interface NFTCollectionDeployer extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "setOwner"
-  ): TypedContractMethod<[_owner: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_owner: AddressLike, _bridge: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "CreatedCollection"

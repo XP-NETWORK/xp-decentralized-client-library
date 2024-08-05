@@ -28,6 +28,7 @@ export interface ERC721RoyaltyInterface extends Interface {
     nameOrSignature:
       | "approve"
       | "balanceOf"
+      | "bridge"
       | "getApproved"
       | "isApprovedForAll"
       | "mint"
@@ -64,6 +65,7 @@ export interface ERC721RoyaltyInterface extends Interface {
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -122,6 +124,7 @@ export interface ERC721RoyaltyInterface extends Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -320,6 +323,8 @@ export interface ERC721Royalty extends BaseContract {
 
   balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
+  bridge: TypedContractMethod<[], [string], "view">;
+
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
   isApprovedForAll: TypedContractMethod<
@@ -413,6 +418,9 @@ export interface ERC721Royalty extends BaseContract {
   getFunction(
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "bridge"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getApproved"
   ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;

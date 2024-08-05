@@ -386,7 +386,17 @@ export function tezosHandler({
         ret: txHash,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+      extraArgs,
+    ) {
+      console.log(metaDataUri);
+
       const hash = await withContractMethodObject(
         signer,
         bridge,

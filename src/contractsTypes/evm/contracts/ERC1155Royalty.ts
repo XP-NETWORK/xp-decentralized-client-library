@@ -28,6 +28,7 @@ export interface ERC1155RoyaltyInterface extends Interface {
     nameOrSignature:
       | "balanceOf"
       | "balanceOfBatch"
+      | "bridge"
       | "isApprovedForAll"
       | "mint"
       | "owner"
@@ -59,6 +60,7 @@ export interface ERC1155RoyaltyInterface extends Interface {
     functionFragment: "balanceOfBatch",
     values: [AddressLike[], BigNumberish[]]
   ): string;
+  encodeFunctionData(functionFragment: "bridge", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [AddressLike, AddressLike]
@@ -120,6 +122,7 @@ export interface ERC1155RoyaltyInterface extends Interface {
     functionFragment: "balanceOfBatch",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "bridge", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -320,6 +323,8 @@ export interface ERC1155Royalty extends BaseContract {
     "view"
   >;
 
+  bridge: TypedContractMethod<[], [string], "view">;
+
   isApprovedForAll: TypedContractMethod<
     [account: AddressLike, operator: AddressLike],
     [boolean],
@@ -417,6 +422,9 @@ export interface ERC1155Royalty extends BaseContract {
     [bigint[]],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "bridge"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
   ): TypedContractMethod<

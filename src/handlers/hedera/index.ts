@@ -235,7 +235,15 @@ export function hederaHandler({
       const address = (ev as EventLog).args[0];
       return address;
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+      extraArgs,
+    ) {
       if (!isEvmSigner(signer)) {
         if (!hsdk) throw new Error("HSDK Not Injected");
 
@@ -273,6 +281,7 @@ export function hederaHandler({
         destinationChain,
         to,
         sourceNft,
+        metaDataUri,
         {
           ...extraArgs,
         },

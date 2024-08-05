@@ -224,6 +224,7 @@ export function evmHandler({
       to,
       tokenId,
       amt,
+      metaDataUri,
       extraArgs,
     ) {
       const contract = Bridge__factory.connect(bridge, signer);
@@ -233,6 +234,7 @@ export function evmHandler({
         to,
         sourceNftAddress,
         amt,
+        metaDataUri,
         {
           ...extraArgs,
         },
@@ -274,6 +276,7 @@ export function evmHandler({
       destinationChain,
       to,
       tokenId,
+      metaDataUri,
       extraArgs,
     ) {
       const contract = Bridge__factory.connect(bridge, signer);
@@ -282,6 +285,7 @@ export function evmHandler({
         destinationChain,
         to,
         sourceNftAddress,
+        metaDataUri,
         {
           ...extraArgs,
         },

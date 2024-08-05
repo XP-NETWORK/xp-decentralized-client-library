@@ -370,7 +370,17 @@ export function secretHandler({
       });
       return BigInt(result.balance?.amount ?? 0);
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+      _,
+    ) {
+      console.log(metaDataUri);
+
       const codeHashResponse =
         await signer.query.compute.codeHashByContractAddress({
           contract_address: sourceNft,
@@ -417,8 +427,10 @@ export function secretHandler({
       to,
       tokenId,
       amt,
+      metaDataUri,
       extraArgs,
     ) {
+      console.log(metaDataUri);
       const codeHashResponse =
         await signer.query.compute.codeHashByContractAddress({
           contract_address: sourceNft,

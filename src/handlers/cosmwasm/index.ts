@@ -256,7 +256,17 @@ export async function cosmWasmHandler({
         lockTxChain: identifier,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, extraArgs) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+      extraArgs,
+    ) {
+      console.log(metaDataUri);
+
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,
         signer,
