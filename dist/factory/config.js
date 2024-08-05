@@ -56,26 +56,26 @@ var ChainFactoryConfigs;
     ChainFactoryConfigs.TestNet = TestNet;
     function MainNet() {
         const optimism = new ethers_1.JsonRpcProvider("https://optimism-mainnet.public.blastapi.io");
-        const storage = evm_1.BridgeStorage__factory.connect("0xA8802be1Bd39888EBD38b236e2A4fAd4d8e76a1d", optimism);
+        const storage = evm_1.BridgeStorage__factory.connect("0xbFDdaF774a3690a44852c70694E05cDaeadae792", optimism);
         return {
             bscParams: {
                 identifier: factory_1.Chain.BSC,
                 provider: new ethers_1.JsonRpcProvider("https://bsc-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0x0E8457f9F2a323DD91673e2D8e9eCA80763Dd98f"),
+                bridge: ethers_1.ethers.getAddress("0x9ED1D37E27561fD416bec704402DA5295084deff"),
                 royaltySalePrice: 10000,
                 storage,
             },
             maticParams: {
                 identifier: factory_1.Chain.MATIC,
                 provider: new ethers_1.JsonRpcProvider("https://polygon-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0xDAc202538A33adC727e95768f472f232eDD2EC56"),
+                bridge: ethers_1.ethers.getAddress("0x12E614A372510cb3bcB75a12d11e7760dE534ed0"),
                 royaltySalePrice: 10000,
                 storage,
             },
             hederaParams: {
                 identifier: factory_1.Chain.HEDERA,
-                bridge: ethers_1.ethers.getAddress("0xdb3ae6531d405d341d7b25597a64082d7ed05a07"),
-                bridgeContractId: "0.0.6446319",
+                bridge: ethers_1.ethers.getAddress("0x0000000000000000000000000000000000648929"),
+                bridgeContractId: "0.0.6588713",
                 provider: new ethers_1.JsonRpcProvider("https://mainnet.hashio.io/api"),
                 royaltySalePrice: 10000,
                 storage,
