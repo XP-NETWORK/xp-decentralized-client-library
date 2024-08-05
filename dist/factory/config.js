@@ -56,7 +56,7 @@ var ChainFactoryConfigs;
     ChainFactoryConfigs.TestNet = TestNet;
     function MainNet() {
         const optimism = new ethers_1.JsonRpcProvider("https://optimism-mainnet.public.blastapi.io");
-        const storage = evm_1.BridgeStorage__factory.connect("0xbFDdaF774a3690a44852c70694E05cDaeadae792", optimism);
+        const storage = evm_1.BridgeStorage__factory.connect("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83", optimism);
         return {
             bscParams: {
                 identifier: factory_1.Chain.BSC,
