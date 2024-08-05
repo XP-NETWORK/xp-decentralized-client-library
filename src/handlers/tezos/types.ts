@@ -40,6 +40,7 @@ export type TTezosClaimArgs = {
   token_amount: nat;
   nft_type: string;
   fee: mutez;
+  lock_tx_chain: string;
 };
 
 export type TezosMintArgs = {

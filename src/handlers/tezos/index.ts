@@ -186,6 +186,7 @@ export function tezosHandler({
         token_amount: tas.nat(input.tokenAmount),
         token_id: tas.nat(input.tokenId),
         transaction_hash: input.transactionHash,
+        lock_tx_chain: input.lockTxChain,
       };
     },
     async getBalance(signer, _) {
@@ -355,6 +356,7 @@ export function tezosHandler({
               token_id: tas.nat(data.token_id),
               transaction_hash: data.transaction_hash,
               source_nft_contract_address: sourceNftContractAddress,
+              lock_tx_chain: data.lock_tx_chain,
             },
             sigs: sigs.map((e) => {
               const addr = tas.address(
