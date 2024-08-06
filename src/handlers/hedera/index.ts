@@ -137,7 +137,7 @@ export function hederaHandler({
           claimData.fee.toString(),
         ).toBigNumber();
         const costOfTokenCreation = hsdk.Hbar.fromString(
-          "30",
+          "50",
           hsdk.HbarUnit.Hbar,
         ).toBigNumber();
 
