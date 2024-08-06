@@ -252,6 +252,7 @@ export function hederaHandler({
           destinationChain,
           to,
           sourceNft,
+          metaDataUri,
         ]);
 
         const tx = await new hsdk.ContractExecuteTransaction()
