@@ -386,6 +386,7 @@ export function tonHandler({
             .storeAddress(Address.parse(sourceNft))
             .storeRef(beginCell().storeStringRefTail(destinationChain))
             .storeRef(beginCell().storeStringRefTail(to))
+            .storeRef(beginCell().storeStringRefTail(metaDataUri))
             .endCell(),
           custom_payload: null,
           forward_amount: toNano("1.0"),
