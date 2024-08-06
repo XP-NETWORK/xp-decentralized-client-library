@@ -107,7 +107,7 @@ function hederaHandler({ provider, royaltySalePrice, royaltyProxy, storage, iden
                 });
                 const functionCallAsUint8Array = encodeFunctionParameters("claimNFT721", [paramClaimData, sigs.map((e) => e.signature)]);
                 const fee = hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber();
-                const costOfTokenCreation = hsdk.Hbar.fromString("30", hsdk.HbarUnit.Hbar).toBigNumber();
+                const costOfTokenCreation = hsdk.Hbar.fromString("50", hsdk.HbarUnit.Hbar).toBigNumber();
                 const tx = await new hsdk.ContractExecuteTransaction()
                     .setContractId(hsdk.ContractId.fromString(bridgeContractId))
                     .setGas(15000000)
