@@ -336,7 +336,15 @@ export function tonHandler({
     async getValidatorCount() {
       return Number((await bridge.getValidatorsCount()) ?? 0);
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+      _,
+    ) {
       if (!signer.address) {
         throw new Error("No Address present in signer");
       }
@@ -362,6 +370,7 @@ export function tonHandler({
         destinationUserAddress: beginCell().storeStringRefTail(to).endCell(),
         sourceNftContractAddress: Address.parse(sourceNft),
         tokenId: tokenId,
+        metaDataUri: beginCell().storeStringRefTail(metaDataUri).endCell(),
       })(locked);
 
       await nftItem.send(
