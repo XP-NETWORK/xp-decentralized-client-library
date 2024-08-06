@@ -61,14 +61,14 @@ var ChainFactoryConfigs;
             bscParams: {
                 identifier: factory_1.Chain.BSC,
                 provider: new ethers_1.JsonRpcProvider("https://bsc-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0x9ED1D37E27561fD416bec704402DA5295084deff"),
+                bridge: ethers_1.ethers.getAddress("0xE0ea24108ec2754467D2c1D9320Cb6A16276478f"),
                 royaltySalePrice: 10000,
                 storage,
             },
             maticParams: {
                 identifier: factory_1.Chain.MATIC,
                 provider: new ethers_1.JsonRpcProvider("https://polygon-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0x12E614A372510cb3bcB75a12d11e7760dE534ed0"),
+                bridge: ethers_1.ethers.getAddress("0x5055E15963504374d989CebC2707f5E46Efb3BDC"),
                 royaltySalePrice: 10000,
                 storage,
             },
