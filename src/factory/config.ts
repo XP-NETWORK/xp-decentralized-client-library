@@ -116,7 +116,7 @@ export namespace ChainFactoryConfigs {
       },
       tonParams: {
         identifier: Chain.TON,
-        bridgeAddress: "EQDOc7_w35twBPJqoEp5SXbnZAB3iNB0O6Ntootpw9eA7Y2m",
+        bridgeAddress: "EQBVvg6Fo1Wo9mqyiRHwuKtrbkqydg9bHfW7k4X0XbkO4_BW",
         client: new TonClient({
           endpoint:
             "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
