@@ -75,70 +75,18 @@ export declare function loadFactoryDeploy(slice: Slice): {
     queryId: bigint;
     cashback: Address;
 };
-export type HiFromParent = {
-    $$type: 'HiFromParent';
-    greeting: string;
+export type LogEventMintRecord = {
+    $$type: 'LogEventMintRecord';
+    minter: Address;
+    item_id: bigint;
+    generate_number: bigint;
 };
-export declare function storeHiFromParent(src: HiFromParent): (builder: Builder) => void;
-export declare function loadHiFromParent(slice: Slice): {
-    $$type: "HiFromParent";
-    greeting: string;
-};
-export type HiFromChild = {
-    $$type: 'HiFromChild';
-    fromSeqno: bigint;
-    greeting: string;
-};
-export declare function storeHiFromChild(src: HiFromChild): (builder: Builder) => void;
-export declare function loadHiFromChild(slice: Slice): {
-    $$type: "HiFromChild";
-    fromSeqno: bigint;
-    greeting: string;
-};
-export type UnlockToken = {
-    $$type: 'UnlockToken';
-    to: Address;
-};
-export declare function storeUnlockToken(src: UnlockToken): (builder: Builder) => void;
-export declare function loadUnlockToken(slice: Slice): {
-    $$type: "UnlockToken";
-    to: Address;
-};
-export type DeployNFT721Storage = {
-    $$type: 'DeployNFT721Storage';
-    collectionAddress: Address;
-};
-export declare function storeDeployNFT721Storage(src: DeployNFT721Storage): (builder: Builder) => void;
-export declare function loadDeployNFT721Storage(slice: Slice): {
-    $$type: "DeployNFT721Storage";
-    collectionAddress: Address;
-};
-export type DeployNFT721Collection = {
-    $$type: 'DeployNFT721Collection';
-    owner_address: Address;
-    collection_content: Cell;
-    royalty_params: RoyaltyParams;
-};
-export declare function storeDeployNFT721Collection(src: DeployNFT721Collection): (builder: Builder) => void;
-export declare function loadDeployNFT721Collection(slice: Slice): {
-    $$type: "DeployNFT721Collection";
-    owner_address: Address;
-    collection_content: Cell;
-    royalty_params: {
-        $$type: "RoyaltyParams";
-        numerator: bigint;
-        denominator: bigint;
-        destination: Address;
-    };
-};
-export type CreatedCollection = {
-    $$type: 'CreatedCollection';
-    collectionAddress: Address;
-};
-export declare function storeCreatedCollection(src: CreatedCollection): (builder: Builder) => void;
-export declare function loadCreatedCollection(slice: Slice): {
-    $$type: "CreatedCollection";
-    collectionAddress: Address;
+export declare function storeLogEventMintRecord(src: LogEventMintRecord): (builder: Builder) => void;
+export declare function loadLogEventMintRecord(slice: Slice): {
+    $$type: "LogEventMintRecord";
+    minter: Address;
+    item_id: bigint;
+    generate_number: bigint;
 };
 export type GetRoyaltyParams = {
     $$type: 'GetRoyaltyParams';
@@ -272,30 +220,211 @@ export declare function loadGetNftData(slice: Slice): {
 };
 export type HiFromDeployNFT721Storage = {
     $$type: 'HiFromDeployNFT721Storage';
+    sourceNftContractAddress: Address;
     storageAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
 };
 export declare function storeHiFromDeployNFT721Storage(src: HiFromDeployNFT721Storage): (builder: Builder) => void;
 export declare function loadHiFromDeployNFT721Storage(slice: Slice): {
     $$type: "HiFromDeployNFT721Storage";
+    sourceNftContractAddress: Address;
     storageAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
 };
 export type HiFromDeployNFT721Collection = {
     $$type: 'HiFromDeployNFT721Collection';
-    collectionAddress: Address;
+    tokenId: bigint;
+    newlyDeployCollection: Address;
+    sourceChain: string;
+    transactionHash: string;
+    lockTxChain: string;
 };
 export declare function storeHiFromDeployNFT721Collection(src: HiFromDeployNFT721Collection): (builder: Builder) => void;
 export declare function loadHiFromDeployNFT721Collection(slice: Slice): {
     $$type: "HiFromDeployNFT721Collection";
+    tokenId: bigint;
+    newlyDeployCollection: Address;
+    sourceChain: string;
+    transactionHash: string;
+    lockTxChain: string;
+};
+export type CollectionDeploy = {
+    $$type: 'CollectionDeploy';
+    newOwner: Address;
+    metadata: Cell;
+    token_id: bigint;
+    bridge: Address;
+    fee: bigint;
+};
+export declare function storeCollectionDeploy(src: CollectionDeploy): (builder: Builder) => void;
+export declare function loadCollectionDeploy(slice: Slice): {
+    $$type: "CollectionDeploy";
+    newOwner: Address;
+    metadata: Cell;
+    token_id: bigint;
+    bridge: Address;
+    fee: bigint;
+};
+export type StorageDeploy = {
+    $$type: 'StorageDeploy';
+    sourceNftContractAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
+};
+export declare function storeStorageDeploy(src: StorageDeploy): (builder: Builder) => void;
+export declare function loadStorageDeploy(slice: Slice): {
+    $$type: "StorageDeploy";
+    sourceNftContractAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
+};
+export type DeployNFT721Storage = {
+    $$type: 'DeployNFT721Storage';
     collectionAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
+};
+export declare function storeDeployNFT721Storage(src: DeployNFT721Storage): (builder: Builder) => void;
+export declare function loadDeployNFT721Storage(slice: Slice): {
+    $$type: "DeployNFT721Storage";
+    collectionAddress: Address;
+    isOriginal: boolean;
+    key: bigint;
+    tokenId: bigint;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddressLock: Cell;
+    sourceChain: string;
+    nftItemAddress: Address;
+    metaDataUri: Cell;
+};
+export type DeployNFT721Collection = {
+    $$type: 'DeployNFT721Collection';
+    collection_content: Cell;
+    royalty_params: RoyaltyParams;
+    destination_user_address: Address;
+    source_chain: string;
+    transaction_hash: string;
+    metadata: Cell;
+    token_id: bigint;
+    lockTxChain: string;
+    fee: bigint;
+};
+export declare function storeDeployNFT721Collection(src: DeployNFT721Collection): (builder: Builder) => void;
+export declare function loadDeployNFT721Collection(slice: Slice): {
+    $$type: "DeployNFT721Collection";
+    collection_content: Cell;
+    royalty_params: {
+        $$type: "RoyaltyParams";
+        numerator: bigint;
+        denominator: bigint;
+        destination: Address;
+    };
+    destination_user_address: Address;
+    source_chain: string;
+    transaction_hash: string;
+    metadata: Cell;
+    token_id: bigint;
+    lockTxChain: string;
+    fee: bigint;
+};
+export type CreatedCollection = {
+    $$type: 'CreatedCollection';
+    collectionAddress: Address;
+};
+export declare function storeCreatedCollection(src: CreatedCollection): (builder: Builder) => void;
+export declare function loadCreatedCollection(slice: Slice): {
+    $$type: "CreatedCollection";
+    collectionAddress: Address;
+};
+export type UnlockToken = {
+    $$type: 'UnlockToken';
+    to: Address;
+    token_id: bigint;
+};
+export declare function storeUnlockToken(src: UnlockToken): (builder: Builder) => void;
+export declare function loadUnlockToken(slice: Slice): {
+    $$type: "UnlockToken";
+    to: Address;
+    token_id: bigint;
+};
+export type MintOne = {
+    $$type: 'MintOne';
+    new_owner: Address;
+    content: Cell;
+    bridge: Address;
+    fee: bigint;
+};
+export declare function storeMintOne(src: MintOne): (builder: Builder) => void;
+export declare function loadMintOne(slice: Slice): {
+    $$type: "MintOne";
+    new_owner: Address;
+    content: Cell;
+    bridge: Address;
+    fee: bigint;
+};
+export type Mint = {
+    $$type: 'Mint';
+    token_id: bigint;
+    owner: Address;
+    content: Cell;
+    fee: bigint;
+};
+export declare function storeMint(src: Mint): (builder: Builder) => void;
+export declare function loadMint(slice: Slice): {
+    $$type: "Mint";
+    token_id: bigint;
+    owner: Address;
+    content: Cell;
+    fee: bigint;
 };
 export type Validator = {
     $$type: 'Validator';
+    address: Address;
     added: boolean;
     pendingRewards: bigint;
 };
 export declare function storeValidator(src: Validator): (builder: Builder) => void;
 export declare function loadValidator(slice: Slice): {
     $$type: "Validator";
+    address: Address;
     added: boolean;
     pendingRewards: bigint;
 };
@@ -319,24 +448,43 @@ export declare function loadNewValidator(slice: Slice): {
     $$type: "NewValidator";
     key: bigint;
 };
+export type ValidatorsToRewards = {
+    $$type: 'ValidatorsToRewards';
+    addresses: Dictionary<bigint, Address>;
+    publicKeys: Dictionary<bigint, bigint>;
+    len: bigint;
+};
+export declare function storeValidatorsToRewards(src: ValidatorsToRewards): (builder: Builder) => void;
+export declare function loadValidatorsToRewards(slice: Slice): {
+    $$type: "ValidatorsToRewards";
+    addresses: Dictionary<bigint, Address>;
+    publicKeys: Dictionary<bigint, bigint>;
+    len: bigint;
+};
 export type DuplicateToOriginalContractInfo = {
     $$type: 'DuplicateToOriginalContractInfo';
     keyChain: string;
     chain: string;
-    contractAddress: string;
+    contractAddress: Cell;
+    lastIndex: bigint;
+    collectionContent: Cell;
 };
 export declare function storeDuplicateToOriginalContractInfo(src: DuplicateToOriginalContractInfo): (builder: Builder) => void;
 export declare function loadDuplicateToOriginalContractInfo(slice: Slice): {
     $$type: "DuplicateToOriginalContractInfo";
     keyChain: string;
     chain: string;
-    contractAddress: string;
+    contractAddress: Cell;
+    lastIndex: bigint;
+    collectionContent: Cell;
 };
 export type OriginalToDuplicateContractInfo = {
     $$type: 'OriginalToDuplicateContractInfo';
     keyChain: string;
     chain: string;
     contractAddress: Address;
+    lastIndex: bigint;
+    collectionContent: Cell;
 };
 export declare function storeOriginalToDuplicateContractInfo(src: OriginalToDuplicateContractInfo): (builder: Builder) => void;
 export declare function loadOriginalToDuplicateContractInfo(slice: Slice): {
@@ -344,45 +492,135 @@ export declare function loadOriginalToDuplicateContractInfo(slice: Slice): {
     keyChain: string;
     chain: string;
     contractAddress: Address;
+    lastIndex: bigint;
+    collectionContent: Cell;
 };
-export type ClaimData = {
-    $$type: 'ClaimData';
+export type ClaimData1 = {
+    $$type: 'ClaimData1';
     tokenId: bigint;
     sourceChain: string;
     destinationChain: string;
     destinationUserAddress: Address;
-    sourceNftContractAddress: string;
+    tokenAmount: bigint;
+};
+export declare function storeClaimData1(src: ClaimData1): (builder: Builder) => void;
+export declare function loadClaimData1(slice: Slice): {
+    $$type: "ClaimData1";
+    tokenId: bigint;
+    sourceChain: string;
+    destinationChain: string;
+    destinationUserAddress: Address;
+    tokenAmount: bigint;
+};
+export type ClaimData2 = {
+    $$type: 'ClaimData2';
     name: string;
     symbol: string;
-    royalty: bigint;
-    royaltyReceiver: Address;
-    metadata: string;
-    transactionHash: string;
-    tokenAmount: bigint;
     nftType: string;
+};
+export declare function storeClaimData2(src: ClaimData2): (builder: Builder) => void;
+export declare function loadClaimData2(slice: Slice): {
+    $$type: "ClaimData2";
+    name: string;
+    symbol: string;
+    nftType: string;
+};
+export type ClaimData3 = {
+    $$type: 'ClaimData3';
     fee: bigint;
+    sourceNftContractAddress: Cell;
+    royaltyReceiver: Address;
+    metadata: Cell;
+};
+export declare function storeClaimData3(src: ClaimData3): (builder: Builder) => void;
+export declare function loadClaimData3(slice: Slice): {
+    $$type: "ClaimData3";
+    fee: bigint;
+    sourceNftContractAddress: Cell;
+    royaltyReceiver: Address;
+    metadata: Cell;
+};
+export type ClaimData4 = {
+    $$type: 'ClaimData4';
+    newContent: Cell;
+    transactionHash: string;
+    royalty: RoyaltyParams;
+    lockTxChain: string;
+};
+export declare function storeClaimData4(src: ClaimData4): (builder: Builder) => void;
+export declare function loadClaimData4(slice: Slice): {
+    $$type: "ClaimData4";
+    newContent: Cell;
+    transactionHash: string;
+    royalty: {
+        $$type: "RoyaltyParams";
+        numerator: bigint;
+        denominator: bigint;
+        destination: Address;
+    };
+    lockTxChain: string;
+};
+export type ClaimData = {
+    $$type: 'ClaimData';
+    data1: ClaimData1;
+    data2: ClaimData2;
+    data3: ClaimData3;
+    data4: ClaimData4;
 };
 export declare function storeClaimData(src: ClaimData): (builder: Builder) => void;
 export declare function loadClaimData(slice: Slice): {
     $$type: "ClaimData";
+    data1: {
+        $$type: "ClaimData1";
+        tokenId: bigint;
+        sourceChain: string;
+        destinationChain: string;
+        destinationUserAddress: Address;
+        tokenAmount: bigint;
+    };
+    data2: {
+        $$type: "ClaimData2";
+        name: string;
+        symbol: string;
+        nftType: string;
+    };
+    data3: {
+        $$type: "ClaimData3";
+        fee: bigint;
+        sourceNftContractAddress: Cell;
+        royaltyReceiver: Address;
+        metadata: Cell;
+    };
+    data4: {
+        $$type: "ClaimData4";
+        newContent: Cell;
+        transactionHash: string;
+        royalty: {
+            $$type: "RoyaltyParams";
+            numerator: bigint;
+            denominator: bigint;
+            destination: Address;
+        };
+        lockTxChain: string;
+    };
+};
+export type Token = {
+    $$type: 'Token';
     tokenId: bigint;
-    sourceChain: string;
-    destinationChain: string;
-    destinationUserAddress: Address;
-    sourceNftContractAddress: string;
-    name: string;
-    symbol: string;
-    royalty: bigint;
-    royaltyReceiver: Address;
-    metadata: string;
-    transactionHash: string;
-    tokenAmount: bigint;
-    nftType: string;
-    fee: bigint;
+    chain: string;
+    contractAddress: Cell;
+};
+export declare function storeToken(src: Token): (builder: Builder) => void;
+export declare function loadToken(slice: Slice): {
+    $$type: "Token";
+    tokenId: bigint;
+    chain: string;
+    contractAddress: Cell;
 };
 export type AddValidator = {
     $$type: 'AddValidator';
     newValidatorPublicKey: NewValidator;
+    newValidatorAddress: Address;
     sigs: Dictionary<bigint, SignerAndSignature>;
     len: bigint;
 };
@@ -393,14 +631,13 @@ export declare function loadAddValidator(slice: Slice): {
         $$type: "NewValidator";
         key: bigint;
     };
+    newValidatorAddress: Address;
     sigs: Dictionary<bigint, SignerAndSignature>;
     len: bigint;
 };
 export type RewardValidator = {
     $$type: 'RewardValidator';
     validator: NewValidator;
-    sigs: Dictionary<bigint, SignerAndSignature>;
-    len: bigint;
 };
 export declare function storeRewardValidator(src: RewardValidator): (builder: Builder) => void;
 export declare function loadRewardValidator(slice: Slice): {
@@ -409,23 +646,71 @@ export declare function loadRewardValidator(slice: Slice): {
         $$type: "NewValidator";
         key: bigint;
     };
-    sigs: Dictionary<bigint, SignerAndSignature>;
-    len: bigint;
 };
 export type Lock721 = {
     $$type: 'Lock721';
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Address;
+    metaDataUri: Cell;
 };
 export declare function storeLock721(src: Lock721): (builder: Builder) => void;
 export declare function loadLock721(slice: Slice): {
     $$type: "Lock721";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
     sourceNftContractAddress: Address;
+    metaDataUri: Cell;
+};
+export type ClaimNFT721 = {
+    $$type: 'ClaimNFT721';
+    data: ClaimData;
+    signatures: Dictionary<bigint, SignerAndSignature>;
+    len: bigint;
+};
+export declare function storeClaimNFT721(src: ClaimNFT721): (builder: Builder) => void;
+export declare function loadClaimNFT721(slice: Slice): {
+    $$type: "ClaimNFT721";
+    data: {
+        $$type: "ClaimData";
+        data1: {
+            $$type: "ClaimData1";
+            tokenId: bigint;
+            sourceChain: string;
+            destinationChain: string;
+            destinationUserAddress: Address;
+            tokenAmount: bigint;
+        };
+        data2: {
+            $$type: "ClaimData2";
+            name: string;
+            symbol: string;
+            nftType: string;
+        };
+        data3: {
+            $$type: "ClaimData3";
+            fee: bigint;
+            sourceNftContractAddress: Cell;
+            royaltyReceiver: Address;
+            metadata: Cell;
+        };
+        data4: {
+            $$type: "ClaimData4";
+            newContent: Cell;
+            transactionHash: string;
+            royalty: {
+                $$type: "RoyaltyParams";
+                numerator: bigint;
+                denominator: bigint;
+                destination: Address;
+            };
+            lockTxChain: string;
+        };
+    };
+    signatures: Dictionary<bigint, SignerAndSignature>;
+    len: bigint;
 };
 export type StakeEvent = {
     $$type: 'StakeEvent';
@@ -459,45 +744,53 @@ export declare function loadRewardValidatorEvent(slice: Slice): {
 export type LockedEvent = {
     $$type: 'LockedEvent';
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
-    sourceNftContractAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddress: Cell;
     tokenAmount: bigint;
     nftType: string;
     sourceChain: string;
+    metaDataUri: Cell;
 };
 export declare function storeLockedEvent(src: LockedEvent): (builder: Builder) => void;
 export declare function loadLockedEvent(slice: Slice): {
     $$type: "LockedEvent";
     tokenId: bigint;
-    destinationChain: string;
-    destinationUserAddress: string;
-    sourceNftContractAddress: string;
+    destinationChain: Cell;
+    destinationUserAddress: Cell;
+    sourceNftContractAddress: Cell;
     tokenAmount: bigint;
     nftType: string;
     sourceChain: string;
+    metaDataUri: Cell;
 };
 export type UnLock721Event = {
     $$type: 'UnLock721Event';
     to: Address;
     tokenId: bigint;
-    contractAddr: Address;
+    contractAddress: Address;
 };
 export declare function storeUnLock721Event(src: UnLock721Event): (builder: Builder) => void;
 export declare function loadUnLock721Event(slice: Slice): {
     $$type: "UnLock721Event";
     to: Address;
     tokenId: bigint;
-    contractAddr: Address;
+    contractAddress: Address;
 };
 export type ClaimedEvent = {
     $$type: 'ClaimedEvent';
+    lockTxChain: string;
+    tokenId: bigint;
+    newlyDeployCollection: Address;
     sourceChain: string;
     transactionHash: string;
 };
 export declare function storeClaimedEvent(src: ClaimedEvent): (builder: Builder) => void;
 export declare function loadClaimedEvent(slice: Slice): {
     $$type: "ClaimedEvent";
+    lockTxChain: string;
+    tokenId: bigint;
+    newlyDeployCollection: Address;
     sourceChain: string;
     transactionHash: string;
 };
@@ -518,7 +811,7 @@ export declare class NftCollection implements Contract {
     send(provider: ContractProvider, via: Sender, args: {
         value: bigint;
         bounce?: boolean | null | undefined;
-    }, message: 'Mint' | GetRoyaltyParams): Promise<void>;
+    }, message: CollectionDeploy | Mint | GetRoyaltyParams): Promise<void>;
     getGetCollectionData(provider: ContractProvider): Promise<{
         $$type: "CollectionData";
         next_item_index: bigint;
