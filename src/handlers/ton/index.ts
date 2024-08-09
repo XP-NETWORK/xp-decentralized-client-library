@@ -87,7 +87,7 @@ export function tonHandler({
       await bridge.send(
         signer,
         {
-          value: claimData.data3.fee * 2n,
+          value: claimData.data3.fee + 1300000000n,
         },
         {
           $$type: "ClaimNFT721",
@@ -186,7 +186,7 @@ export function tonHandler({
         for (let i = 0; i < tx.outMessages.size; i++) {
           const msg = tx.outMessages.get(i) ?? raise("Unreachable");
           const hash = txHash;
-          if (msg.body.asSlice().loadUint(32) !== 4205190074) {
+          if (msg.body.asSlice().loadUint(32) !== 2105076052) {
             continue;
           }
           const {
@@ -434,7 +434,7 @@ export function tonHandler({
               await new Promise((e) => setTimeout(e, 10000));
               continue;
             }
-            if (msg.body.asSlice().loadUint(32) !== 4205190074) {
+            if (msg.body.asSlice().loadUint(32) !== 2105076052) {
               continue;
             }
             const log = loadLockedEvent(msg.body.asSlice());
