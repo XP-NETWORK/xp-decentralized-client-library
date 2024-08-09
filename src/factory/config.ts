@@ -86,7 +86,7 @@ export namespace ChainFactoryConfigs {
       "https://optimism-mainnet.public.blastapi.io",
     );
     const storage = BridgeStorage__factory.connect(
-      "0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83",
+      "0xc6e84955ba7C354fb7ca60011883e5673Be3F629",
       optimism,
     );
     return {
