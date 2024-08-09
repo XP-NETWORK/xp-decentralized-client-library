@@ -84,7 +84,7 @@ var ChainFactoryConfigs;
             },
             tonParams: {
                 identifier: factory_1.Chain.TON,
-                bridgeAddress: "EQAzLHlLRFQW473SxjoFKQOdUo7w_9L4gSjVuzT6gI2w04aX",
+                bridgeAddress: "EQD3MmAJjHK3iyynZMRb0_shk5BdG_wgP4VRIdGfSW5_-Vsu",
                 client: new ton_1.TonClient({
                     endpoint: "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
                 }),
