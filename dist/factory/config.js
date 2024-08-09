@@ -61,14 +61,14 @@ var ChainFactoryConfigs;
             bscParams: {
                 identifier: factory_1.Chain.BSC,
                 provider: new ethers_1.JsonRpcProvider("https://bsc-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0xE0ea24108ec2754467D2c1D9320Cb6A16276478f"),
+                bridge: ethers_1.ethers.getAddress("0x289FDdDce5119C41B82C969135212061D5E7Dce5"),
                 royaltySalePrice: 10000,
                 storage,
             },
             maticParams: {
                 identifier: factory_1.Chain.MATIC,
                 provider: new ethers_1.JsonRpcProvider("https://polygon-pokt.nodies.app"),
-                bridge: ethers_1.ethers.getAddress("0x5055E15963504374d989CebC2707f5E46Efb3BDC"),
+                bridge: ethers_1.ethers.getAddress("0x2011DAD5caE280243d075D12a38CcCc0Fb4412dE"),
                 royaltySalePrice: 10000,
                 storage,
             },
@@ -84,7 +84,7 @@ var ChainFactoryConfigs;
             },
             tonParams: {
                 identifier: factory_1.Chain.TON,
-                bridgeAddress: "EQCWc1o9GxJIkcHzjtHN24jARzkJY4x1QoWEFkZYLLAb-BY-",
+                bridgeAddress: "EQAzLHlLRFQW473SxjoFKQOdUo7w_9L4gSjVuzT6gI2w04aX",
                 client: new ton_1.TonClient({
                     endpoint: "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
                 }),
