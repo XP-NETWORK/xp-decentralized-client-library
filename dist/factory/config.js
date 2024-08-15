@@ -15,7 +15,7 @@ var ChainFactoryConfigs;
             bscParams: {
                 identifier: factory_1.Chain.BSC,
                 provider: new ethers_1.JsonRpcProvider("https://bsc-testnet.publicnode.com"),
-                bridge: ethers_1.ethers.getAddress("0xA70D9c05EB97FeDF4EA6CD52Dc426E66C0959968"),
+                bridge: ethers_1.ethers.getAddress("0xA86704500C991a5C1976756Ee3f458d59240A6cE"),
                 royaltySalePrice: 10000,
                 storage,
             },
