@@ -10,7 +10,7 @@ var ChainFactoryConfigs;
 (function (ChainFactoryConfigs) {
     function TestNet() {
         const skale = new ethers_1.JsonRpcProvider("https://testnet.skalenodes.com/v1/juicy-low-small-testnet");
-        const storage = evm_1.BridgeStorage__factory.connect("0x04cAEd1763B2C121D92FcaEaB41BFfe3EAB57EFC", skale);
+        const storage = evm_1.BridgeStorage__factory.connect("0x8184bCDC0a4C24D1cB8e054E389660B5b7160186", skale);
         return {
             bscParams: {
                 identifier: factory_1.Chain.BSC,
