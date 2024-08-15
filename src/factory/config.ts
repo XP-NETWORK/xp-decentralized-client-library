@@ -45,7 +45,7 @@ export namespace ChainFactoryConfigs {
       },
       hederaParams: {
         identifier: Chain.HEDERA,
-        bridge: ethers.getAddress("0x5AaC11DDCf117A789f339ece3CBC23756985E554"),
+        bridge: ethers.getAddress("0xf33e51DccC7727F1ac62782de7811712420841a0"),
         bridgeContractId: "0.0.4622994",
         provider: new JsonRpcProvider("https://testnet.hashio.io/api"),
         royaltySalePrice: 10000,
