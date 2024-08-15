@@ -38,7 +38,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             moonbeamParams: {
-                bridge: ethers_1.ethers.getAddress("0x2b4082b5cBe5958888d68985524939ec1c871007"),
+                bridge: ethers_1.ethers.getAddress("0x4144b9255B45691E1Cc9BEdE04726b26ebd6C90A"),
                 identifier: "MOONBEAM",
                 provider: new ethers_1.JsonRpcProvider("https://rpc.api.moonbase.moonbeam.network"),
                 royaltySalePrice: 10000,
