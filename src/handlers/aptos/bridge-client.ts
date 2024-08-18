@@ -14,9 +14,9 @@ import {
   MINT_MODULE,
 } from "./constants";
 
-type TCollectionCounterObj = {
-  key: string;
-  value: string;
+type TAptosMapObj<K, V> = {
+  key: K;
+  value: V;
 };
 
 type TValidatorsObj = {
@@ -27,24 +27,26 @@ type TValidatorsObj = {
 };
 
 export type TClaimData = {
-  collection: string;
-  description: string;
+  destinationUserAddress: HexString;
+  name: string;
   symbol: string;
   amount: number;
-  uri: string;
-  iconUri: string;
-  projectUri: string;
-  royaltyPointsNumerator: number;
-  royaltyPointsDenominator: number;
+  royaltyPercentage: number;
   royaltyPayeeAddress: HexString;
   fee: number;
   sourceChain: Uint8Array;
-  sourceNftContractAddress: Uint8Array;
   destinationChain: Uint8Array;
+  sourceNftContractAddress: Uint8Array;
   transactionHash: Uint8Array;
-  tokenId: string;
+  tokenId: number;
   nftType: Uint8Array;
   metadata: string;
+  lockTxChain: Uint8Array;
+};
+
+type TCollectionNFTObj = {
+  collection_address: string;
+  token_id: string;
 };
 
 type TBridgeData = {
@@ -55,10 +57,10 @@ type TBridgeData = {
     handle: string;
   };
   nft_collection_tokens: {
-    handle: string;
+    data: TAptosMapObj<TCollectionNFTObj, string>[];
   };
   nft_collections_counter: {
-    data: TCollectionCounterObj[];
+    data: TAptosMapObj<string, string>[];
   };
   nfts_counter: string;
   original_to_duplicate_mapping: {
@@ -136,22 +138,20 @@ export class BridgeClient {
 
   async lock721(
     owner: Account,
-    collection: string,
-    name: string,
+    token_address: HexString,
     destination_chain: Uint8Array,
-    token_id: number,
-    source_nft_contract_address: Uint8Array,
+    destination_user_address: string,
+    collection_address: HexString,
   ) {
     const transaction = await this.aptosClient.transaction.build.simple({
       sender: owner.accountAddress,
       data: {
         function: `${this.address}::${BRIDGE_MODULE}::${BRIDGE_FUNCTIONS.Lock721}`,
         functionArguments: [
-          collection,
-          name,
+          token_address.toString(),
           destination_chain,
-          token_id,
-          source_nft_contract_address,
+          destination_user_address,
+          collection_address.toString(),
         ],
       },
     });
@@ -164,24 +164,22 @@ export class BridgeClient {
 
   async lock1155(
     owner: Account,
-    collection: string,
-    name: string,
-    amount: number,
+    token_address: HexString,
     destination_chain: Uint8Array,
-    token_id: number,
-    source_nft_contract_address: Uint8Array,
+    destination_user_address: string,
+    collection_address: HexString,
+    amount: number,
   ) {
     const transaction = await this.aptosClient.transaction.build.simple({
       sender: owner.accountAddress,
       data: {
         function: `${this.address}::${BRIDGE_MODULE}::${BRIDGE_FUNCTIONS.Lock1155}`,
         functionArguments: [
-          collection,
-          name,
-          amount,
+          token_address.toString(),
           destination_chain,
-          token_id,
-          source_nft_contract_address,
+          destination_user_address,
+          collection_address.toString(),
+          amount,
         ],
       },
     });
@@ -195,15 +193,12 @@ export class BridgeClient {
   async claim721(
     sender: Account,
     {
-      collection,
-      description,
+      destinationUserAddress,
+      name,
       symbol,
-      uri,
-      royaltyPointsNumerator,
-      royaltyPointsDenominator,
+      royaltyPercentage,
       royaltyPayeeAddress,
       fee,
-
       sourceChain,
       sourceNftContractAddress,
       destinationChain,
@@ -211,6 +206,7 @@ export class BridgeClient {
       tokenId,
       nftType,
       metadata,
+      lockTxChain,
     }: TClaimData,
     signatures: Uint8Array[],
     publicKeys: Uint8Array[],
@@ -220,11 +216,9 @@ export class BridgeClient {
       data: {
         function: `${this.address}::${BRIDGE_MODULE}::${BRIDGE_FUNCTIONS.Claim721}`,
         functionArguments: [
-          collection,
-          description,
-          uri,
-          royaltyPointsNumerator,
-          royaltyPointsDenominator,
+          destinationUserAddress.toString(),
+          name,
+          royaltyPercentage,
           royaltyPayeeAddress.toString(),
           fee,
           signatures,
@@ -237,9 +231,8 @@ export class BridgeClient {
           nftType,
           metadata,
           symbol,
-          // amount,
-          // iconUri,
-          // projectUri,
+          0,
+          lockTxChain,
         ],
       },
     });
@@ -253,15 +246,10 @@ export class BridgeClient {
   async claim1155(
     sender: Account,
     {
-      collection,
-      description,
+      destinationUserAddress,
+      name,
       symbol,
-      amount,
-      uri,
-      iconUri,
-      projectUri,
-      royaltyPointsNumerator,
-      royaltyPointsDenominator,
+      royaltyPercentage,
       royaltyPayeeAddress,
       fee,
       sourceChain,
@@ -271,6 +259,8 @@ export class BridgeClient {
       tokenId,
       nftType,
       metadata,
+      amount,
+      lockTxChain,
     }: TClaimData,
     signatures: Uint8Array[],
     publicKeys: Uint8Array[],
@@ -280,11 +270,9 @@ export class BridgeClient {
       data: {
         function: `${this.address}::${BRIDGE_MODULE}::${BRIDGE_FUNCTIONS.Claim1155}`,
         functionArguments: [
-          collection,
-          description,
-          uri,
-          royaltyPointsNumerator,
-          royaltyPointsDenominator,
+          destinationUserAddress.toString(),
+          name,
+          royaltyPercentage,
           royaltyPayeeAddress.toString(),
           fee,
           signatures,
@@ -298,8 +286,7 @@ export class BridgeClient {
           metadata,
           symbol,
           amount,
-          iconUri,
-          projectUri,
+          lockTxChain,
         ],
       },
     });
@@ -439,20 +426,29 @@ export class BridgeClient {
     return `0x${Buffer.from(str).toString("hex")}`;
   }
 
-  generateClaimDataHash(claimData: TClaimData, user: Ed25519Account): Buffer {
+  base64ToUint8Array(base64String: string): Uint8Array {
+    const binaryString = atob(base64String);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+  }
+
+  generateClaimDataHash(claimData: TClaimData): Buffer {
     const serializer = new BCS.Serializer();
-    serializer.serializeStr(claimData.tokenId);
+    serializer.serializeU256(claimData.tokenId);
     serializer.serializeBytes(claimData.sourceChain);
     serializer.serializeBytes(claimData.destinationChain);
     serializer.serializeFixedBytes(
-      new HexString(user.accountAddress.toString()).toUint8Array(),
+      claimData.destinationUserAddress.toUint8Array(),
     );
     serializer.serializeBytes(claimData.sourceNftContractAddress);
-    serializer.serializeStr(claimData.collection);
-    serializer.serializeU64(claimData.royaltyPointsNumerator);
-    serializer.serializeU64(claimData.royaltyPointsDenominator);
+    serializer.serializeStr(claimData.name);
+    serializer.serializeU64(claimData.royaltyPercentage);
     serializer.serializeFixedBytes(
-      new HexString(user.accountAddress.toString()).toUint8Array(),
+      claimData.royaltyPayeeAddress.toUint8Array(),
     );
     serializer.serializeStr(claimData.metadata);
     serializer.serializeBytes(claimData.transactionHash);
@@ -460,6 +456,13 @@ export class BridgeClient {
     serializer.serializeBytes(claimData.nftType);
     serializer.serializeU64(claimData.fee);
     serializer.serializeStr(claimData.symbol);
+    serializer.serializeBytes(claimData.lockTxChain);
     return createHash("SHA256").update(serializer.getBytes()).digest();
+  }
+
+  hexStringToUint8Array(hexString: string): Uint8Array {
+    return new Uint8Array(
+      hexString.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) ?? [],
+    );
   }
 }
