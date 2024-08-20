@@ -1,3 +1,4 @@
+import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
@@ -11,7 +12,6 @@ import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
 import { TTonParams } from "../handlers/ton/types";
 import { Chain } from "./factory";
-
 export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
@@ -77,6 +77,17 @@ export namespace ChainFactoryConfigs {
         storage,
         Tezos: new TezosToolkit("https://ghostnet.smartpy.io"),
         tzktApi: "https://api.ghostnet.tzkt.io/",
+      },
+      multiversxParams: {
+        bridge:
+          "erd1qqqqqqqqqqqqqpgqn5vhjcu3mrctgaj85zx2c5lpph32q408lwzqrl4vys",
+        chainId: "D",
+        identifier: "MULTIVERSX",
+        gatewayURL: "https://devnet-gateway.multiversx.com",
+        provider: new ProxyNetworkProvider(
+          "https://devnet-gateway.multiversx.com",
+        ),
+        storage,
       },
     } satisfies Partial<TChainParams>;
   }
