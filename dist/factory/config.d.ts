@@ -1,3 +1,4 @@
+import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
@@ -60,6 +61,14 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
             Tezos: TezosToolkit;
             tzktApi: string;
+        };
+        multiversxParams: {
+            bridge: string;
+            chainId: string;
+            identifier: string;
+            gatewayURL: string;
+            provider: ProxyNetworkProvider;
+            storage: import("../contractsTypes/evm").BridgeStorage;
         };
     };
     function MainNet(): {
