@@ -46,7 +46,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             tezosParams: {
-                bridge: "KT1S9vCe85fpjfPNEnuDJ2zb453bSjcGNBH8",
+                bridge: "KT1UGfH2Hk2MVKt8ADqqkRqcGZussRnfpahV",
                 identifier: "TEZOS",
                 storage,
                 Tezos: new taquito_1.TezosToolkit("https://ghostnet.smartpy.io"),
