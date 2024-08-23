@@ -178,6 +178,14 @@ export async function icpHandler({
       const bcWithSigner = createActor(bridge, {
         agent: signer,
       });
+      const lc = LedgerCanister.create({ agent: signer });
+      await lc.icrc2Approve({
+        amount: BigInt(claimData.fee),
+        spender: {
+          owner: bridge,
+          subaccount: [],
+        },
+      });
       const claim = await bcWithSigner.claim_nft(
         claimData,
         sig.map((e) => {

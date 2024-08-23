@@ -1,18 +1,26 @@
 type XPBridge = 
  service {
    acceptCycles: () -> ();
-   add_validator: (record {
-                     text;
-                     principal;
-                   }, vec SignerAndSignature) -> ();
+   add_validator: (AddValidator, vec SignerAndSignature) -> ();
    availableCycles: () -> (nat) query;
+   blacklist_validator: (BlacklistValidator, vec SignerAndSignature) -> ();
    claim_nft: (ClaimData, vec SignerAndSignature) -> (text);
-   claim_validator_rewards: (text, vec SignerAndSignature) -> ();
+   claim_validator_rewards: (text) -> (nat64, nat64);
+   encode_add_validator: (AddValidator) -> (blob) query;
+   encode_blacklist_validator: (BlacklistValidator) -> (blob) query;
+   encode_claim_data: (ClaimData) -> (blob) query;
+   get_blacklisted_validators: (text) -> (opt bool) query;
    get_claimed_data: (text) -> (opt ClaimedEvent) query;
    get_locked_data: (text) -> (opt LockedEvent) query;
+   get_validator: (text) -> (opt Validator) query;
    get_validator_count: () -> (nat) query;
    init: () -> ();
    lock_nft: (principal, nat, text, text) -> (text);
+ };
+type Validator = 
+ record {
+   address: principal;
+   pending_rewards: nat64;
  };
 type SignerAndSignature = 
  record {
@@ -54,6 +62,16 @@ type ClaimData =
    token_amount: nat;
    token_id: nat;
    transaction_hash: text;
+ };
+type BlacklistValidator = 
+ record {
+   "principal": principal;
+   public_key: text;
+ };
+type AddValidator = 
+ record {
+   "principal": principal;
+   public_key: text;
  };
 service : (record {
              chain_type: text;
