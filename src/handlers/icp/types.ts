@@ -1,7 +1,7 @@
 import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.did";
+import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
 import {
   DeployCollection,
   MintNft,

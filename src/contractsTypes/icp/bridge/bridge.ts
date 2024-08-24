@@ -1,3 +1,4 @@
+//@ts-nocheck generated code cope
 export const idlFactory = ({ IDL }) => {
   const AddValidator = IDL.Record({
     'principal' : IDL.Principal,
