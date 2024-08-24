@@ -15,12 +15,12 @@ import { TNFTData } from "../types";
 import { NftByteCode } from "./nft.wasm.gz.hex";
 import { TICPHandler, TICPParams } from "./types";
 
-export async function icpHandler({
+export function icpHandler({
   agent,
   bridge,
   storage,
   identifier,
-}: TICPParams): Promise<TICPHandler> {
+}: TICPParams): TICPHandler {
   const ledger = LedgerCanister.create({ agent });
   const bc = createActor(bridge);
   return {

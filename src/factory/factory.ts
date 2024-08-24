@@ -9,6 +9,7 @@ import { aptosHandler } from "../handlers/aptos";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
+import { icpHandler } from "../handlers/icp";
 import { multiversxHandler } from "../handlers/multiversx";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
@@ -26,6 +27,7 @@ export namespace Chain {
   export const MATIC = "MATIC";
   export const HEDERA = "HEDERA";
   export const APTOS = "APTOS";
+  export const ICP = "ICP";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -40,6 +42,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.TON, chainParams.tonParams);
   cToP.set(Chain.TERRA, chainParams.terraParams);
   cToP.set(Chain.APTOS, chainParams.aptosParams);
+  cToP.set(Chain.ICP, chainParams.icpParams);
   return cToP;
 }
 
@@ -108,4 +111,7 @@ CHAIN_INFO.set(Chain.TERRA, {
 });
 CHAIN_INFO.set(Chain.APTOS, {
   constructor: aptosHandler,
+});
+CHAIN_INFO.set(Chain.ICP, {
+  constructor: icpHandler,
 });
