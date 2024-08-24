@@ -11,6 +11,7 @@ export declare namespace Chain {
     const MATIC = "MATIC";
     const HEDERA = "HEDERA";
     const APTOS = "APTOS";
+    const ICP = "ICP";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
