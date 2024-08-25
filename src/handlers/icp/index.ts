@@ -211,7 +211,7 @@ export function icpHandler({
       });
       const lc = LedgerCanister.create({ agent: signer });
       await lc.icrc2Approve({
-        amount: BigInt(claimData.fee),
+        amount: BigInt(claimData.fee + 10_000n),
         spender: {
           owner: bridge,
           subaccount: [],
@@ -221,7 +221,7 @@ export function icpHandler({
         claimData,
         sig.map((e) => {
           return {
-            signature: e.signature,
+            signature: e.signature.replace("0x", ""),
             signer: e.signerAddress,
           };
         }),
