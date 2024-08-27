@@ -28,6 +28,7 @@ export namespace Chain {
   export const HEDERA = "HEDERA";
   export const APTOS = "APTOS";
   export const ICP = "ICP";
+  export const BASE = "BASE";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {

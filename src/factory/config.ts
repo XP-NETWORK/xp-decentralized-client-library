@@ -20,6 +20,7 @@ export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
   maticParams: TEvmParams;
+  baseParams: TEvmParams;
   hederaParams: THederaParams;
   tezosParams: TTezosParams;
   secretParams: TSecretParams;
@@ -125,6 +126,13 @@ export namespace ChainFactoryConfigs {
         identifier: Chain.MATIC,
         provider: new JsonRpcProvider("https://polygon-pokt.nodies.app"),
         bridge: ethers.getAddress("0x2011DAD5caE280243d075D12a38CcCc0Fb4412dE"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      baseParams: {
+        identifier: Chain.BASE,
+        provider: new JsonRpcProvider("https://base.llamarpc.com"),
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
         royaltySalePrice: 10000,
         storage,
       },
