@@ -17,6 +17,7 @@ export interface TChainParams {
     bscParams: TEvmParams;
     ethParams: TEvmParams;
     maticParams: TEvmParams;
+    baseParams: TEvmParams;
     hederaParams: THederaParams;
     tezosParams: TTezosParams;
     secretParams: TSecretParams;
@@ -90,6 +91,13 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         maticParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        baseParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
