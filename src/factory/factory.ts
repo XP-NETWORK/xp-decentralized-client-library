@@ -36,6 +36,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.MULTIVERSX, chainParams.multiversxParams);
   cToP.set(Chain.BSC, chainParams.bscParams);
   cToP.set(Chain.MATIC, chainParams.maticParams);
+  cToP.set(Chain.BASE, chainParams.baseParams);
   cToP.set(Chain.HEDERA, chainParams.hederaParams);
   cToP.set(Chain.ETH, chainParams.ethParams);
   cToP.set(Chain.TEZOS, chainParams.tezosParams);
@@ -90,6 +91,9 @@ CHAIN_INFO.set(Chain.ETH, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.MATIC, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.BASE, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.HEDERA, {
