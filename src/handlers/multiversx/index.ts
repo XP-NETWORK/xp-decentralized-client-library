@@ -353,7 +353,7 @@ export function multiversxHandler({
         lockTxChain: identifier,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _, extra) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -365,7 +365,9 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      const noncec = `@0${tokenId}`;
+      // @ts-ignore
+      const nonce = new Nonce(extra?.nonce).hex();
+      const noncec = `@${nonce}`;
       const quantity = "@" + "01";
       const destination_address = `@${ba.hex()}`;
       const method = `@${Buffer.from("lock721").toString("hex")}`;
