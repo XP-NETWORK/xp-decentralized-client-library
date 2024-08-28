@@ -39,6 +39,17 @@ declare const multiversXBridgeABI: {
     } | {
         name: string;
         mutability: string;
+        inputs: {
+            name: string;
+            type: string;
+        }[];
+        outputs: {
+            type: string;
+        }[];
+        payableInTokens?: undefined;
+    } | {
+        name: string;
+        mutability: string;
         payableInTokens: string[];
         inputs: ({
             name: string;
@@ -50,17 +61,6 @@ declare const multiversXBridgeABI: {
             multi_arg: boolean;
         })[];
         outputs: never[];
-    } | {
-        name: string;
-        mutability: string;
-        inputs: {
-            name: string;
-            type: string;
-        }[];
-        outputs: {
-            type: string;
-        }[];
-        payableInTokens?: undefined;
     })[];
     events: {
         identifier: string;
