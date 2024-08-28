@@ -27,9 +27,8 @@ import {
   TypedValue,
   VariadicValue,
 } from "@multiversx/sdk-core/out";
-
+import { ApiNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
-
 import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
@@ -54,6 +53,7 @@ export function multiversxHandler({
     address: Address.fromString(bridge),
     abi: abiRegistry,
   });
+  const apin = new ApiNetworkProvider(gatewayURL.replace("gateway", "api"));
 
   const eventsParser = new TransactionEventsParser({
     abi: abiRegistry,
@@ -75,19 +75,17 @@ export function multiversxHandler({
     nonce: number,
   ): Promise<{ royalties: number; metaData: string }> => {
     const nonceAsHex = new Nonce(nonce).hex();
-    const response = (
-      await (
-        await http.get(
-          `${gatewayURL.replace(
-            "gateway",
-            "api",
-          )}/nfts/${collection}-${nonceAsHex}`,
-        )
-      ).data
+    const response = await (
+      await http.get(
+        `${gatewayURL.replace(
+          "gateway",
+          "api",
+        )}/nfts/${collection}-${nonceAsHex}`,
+      )
     ).data;
     return {
-      metaData: atob(response.uris[1]),
-      royalties: response.royalties,
+      metaData: atob(response.uris[0]),
+      royalties: response.royalties ?? 0,
     };
   };
   return {
@@ -309,10 +307,12 @@ export function multiversxHandler({
     },
     async getClaimData(txHash) {
       await waitForTransaction(txHash);
-      const transactionOnNetworkMultisig =
-        await provider.getTransaction(txHash);
+      const transactionOnNetworkMultisig = await apin.getTransaction(txHash);
+      const tx = await apin.getTransaction(
+        transactionOnNetworkMultisig.contractResults.items[0].hash,
+      );
       const transactionOutcomeMultisig =
-        converter.transactionOnNetworkToOutcome(transactionOnNetworkMultisig);
+        converter.transactionOnNetworkToOutcome(tx);
       const [event] = findEventsByFirstTopic(
         transactionOutcomeMultisig,
         "Locked",
@@ -332,7 +332,10 @@ export function multiversxHandler({
         symbol: "",
       };
       if (sourceChain === "MULTIVERSX") {
-        metadata = await this.nftData(tokenId, tokenAmount);
+        metadata = await this.nftData(
+          tokenId,
+          parsed.source_nft_contract_address,
+        );
       }
       return {
         destinationChain,
