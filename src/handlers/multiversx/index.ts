@@ -307,7 +307,10 @@ export function multiversxHandler({
     },
     async getClaimData(txHash) {
       await waitForTransaction(txHash);
-      const transactionOnNetworkMultisig = await apin.getTransaction(txHash);
+      const transactionOnNetworkMultisig = await provider.getTransaction(
+        txHash,
+        true,
+      );
       const tx = await apin.getTransaction(
         transactionOnNetworkMultisig.contractResults.items[0].hash,
       );
