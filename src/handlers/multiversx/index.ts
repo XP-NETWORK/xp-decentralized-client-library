@@ -1,5 +1,6 @@
 import {
   TransactionEventsParser,
+  TransactionWatcher,
   findEventsByFirstTopic,
 } from "@multiversx/sdk-core";
 import {
@@ -54,6 +55,7 @@ export function multiversxHandler({
     abi: abiRegistry,
   });
   const apin = new ApiNetworkProvider(gatewayURL.replace("gateway", "api"));
+  const txWatcher = new TransactionWatcher(apin);
 
   const eventsParser = new TransactionEventsParser({
     abi: abiRegistry,
@@ -280,6 +282,7 @@ export function multiversxHandler({
 
       const signed = await signer.signTransaction(tx);
       const hash = await provider.sendTransaction(signed);
+      await waitForTransaction(hash);
       return hash;
     },
     transform(input) {
@@ -306,7 +309,7 @@ export function multiversxHandler({
       return Promise.resolve("Not Required for MultiversX");
     },
     async getClaimData(txHash) {
-      await waitForTransaction(txHash);
+      await txWatcher.awaitCompleted(txHash);
       const transactionOnNetworkMultisig = await provider.getTransaction(
         txHash,
         true,
@@ -314,6 +317,7 @@ export function multiversxHandler({
       const tx = await apin.getTransaction(
         transactionOnNetworkMultisig.contractResults.items[0].hash,
       );
+      console.log(`HyperBlock Nonce: ${tx.hyperblockNonce}`);
       const transactionOutcomeMultisig =
         converter.transactionOnNetworkToOutcome(tx);
       const [event] = findEventsByFirstTopic(
@@ -359,7 +363,7 @@ export function multiversxHandler({
         lockTxChain: identifier,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _, extra) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -371,8 +375,7 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      // @ts-ignore
-      const nonce = new Nonce(extra?.nonce).hex();
+      const nonce = new Nonce(Number(tokenId)).hex();
       const noncec = `@${nonce}`;
       const quantity = "@" + "01";
       const destination_address = `@${ba.hex()}`;
