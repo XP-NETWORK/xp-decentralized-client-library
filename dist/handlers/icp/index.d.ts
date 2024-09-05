@@ -9,5 +9,5 @@ export declare function createNftActor(contract: string | Principal, { agent }: 
 export declare function createBridgeActor(contract: string | Principal, { agent }: {
     agent: HttpAgent;
 }): import("@dfinity/agent").ActorSubclass<BridgeService>;
-export declare function icpHandler({ agent, bridge, storage, identifier, }: TICPParams): TICPHandler;
+export declare function icpHandler({ agent, bridge, storage, identifier, }: TICPParams): Promise<TICPHandler>;
 //# sourceMappingURL=index.d.ts.map
