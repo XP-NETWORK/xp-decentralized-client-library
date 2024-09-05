@@ -34,14 +34,15 @@ export function createBridgeActor(
   });
 }
 
-export function icpHandler({
+export async function icpHandler({
   agent,
   bridge,
   storage,
   identifier,
-}: TICPParams): TICPHandler {
+}: TICPParams): Promise<TICPHandler> {
   const ledger = LedgerCanister.create({ agent });
   const bc = createBridgeActor(bridge, { agent });
+  await agent.fetchRootKey();
   return {
     async getBalance(signer) {
       return ledger.accountBalance({
