@@ -44,6 +44,40 @@ export async function icpHandler({
   const bc = createBridgeActor(bridge, { agent });
   await agent.fetchRootKey();
   return {
+    async nftList(owner, contract) {
+      const nft = createNftActor(contract, { agent });
+      const tokens = await nft.icrc7_tokens_of(
+        { owner: Principal.fromText(owner), subaccount: [] },
+        [],
+        [],
+      );
+
+      const nfts = await Promise.allSettled(
+        tokens.map(async (tid) => {
+          const [[md]] = await nft.icrc7_token_metadata([tid]);
+          if (!md)
+            throw new Error("No metadata found for this token id and contract");
+          const [, value] = md[0];
+          if (!("Text" in value)) {
+            throw new Error("Invalid Metadata");
+          }
+          const metadata = value.Text;
+          return {
+            tokenId: tid.toString(),
+            uri: metadata,
+            native: md,
+            collectionIdent: contract,
+          } as const;
+        }),
+      );
+      const response = nfts.flatMap((e) => {
+        if (e.status === "fulfilled") {
+          return [e.value];
+        }
+        return [];
+      });
+      return response;
+    },
     async getBalance(signer) {
       return ledger.accountBalance({
         accountIdentifier: principalToAccountIdentifier(

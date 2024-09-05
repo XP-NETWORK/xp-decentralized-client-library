@@ -2,10 +2,12 @@ import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
+import { Value } from "../../contractsTypes/icp/nft/nft.types";
 import {
   DeployCollection,
   MintNft,
   ReadClaimed721Event,
+  TNFTList,
   TSingularNftChain,
 } from "../types";
 
@@ -38,4 +40,5 @@ export type TICPHandler = TSingularNftChain<
     undefined,
     string
   > &
-  ReadClaimed721Event;
+  ReadClaimed721Event &
+  TNFTList<[string, Value][]>;
