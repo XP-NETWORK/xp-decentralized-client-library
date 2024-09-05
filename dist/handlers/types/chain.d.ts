@@ -244,4 +244,16 @@ export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = T
  * @template RetTx The type of the return value after a transaction.
  */
 export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> & TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider>;
+/**
+ * Represents a type that has the methods required to fetch NFTs from a chain for a user, and a certain contract. This type should be implemented for all chains, that do not have a working indexer.
+ * @template NFT The type of the NFT. It could be anything that represents an NFT on that particular chain.
+ */
+export type TNFTList<NFT> = {
+    nftList: (owner: string, contract: string) => Promise<{
+        readonly native: NFT;
+        readonly uri: string;
+        readonly collectionIdent: string;
+        readonly tokenId: string;
+    }[]>;
+};
 //# sourceMappingURL=chain.d.ts.map
