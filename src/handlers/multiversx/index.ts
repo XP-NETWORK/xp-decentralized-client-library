@@ -499,12 +499,7 @@ export function multiversxHandler({
           "source_nft_contract_address",
         ),
         new Field(new BytesValue(Buffer.from(claimData.name)), "name"),
-        new Field(
-          new BytesValue(
-            Buffer.from(`N${claimData.sourceChain.toUpperCase()}`),
-          ),
-          "symbol",
-        ),
+        new Field(new BytesValue(Buffer.from(claimData.symbol)), "symbol"),
         new Field(new BigUIntValue(Number(claimData.royalty)), "royalty"),
         new Field(
           new AddressValue(new Address(claimData.royaltyReceiver)),
