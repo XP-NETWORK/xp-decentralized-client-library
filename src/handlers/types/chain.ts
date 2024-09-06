@@ -186,6 +186,7 @@ export type TNftTransferDetailsObject = {
   nftType: string;
   fee: string;
   lockTxChain: string;
+  imgUri?: string;
 };
 
 /**

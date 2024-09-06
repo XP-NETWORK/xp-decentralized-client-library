@@ -1,6 +1,5 @@
 import { Address, Dictionary, beginCell, toNano } from "@ton/core";
 
-import axios from "axios";
 import {
   Bridge,
   SignerAndSignature,
@@ -12,6 +11,7 @@ import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
 import { TNFTData } from "../types";
+import { fetchHttpOrIpfs } from "../utils";
 import { TestnetNftCollection } from "./nftc";
 import { buildJettonContent } from "./tep64";
 import { TTonHandler, TTonParams } from "./types";
@@ -26,23 +26,6 @@ export function tonHandler({
   storage,
   identifier,
 }: TTonParams): TTonHandler {
-  const http = axios.create();
-
-  async function fetchHttpOrIpfs(uri: string) {
-    const url = new URL(uri);
-    if (url.protocol === "http:" || url.protocol === "https:") {
-      const response = await http.get(uri);
-      return response.data;
-    }
-    if (url.protocol === "ipfs:") {
-      const response = await http.get(
-        `https://ipfs.io/ipfs/${uri.replace("ipfs://", "")}`,
-      );
-      return response.data;
-    }
-    throw new Error("Unsupported protocol");
-  }
-
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );

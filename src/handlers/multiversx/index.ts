@@ -26,7 +26,6 @@ import {
   TransactionPayload,
   TransactionsConverter,
   TypedValue,
-  VariadicValue,
 } from "@multiversx/sdk-core/out";
 import { ApiNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
@@ -35,6 +34,7 @@ import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
 import { TNFTData } from "../types";
+import { fetchHttpOrIpfs } from "../utils";
 import {
   TMultiversXHandler,
   TMultiversXParams,
@@ -303,6 +303,7 @@ export function multiversxHandler({
         tokenId: input.tokenId,
         transactionHash: input.transactionHash,
         lockTxChain: input.lockTxChain,
+        imgUri: input.imgUri || "",
       };
     },
     async approveNft(_signer, _tokenId, _contract) {
@@ -344,6 +345,9 @@ export function multiversxHandler({
           parsed.source_nft_contract_address,
         );
       }
+
+      const imgUri = (await fetchHttpOrIpfs(metadata.metadata)).image;
+
       return {
         destinationChain,
         destinationUserAddress:
@@ -361,6 +365,7 @@ export function multiversxHandler({
         symbol: metadata.symbol,
         royalty: metadata.royalty.toString(),
         lockTxChain: identifier,
+        imgUri: imgUri,
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
@@ -473,6 +478,7 @@ export function multiversxHandler({
           "Chain identifier on which nft was locked",
           new BytesType(),
         ),
+        new FieldDefinition("img_uri", "uri of the image", new BytesType()),
       ]);
 
       const claimDataArgs = new Struct(structClaimData, [
@@ -522,6 +528,7 @@ export function multiversxHandler({
           new BytesValue(Buffer.from(claimData.lockTxChain)),
           "lock_tx_chain",
         ),
+        new Field(new BytesValue(Buffer.from(claimData.imgUri)), "img_uri"),
       ]);
       const data = [
         claimDataArgs,
@@ -536,11 +543,6 @@ export function multiversxHandler({
             ),
           };
         }),
-
-        VariadicValue.fromItems(
-          new BytesValue(Buffer.from(claimData.metadata, "utf-8")),
-          new BytesValue(Buffer.from(claimData.metadata, "utf-8")),
-        ),
       ];
       const transaction = multiversXBridgeContract.methods
         .claimNft721(data)
