@@ -51,15 +51,10 @@ declare const multiversXBridgeABI: {
         name: string;
         mutability: string;
         payableInTokens: string[];
-        inputs: ({
+        inputs: {
             name: string;
             type: string;
-            multi_arg?: undefined;
-        } | {
-            name: string;
-            type: string;
-            multi_arg: boolean;
-        })[];
+        }[];
         outputs: never[];
     })[];
     events: {

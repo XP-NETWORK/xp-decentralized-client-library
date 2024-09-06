@@ -23,6 +23,7 @@ export type TMultiversXClaimArgs = {
     fee: string;
     metadata: string;
     lockTxChain: string;
+    imgUri: string;
 };
 /**
  * arguments required to issue an NFT
