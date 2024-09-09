@@ -100,8 +100,8 @@ var ChainFactoryConfigs;
             },
             hederaParams: {
                 identifier: factory_1.Chain.HEDERA,
-                bridge: ethers_1.ethers.getAddress("0x000000000000000000000000000000000064a394"),
-                bridgeContractId: "0.0.6595476",
+                bridge: ethers_1.ethers.getAddress("0x00000000000000000000000000000000006bc585"),
+                bridgeContractId: "0.0.7062917",
                 provider: new ethers_1.JsonRpcProvider("https://mainnet.hashio.io/api"),
                 royaltySalePrice: 10000,
                 storage,
@@ -110,7 +110,7 @@ var ChainFactoryConfigs;
             },
             tonParams: {
                 identifier: factory_1.Chain.TON,
-                bridgeAddress: "EQD3MmAJjHK3iyynZMRb0_shk5BdG_wgP4VRIdGfSW5_-Vsu",
+                bridgeAddress: "EQDn9dWuVp18AMnFc7yrEx6TxDwrbFI8FZYElkY7Exe1QcQO",
                 client: new ton_1.TonClient({
                     endpoint: "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
                 }),
