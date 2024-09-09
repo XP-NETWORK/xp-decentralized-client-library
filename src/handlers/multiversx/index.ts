@@ -422,6 +422,8 @@ export function multiversxHandler({
       const userOnNetwork = await provider.getAccount(userAddress);
       userAccount.update(userOnNetwork);
 
+      const imgUri = (await fetchHttpOrIpfs(claimData.metadata)).image;
+
       const structClaimData = new StructType("ClaimData", [
         new FieldDefinition("token_id", "name of the nft", new BytesType()),
         new FieldDefinition(
@@ -523,7 +525,7 @@ export function multiversxHandler({
           new BytesValue(Buffer.from(claimData.lockTxChain)),
           "lock_tx_chain",
         ),
-        new Field(new BytesValue(Buffer.from(claimData.imgUri)), "img_uri"),
+        new Field(new BytesValue(Buffer.from(imgUri)), "img_uri"),
       ]);
       const data = [
         claimDataArgs,
