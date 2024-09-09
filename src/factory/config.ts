@@ -16,6 +16,7 @@ export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
   maticParams: TEvmParams;
+  baseParams: TEvmParams;
   hederaParams: THederaParams;
   tezosParams: TTezosParams;
   secretParams: TSecretParams;
@@ -115,10 +116,17 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
       },
+      baseParams: {
+        identifier: Chain.BASE,
+        provider: new JsonRpcProvider("https://base.llamarpc.com"),
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
+        storage,
+      },
       hederaParams: {
         identifier: Chain.HEDERA,
-        bridge: ethers.getAddress("0x000000000000000000000000000000000064a394"),
-        bridgeContractId: "0.0.6595476",
+        bridge: ethers.getAddress("0x00000000000000000000000000000000006bc585"),
+        bridgeContractId: "0.0.7062917",
         provider: new JsonRpcProvider("https://mainnet.hashio.io/api"),
         royaltySalePrice: 10000,
         storage,
@@ -127,7 +135,7 @@ export namespace ChainFactoryConfigs {
       },
       tonParams: {
         identifier: Chain.TON,
-        bridgeAddress: "EQD3MmAJjHK3iyynZMRb0_shk5BdG_wgP4VRIdGfSW5_-Vsu",
+        bridgeAddress: "EQDn9dWuVp18AMnFc7yrEx6TxDwrbFI8FZYElkY7Exe1QcQO",
         client: new TonClient({
           endpoint:
             "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
