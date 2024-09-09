@@ -54,6 +54,11 @@ export async function icpHandler({
 
       const nfts = await Promise.allSettled(
         tokens.map(async (tid) => {
+          if (
+            owner !== (await nft.icrc7_owner_of([tid]))[0][0]?.owner.toText()
+          ) {
+            throw new Error("Invalid Owner");
+          }
           const [[md]] = await nft.icrc7_token_metadata([tid]);
           if (!md)
             throw new Error("No metadata found for this token id and contract");
