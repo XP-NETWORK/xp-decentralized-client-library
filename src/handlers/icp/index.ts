@@ -7,31 +7,73 @@ import {
 import { Principal } from "@dfinity/principal";
 import { idlFactory as BridgeIdl } from "../../contractsTypes/icp/bridge/bridge";
 import { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridge.types";
+import { idlFactory as LedgerIDL } from "../../contractsTypes/icp/ledger/ledger";
+import { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
 import { idlFactory as NftIdl } from "../../contractsTypes/icp/nft/nft";
 import { init } from "../../contractsTypes/icp/nft/nft";
 import { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
 import { TNFTData } from "../types";
 import { NftByteCode } from "./nft.wasm.gz.hex";
-import { TICPHandler, TICPParams } from "./types";
+import { BrowserSigners, TICPHandler, TICPParams } from "./types";
 
-export function createNftActor(
+export async function createNftActor(
   contract: string | Principal,
-  { agent }: { agent: HttpAgent },
+  { agent }: { agent: HttpAgent | BrowserSigners },
 ) {
+  if (ifBrowserSigners(agent)) {
+    return await agent.createActor<_SERVICE>({
+      canisterId: contract.toString(),
+      idl: NftIdl,
+      host: undefined,
+    });
+  }
   return Actor.createActor<_SERVICE>(NftIdl, {
     canisterId: contract,
     agent,
   });
 }
 
-export function createBridgeActor(
+export async function createBridgeActor(
   contract: string | Principal,
-  { agent }: { agent: HttpAgent },
+  { agent }: { agent: HttpAgent | BrowserSigners },
 ) {
+  if (ifBrowserSigners(agent)) {
+    return await agent.createActor<BridgeService>({
+      canisterId: contract.toString(),
+      idl: BridgeIdl,
+      host: undefined,
+    });
+  }
   return Actor.createActor<BridgeService>(BridgeIdl, {
     canisterId: contract,
     agent,
   });
+}
+
+export async function createLedgerActor(
+  contract: string | Principal,
+  { agent }: { agent: HttpAgent | BrowserSigners },
+) {
+  if (ifBrowserSigners(agent)) {
+    return await agent.createActor<LedgerService>({
+      canisterId: contract.toString(),
+      idl: LedgerIDL,
+      host: undefined,
+    });
+  }
+  return Actor.createActor<LedgerService>(BridgeIdl, {
+    canisterId: contract,
+    agent,
+  });
+}
+
+export function ifBrowserSigners(
+  signers: BrowserSigners | HttpAgent,
+): signers is BrowserSigners {
+  if ("isAgent" in signers) {
+    return false;
+  }
+  return true;
 }
 
 export async function icpHandler({
@@ -41,11 +83,11 @@ export async function icpHandler({
   identifier,
 }: TICPParams): Promise<TICPHandler> {
   const ledger = LedgerCanister.create({ agent });
-  const bc = createBridgeActor(bridge, { agent });
+  const bc = await createBridgeActor(bridge, { agent });
   await agent.fetchRootKey();
   return {
     async nftList(owner, contract) {
-      const nft = createNftActor(contract, { agent });
+      const nft = await createNftActor(contract, { agent });
       const tokens = await nft.icrc7_tokens_of(
         { owner: Principal.fromText(owner), subaccount: [] },
         [],
@@ -94,7 +136,7 @@ export async function icpHandler({
       return agent;
     },
     async approveNft(signer, tokenId, contract) {
-      const nft = createNftActor(contract, {
+      const nft = await createNftActor(contract, {
         agent: signer,
       });
       const approvals = await nft.icrc37_approve_tokens([
@@ -151,7 +193,7 @@ export async function icpHandler({
       return Actor.canisterIdOf(actor).toString();
     },
     async mintNft(signer, ma) {
-      const nft = createNftActor(ma.contract, {
+      const nft = await createNftActor(ma.contract, {
         agent: signer,
       });
       const mints = await nft.icrcX_mint(
@@ -174,7 +216,7 @@ export async function icpHandler({
       );
     },
     async nftData(tokenId, contract) {
-      const nft = createNftActor(contract, {
+      const nft = await createNftActor(contract, {
         agent,
       });
       const name = await nft.icrc7_name();
@@ -230,7 +272,10 @@ export async function icpHandler({
       return storage;
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
-      const bcWithSigner = createBridgeActor(bridge, {
+      if (ifBrowserSigners(signer)) {
+        throw new Error("Browser Signer not supported");
+      }
+      const bcWithSigner = await createBridgeActor(bridge, {
         agent: signer,
       });
       const hash = await bcWithSigner.lock_nft(
@@ -246,17 +291,23 @@ export async function icpHandler({
     },
 
     async claimNft(signer, claimData, sig) {
-      const bcWithSigner = createBridgeActor(bridge, {
+      const lc = await createLedgerActor("ryjl3-tyaaa-aaaaa-aaaba-cai", {
         agent: signer,
       });
-      const lc = LedgerCanister.create({ agent: signer });
-      await lc.icrc2Approve({
+      await lc.icrc2_approve({
         amount: BigInt(claimData.fee + 10_000n),
         spender: {
           owner: bridge,
           subaccount: [],
         },
+        created_at_time: [],
+        expected_allowance: [],
+        expires_at: [],
+        fee: [],
+        from_subaccount: [],
+        memo: [],
       });
+      const bcWithSigner = await createBridgeActor(bridge, { agent: signer });
       const claim = await bcWithSigner.claim_nft(
         claimData,
         sig.map((e) => {

@@ -1,4 +1,5 @@
-import { HttpAgent } from "@dfinity/agent";
+import { ActorSubclass, HttpAgent } from "@dfinity/agent";
+import { IDL } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
@@ -10,6 +11,16 @@ import {
   TNFTList,
   TSingularNftChain,
 } from "../types";
+
+export interface ActorArgs {
+  idl: IDL.InterfaceFactory;
+  canisterId: string;
+  host: string | undefined;
+}
+export interface BrowserSigners {
+  createActor: <Type>(args: ActorArgs) => Promise<ActorSubclass<Type>>;
+  getPrincipal(): Promise<Principal>;
+}
 
 export type TICPParams = {
   agent: HttpAgent;
@@ -27,7 +38,7 @@ export type TICPMintArgs = {
 export type TICPClaimArgs = ClaimData;
 
 export type TICPHandler = TSingularNftChain<
-  HttpAgent,
+  HttpAgent | BrowserSigners,
   TICPClaimArgs,
   undefined,
   string,
