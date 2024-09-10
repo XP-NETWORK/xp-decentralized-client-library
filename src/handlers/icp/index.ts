@@ -189,9 +189,9 @@ export async function icpHandler({
       const metadata = value.Text;
       return {
         metadata,
-        name,
+        name: name === "" ? "TICP" : name,
         royalty: 0n,
-        symbol,
+        symbol: symbol === "" ? "TICP" : symbol,
       };
     },
     async getClaimData(txHash) {
