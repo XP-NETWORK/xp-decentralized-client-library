@@ -13,7 +13,7 @@ import {
 } from "../types";
 
 export interface ActorArgs {
-  idl: IDL.InterfaceFactory;
+  interfaceFactory: IDL.InterfaceFactory;
   canisterId: string;
   host: string | undefined;
 }

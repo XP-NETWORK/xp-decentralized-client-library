@@ -23,7 +23,7 @@ export async function createNftActor(
   if (ifBrowserSigners(agent)) {
     return await agent.createActor<_SERVICE>({
       canisterId: contract.toString(),
-      idl: NftIdl,
+      interfaceFactory: NftIdl,
       host: undefined,
     });
   }
@@ -40,7 +40,7 @@ export async function createBridgeActor(
   if (ifBrowserSigners(agent)) {
     return await agent.createActor<BridgeService>({
       canisterId: contract.toString(),
-      idl: BridgeIdl,
+      interfaceFactory: BridgeIdl,
       host: undefined,
     });
   }
@@ -57,7 +57,7 @@ export async function createLedgerActor(
   if (ifBrowserSigners(agent)) {
     return await agent.createActor<LedgerService>({
       canisterId: contract.toString(),
-      idl: LedgerIDL,
+      interfaceFactory: LedgerIDL,
       host: undefined,
     });
   }
