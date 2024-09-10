@@ -70,7 +70,7 @@ export async function createLedgerActor(
 export function ifBrowserSigners(
   signers: BrowserSigners | HttpAgent,
 ): signers is BrowserSigners {
-  if ("isAgent" in signers) {
+  if ("_isAgent" in signers) {
     return false;
   }
   return true;
@@ -206,7 +206,7 @@ export async function icpHandler({
       );
       const mint = mints[0];
       if (!("Ok" in mint)) {
-        throw new Error(`Failed to mint reason: ${mint}`);
+        throw new Error(`Failed to mint reason: ${JSON.stringify(mint)}`);
       }
       return (
         mint.Ok[0]?.toString() ??
