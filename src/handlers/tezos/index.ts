@@ -13,7 +13,7 @@ import {
 } from "@taquito/utils";
 import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { bytes, tas } from "../../contractsTypes/tezos/type-aliases";
+import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
 
 import {
   ContractAbstraction,
@@ -157,9 +157,21 @@ export function tezosHandler({
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
 
-    const tokenMetaData = await (
-      await nftContract.storage()
-    ).token_metadata.get(tas.nat(tokenId.toString()));
+    let tokenMetaData: {
+      token_id: nat;
+      token_info: MMap<string, bytes>;
+    };
+
+    try {
+      tokenMetaData = await (
+        await nftContract.storage()
+      ).tokens.token_metadata.get(tas.nat(tokenId.toString()));
+    } catch (ex) {
+      tokenMetaData = await (await nftContract.storage()).token_metadata.get(
+        tas.nat(tokenId.toString()),
+      );
+    }
+
     const metaDataInHex = tokenMetaData.token_info.get("");
     return bytes2Char(metaDataInHex);
   };
@@ -439,7 +451,8 @@ export function tezosHandler({
       };
     },
     async nftData(tokenId, contract) {
-      const tokenMd = await getNftTokenMetaData(contract, BigInt(tokenId));
+      let tokenMd = await getNftTokenMetaData(contract, BigInt(tokenId));
+      tokenMd = tokenMd.substring(tokenMd.indexOf("https://"));
       let name = "NTEZOS";
       try {
         Tezos.addExtension(new Tzip16Module());
@@ -464,10 +477,7 @@ export function tezosHandler({
       }
       let royalty = 0n;
       try {
-        const metaDataOrURL = await getNftTokenMetaData(
-          contract,
-          BigInt(tokenId),
-        );
+        const metaDataOrURL = tokenMd;
         const isUrl = URLCanParse(metaDataOrURL);
         let metaData: {
           royalties: {
