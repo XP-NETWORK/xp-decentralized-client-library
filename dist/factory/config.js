@@ -1,0 +1,113 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChainFactoryConfigs = void 0;
+const out_1 = require("@multiversx/sdk-network-providers/out");
+const taquito_1 = require("@taquito/taquito");
+const ton_1 = require("@ton/ton");
+const ethers_1 = require("ethers");
+const evm_1 = require("../contractsTypes/evm");
+const factory_1 = require("./factory");
+var ChainFactoryConfigs;
+(function (ChainFactoryConfigs) {
+    function TestNet() {
+        const skale = new ethers_1.JsonRpcProvider("https://testnet.skalenodes.com/v1/juicy-low-small-testnet");
+        const storage = evm_1.BridgeStorage__factory.connect("0x8184bCDC0a4C24D1cB8e054E389660B5b7160186", skale);
+        return {
+            bscParams: {
+                identifier: factory_1.Chain.BSC,
+                provider: new ethers_1.JsonRpcProvider("https://bsc-testnet.publicnode.com"),
+                bridge: ethers_1.ethers.getAddress("0xA86704500C991a5C1976756Ee3f458d59240A6cE"),
+                royaltySalePrice: 10000,
+                storage,
+            },
+            hederaParams: {
+                identifier: factory_1.Chain.HEDERA,
+                bridge: ethers_1.ethers.getAddress("0xf33e51DccC7727F1ac62782de7811712420841a0"),
+                bridgeContractId: "0.0.4622994",
+                provider: new ethers_1.JsonRpcProvider("https://testnet.hashio.io/api"),
+                royaltySalePrice: 10000,
+                storage,
+                royaltyProxy: "0xFdDEEbDf5F2e959A1637Cb130cE753d42083a2EA",
+                mirrorNodeApi: "https://testnet.mirrornode.hedera.com/api",
+            },
+            tonParams: {
+                identifier: factory_1.Chain.TON,
+                bridgeAddress: "kQCHrjSTU6W7XYUfJgwr_trmG3QL_llPJfPyXPmINYznrkh6",
+                client: new ton_1.TonClient({
+                    endpoint: "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
+                }),
+                storage,
+            },
+            moonbeamParams: {
+                bridge: ethers_1.ethers.getAddress("0x4144b9255B45691E1Cc9BEdE04726b26ebd6C90A"),
+                identifier: "MOONBEAM",
+                provider: new ethers_1.JsonRpcProvider("https://rpc.api.moonbase.moonbeam.network"),
+                royaltySalePrice: 10000,
+                storage,
+            },
+            tezosParams: {
+                bridge: "KT1UGfH2Hk2MVKt8ADqqkRqcGZussRnfpahV",
+                identifier: "TEZOS",
+                storage,
+                Tezos: new taquito_1.TezosToolkit("https://ghostnet.smartpy.io"),
+                tzktApi: "https://api.ghostnet.tzkt.io/",
+            },
+            multiversxParams: {
+                bridge: "erd1qqqqqqqqqqqqqpgqn5vhjcu3mrctgaj85zx2c5lpph32q408lwzqrl4vys",
+                chainId: "D",
+                identifier: "MULTIVERSX",
+                gatewayURL: "https://devnet-gateway.multiversx.com",
+                provider: new out_1.ProxyNetworkProvider("https://devnet-gateway.multiversx.com"),
+                storage,
+            },
+        };
+    }
+    ChainFactoryConfigs.TestNet = TestNet;
+    function MainNet() {
+        const optimism = new ethers_1.JsonRpcProvider("https://optimism-mainnet.public.blastapi.io");
+        const storage = evm_1.BridgeStorage__factory.connect("0xc6e84955ba7C354fb7ca60011883e5673Be3F629", optimism);
+        return {
+            bscParams: {
+                identifier: factory_1.Chain.BSC,
+                provider: new ethers_1.JsonRpcProvider("https://bsc-pokt.nodies.app"),
+                bridge: ethers_1.ethers.getAddress("0x289FDdDce5119C41B82C969135212061D5E7Dce5"),
+                royaltySalePrice: 10000,
+                storage,
+            },
+            maticParams: {
+                identifier: factory_1.Chain.MATIC,
+                provider: new ethers_1.JsonRpcProvider("https://polygon-pokt.nodies.app"),
+                bridge: ethers_1.ethers.getAddress("0x2011DAD5caE280243d075D12a38CcCc0Fb4412dE"),
+                royaltySalePrice: 10000,
+                storage,
+            },
+            baseParams: {
+                identifier: factory_1.Chain.BASE,
+                provider: new ethers_1.JsonRpcProvider("https://base.llamarpc.com"),
+                bridge: ethers_1.ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+                royaltySalePrice: 10000,
+                storage,
+            },
+            hederaParams: {
+                identifier: factory_1.Chain.HEDERA,
+                bridge: ethers_1.ethers.getAddress("0x00000000000000000000000000000000006bc585"),
+                bridgeContractId: "0.0.7062917",
+                provider: new ethers_1.JsonRpcProvider("https://mainnet.hashio.io/api"),
+                royaltySalePrice: 10000,
+                storage,
+                royaltyProxy: "0x97fec8ed7203ea3ce58e2a4f44056fd954a35be4",
+                mirrorNodeApi: "https://mainnet.mirrornode.hedera.com/api",
+            },
+            tonParams: {
+                identifier: factory_1.Chain.TON,
+                bridgeAddress: "EQDn9dWuVp18AMnFc7yrEx6TxDwrbFI8FZYElkY7Exe1QcQO",
+                client: new ton_1.TonClient({
+                    endpoint: "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
+                }),
+                storage,
+            },
+        };
+    }
+    ChainFactoryConfigs.MainNet = MainNet;
+})(ChainFactoryConfigs || (exports.ChainFactoryConfigs = ChainFactoryConfigs = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uZmlnLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL2ZhY3RvcnkvY29uZmlnLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUFBLCtEQUE2RTtBQUM3RSw4Q0FBZ0Q7QUFDaEQsa0NBQXFDO0FBQ3JDLG1DQUFpRDtBQUNqRCwrQ0FBK0Q7QUFTL0QsdUNBQWtDO0FBZ0JsQyxJQUFpQixtQkFBbUIsQ0FxSG5DO0FBckhELFdBQWlCLG1CQUFtQjtJQUNsQyxTQUFnQixPQUFPO1FBQ3JCLE1BQU0sS0FBSyxHQUFHLElBQUksd0JBQWUsQ0FDL0IsMkRBQTJELENBQzVELENBQUM7UUFDRixNQUFNLE9BQU8sR0FBRyw0QkFBc0IsQ0FBQyxPQUFPLENBQzVDLDRDQUE0QyxFQUM1QyxLQUFLLENBQ04sQ0FBQztRQUNGLE9BQU87WUFDTCxTQUFTLEVBQUU7Z0JBQ1QsVUFBVSxFQUFFLGVBQUssQ0FBQyxHQUFHO2dCQUNyQixRQUFRLEVBQUUsSUFBSSx3QkFBZSxDQUFDLG9DQUFvQyxDQUFDO2dCQUNuRSxNQUFNLEVBQUUsZUFBTSxDQUFDLFVBQVUsQ0FBQyw0Q0FBNEMsQ0FBQztnQkFDdkUsZ0JBQWdCLEVBQUUsS0FBSztnQkFDdkIsT0FBTzthQUNSO1lBQ0QsWUFBWSxFQUFFO2dCQUNaLFVBQVUsRUFBRSxlQUFLLENBQUMsTUFBTTtnQkFDeEIsTUFBTSxFQUFFLGVBQU0sQ0FBQyxVQUFVLENBQUMsNENBQTRDLENBQUM7Z0JBQ3ZFLGdCQUFnQixFQUFFLGFBQWE7Z0JBQy9CLFFBQVEsRUFBRSxJQUFJLHdCQUFlLENBQUMsK0JBQStCLENBQUM7Z0JBQzlELGdCQUFnQixFQUFFLEtBQUs7Z0JBQ3ZCLE9BQU87Z0JBQ1AsWUFBWSxFQUFFLDRDQUE0QztnQkFDMUQsYUFBYSxFQUFFLDJDQUEyQzthQUMzRDtZQUNELFNBQVMsRUFBRTtnQkFDVCxVQUFVLEVBQUUsZUFBSyxDQUFDLEdBQUc7Z0JBQ3JCLGFBQWEsRUFBRSxrREFBa0Q7Z0JB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

@@ -1,0 +1,47 @@
+{
+  "name": "xp-decentralized-sdk",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "author": "imsk17",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "format": "npx @biomejs/biome format src/ --write",
+    "lint": "npx @biomejs/biome lint src/"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "@keplr-wallet/types": "^0.12.75",
+    "@types/node": "^20.11.15",
+    "lefthook": "^1.6.1",
+    "typedoc": "^0.25.7",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^1.22.2",
+    "@cosmjs/amino": "^0.32.3",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
+    "@dfinity/agent": "^1.4.0",
+    "@dfinity/candid": "^1.4.0",
+    "@dfinity/ledger-icp": "^2.3.1",
+    "@dfinity/nns": "^5.1.2",
+    "@dfinity/principal": "^1.4.0",
+    "@multiversx/sdk-core": "^13.2.1",
+    "@multiversx/sdk-network-providers": "^2.2.1",
+    "@multiversx/sdk-wallet": "^4.3.0",
+    "@taquito/taquito": "^19.0.0",
+    "@taquito/tzip16": "^19.0.0",
+    "@taquito/utils": "^19.0.0",
+    "@ton/core": "=0.56.3",
+    "@ton/crypto": "=3.2.0",
+    "@ton/ton": "=13.11.1",
+    "@tzkt/sdk-api": "^2.2.1",
+    "@xp/cosmos-client": "git+https://github.com/XP-NETWORK/cosmos-client#bleeding-edge",
+    "aptos": "^1.21.0",
+    "axios": "^1.6.7",
+    "ethers": "^6.10.0",
+    "hashconnect": "^0.2.9",
+    "secretjs": "^1.12.4-beta.0"
+  }
+}

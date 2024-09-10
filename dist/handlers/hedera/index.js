@@ -1,0 +1,292 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isEvmSigner = exports.hederaHandler = void 0;
+const abi_1 = require("@ethersproject/abi");
+const axios_1 = __importDefault(require("axios"));
+const ethers_1 = require("ethers");
+const ContractProxy__factory_1 = require("../../contractsTypes/Hedera/ContractProxy__factory");
+const HederaBridge__factory_1 = require("../../contractsTypes/Hedera/HederaBridge__factory");
+const IHRC__factory_1 = require("../../contractsTypes/Hedera/IHRC__factory");
+const evm_1 = require("../../contractsTypes/evm");
+const evm_2 = require("../evm");
+const ton_1 = require("../ton");
+const abiInterface = new abi_1.Interface(HederaBridge__factory_1.HederaBridge__factory.abi);
+function hederaHandler({ provider, royaltySalePrice, royaltyProxy, storage, identifier, bridge, bridgeContractId, mirrorNodeApi, }) {
+    const proxy = ContractProxy__factory_1.ContractProxy__factory.connect(royaltyProxy, provider);
+    const web3Helper = (0, evm_2.evmHandler)({
+        provider,
+        bridge,
+        royaltySalePrice,
+        storage,
+        identifier,
+    });
+    let hsdk = undefined;
+    return {
+        injectSDK(sdk) {
+            console.log("INJECTED", sdk);
+            hsdk = sdk;
+        },
+        async mintNft(signer, mintArgs, extraArgs) {
+            const ihrc = IHRC__factory_1.IHRC__factory.connect(mintArgs.contract, signer);
+            await ihrc.associate();
+            const mint = await proxy
+                .connect(signer)
+                .mint(mintArgs.contract, mintArgs.uri, {
+                value: ethers_1.ethers.parseEther("10"),
+                gasLimit: 15000000,
+                ...extraArgs,
+            });
+            console.log(mint);
+            return mint;
+        },
+        getClaimData: web3Helper.getClaimData,
+        getProvider: web3Helper.getProvider,
+        transform: web3Helper.transform,
+        getValidatorCount: web3Helper.getValidatorCount,
+        getStorageContract: web3Helper.getStorageContract,
+        async readClaimed721Event(hash) {
+            const receipt = await provider.getTransactionReceipt(hash);
+            if (!receipt)
+                (0, ton_1.raise)("Transaction not found");
+            const intf = HederaBridge__factory_1.HederaBridge__factory.createInterface();
+            const log = receipt.logs.find((e) => e.topics.includes(intf.getEvent("Claimed").topicHash));
+            if (!log)
+                (0, ton_1.raise)("Log not found");
+            const claimed = intf.parseLog({
+                data: log.data,
+                topics: log.topics,
+            });
+            if (!claimed)
+                (0, ton_1.raise)("Failed to parse Log");
+            return {
+                nft_contract: claimed.args.nftContract,
+                source_chain: claimed.args.sourceChain,
+                token_id: claimed.args.emittedTokenId,
+                transaction_hash: claimed.args.transactionHash,
+                lock_tx_chain: claimed.args.lockTxChain,
+            };
+        },
+        async associateTokens(wallet) {
+            if (!isEvmSigner(wallet)) {
+                if (!hsdk)
+                    throw new Error("HSDK Not Injected");
+                let autoAssociatedTokenCount = 0;
+                try {
+                    autoAssociatedTokenCount = (await axios_1.default.get(`${mirrorNodeApi}/v1/accounts/${wallet
+                        .getAccountId()
+                        .toString()}`)).data.max_automatic_token_associations;
+                }
+                catch (ex) {
+                    console.log("Error fetching associated token accounts", ex);
+                }
+                console.log("autoAssociatedTokenCount", autoAssociatedTokenCount + 1);
+                const accountUpdateTx = await new hsdk.AccountUpdateTransaction()
+                    .setAccountId(wallet.getAccountId())
+                    .setMaxAutomaticTokenAssociations(autoAssociatedTokenCount + 1)
+                    .freezeWithSigner(wallet);
+                const txResponse = await accountUpdateTx.executeWithSigner(wallet);
+                const res = await txResponse.getReceiptWithSigner(wallet);
+                if (res.status.toString() !== "SUCCESS") {
+                    throw new Error(`Error·in·token·association:·${res.status.toString()}`);
+                }
+                return res;
+            }
+            throw new Error("unimplemented");
+        },
+        async claimNft(wallet, claimData, sigs, extraArgs) {
+            if (!isEvmSigner(wallet)) {
+                if (!hsdk)
+                    throw new Error("HSDK Not Injected");
+                const paramClaimData = [];
+                const data = orderClaimData(claimData);
+                Object.keys(data).map((key) => {
+                    paramClaimData.push(data[key].toString());
+                });
+                const functionCallAsUint8Array = encodeFunctionParameters("claimNFT721", [paramClaimData, sigs.map((e) => e.signature)]);
+                const fee = hsdk.Hbar.fromTinybars(claimData.fee.toString()).toBigNumber();
+                const costOfTokenCreation = hsdk.Hbar.fromString("50", hsdk.HbarUnit.Hbar).toBigNumber();
+                const tx = await new hsdk.ContractExecuteTransaction()
+                    .setContractId(hsdk.ContractId.fromString(bridgeContractId))
+                    .setGas(15000000)
+                    .setPayableAmount(fee.plus(costOfTokenCreation))
+                    .setFunctionParameters(functionCallAsUint8Array)
+                    .freezeWithSigner(wallet);
+                const response = await tx.executeWithSigner(wallet);
+                const receipt = await response.getReceiptWithSigner(wallet);
+                if (receipt.status.toString() !== "SUCCESS") {
+                    throw new Error(receipt.status.toString());
+                }
+                return {
+                    ret: response.toJSON(),
+                    hash() {
+                        return response.toJSON().transactionHash;
+                    },
+                };
+            }
+            const contract = evm_1.Bridge__factory.connect(bridge, wallet);
+            const ret = await contract.claimNFT721(claimData, sigs.map((e) => e.signature), {
+                value: BigInt(claimData.fee) * BigInt(1e10) + BigInt(20e18),
+                ...extraArgs,
+            });
+            return {
+                ret: ret,
+                hash: () => ret.hash,
+            };
+        },
+        getBalance(signer) {
+            if (!isEvmSigner(signer)) {
+                throw new Error("unimplemented");
+            }
+            return provider.getBalance(signer);
+        },
+        async approveNft(signer, tid, contract, extra) {
+            if (!isEvmSigner(signer)) {
+                // throw new Error("unimplemented");
+                if (!hsdk)
+                    throw new Error("HSDK Not Injected");
+                console.log("hedera approve", tid, contract);
+                const transaction = await new hsdk.ContractExecuteTransaction()
+                    .setContractId(hsdk.ContractId.fromEvmAddress(0, 0, contract))
+                    .setGas(1000000)
+                    .setMaxTransactionFee(new hsdk.Hbar(10))
+                    //.setPayableAmount(new hashSDK.Hbar(5))
+                    .setFunction("approve", new hsdk.ContractFunctionParameters()
+                    .addAddress(bridge)
+                    .addUint256(Number(tid)))
+                    .freezeWithSigner(signer);
+                const response = await transaction.executeWithSigner(signer);
+                const receipt = await response.getReceiptWithSigner(signer);
+                if (receipt.status.toString() !== "SUCCESS") {
+                    throw new Error(receipt.status.toString());
+                }
+                return response.toJSON();
+            }
+            return evm_1.ERC721Royalty__factory.connect(contract, signer).approve(bridge, tid, {
+                ...extra,
+            });
+        },
+        async deployCollection(signer, da, ga) {
+            const rif = proxy.connect(signer);
+            const deploy = await rif.deployNft(da.name, da.symbol, {
+                ...ga,
+                value: ethers_1.ethers.parseEther("10"),
+            });
+            const receipt = await deploy.wait();
+            const ev = receipt?.logs.find((e) => {
+                if (e instanceof ethers_1.EventLog) {
+                    const a = e.eventName === "NftCollectionCreated";
+                    return a;
+                }
+                return false;
+            });
+            const address = ev.args[0];
+            return address;
+        },
+        async lockNft(signer, sourceNft, destinationChain, to, tokenId, metaDataUri, extraArgs) {
+            if (!isEvmSigner(signer)) {
+                if (!hsdk)
+                    throw new Error("HSDK Not Injected");
+                const functionCallAsUint8Array = encodeFunctionParameters("lock721", [
+                    tokenId.toString(),
+                    destinationChain,
+                    to,
+                    sourceNft,
+                    metaDataUri,
+                ]);
+                const tx = await new hsdk.ContractExecuteTransaction()
+                    .setContractId(hsdk.ContractId.fromString(bridgeContractId))
+                    .setGas(5000000)
+                    .setFunctionParameters(functionCallAsUint8Array)
+                    .freezeWithSigner(signer);
+                const response = await tx.executeWithSigner(signer);
+                const receipt = await response.getReceiptWithSigner(signer);
+                if (receipt.status.toString() !== "SUCCESS") {
+                    throw new Error(receipt.status.toString());
+                }
+                return {
+                    ret: response.toJSON(),
+                    hash() {
+                        return response.toJSON().transactionHash;
+                    },
+                };
+            }
+            const contract = evm_1.Bridge__factory.connect(bridge, signer);
+            const tx = await contract.lock721(tokenId.toString(), destinationChain, to, sourceNft, metaDataUri, {
+                ...extraArgs,
+            });
+            return {
+                ret: tx,
+                hash() {
+                    return tx.hash;
+                },
+            };
+        },
+        async nftData(tokenId, contract, overrides) {
+            const nft = evm_1.ERC721Royalty__factory.connect(contract, provider);
+            const name = await retryFn(() => nft.name({ ...overrides }), `Trying to fetch name() for ${contract}`);
+            const symbol = await retryFn(() => nft.symbol(), `Trying to fetch symbol() for ${contract}`);
+            const rif = ContractProxy__factory_1.ContractProxy__factory.connect(royaltyProxy, provider);
+            const tokenInfo = await retryFn(() => rif.royaltyInfo.staticCall(tokenId, royaltySalePrice), `Trying to fetch royaltyInfo() for ${contract}`);
+            const metadata = await retryFn(() => nft.tokenURI(tokenId), `Trying to fetch tokenURI() for ${contract}`);
+            const rinfo = tokenInfo?.[1].tokenInfo[7][0];
+            // If undefined, set royalty as zero.
+            const royalty = rinfo?.numerator ?? 0n;
+            return {
+                name: name || "XP Wrapped Nft",
+                symbol: symbol || "XPNFT",
+                royalty: royalty,
+                metadata: metadata || "",
+            };
+        },
+    };
+}
+exports.hederaHandler = hederaHandler;
+const retryFn = async (func, ctx, retries = 3) => {
+    if (retries === 0) {
+        return undefined;
+    }
+    try {
+        return await func();
+    }
+    catch (e) {
+        return await retryFn(func, ctx, retries - 1);
+    }
+};
+function isEvmSigner(
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+signer) {
+    return !("hederaClient" in signer || "hashconnect" in signer);
+}
+exports.isEvmSigner = isEvmSigner;
+const encodeFunctionParameters = (functionName, parameterArray) => {
+    // build the call parameters using ethers.js
+    // .slice(2) to remove leading '0x'
+    const functionCallAsHexString = abiInterface
+        .encodeFunctionData(functionName, parameterArray)
+        .slice(2);
+    // convert to a Uint8Array
+    return Buffer.from(functionCallAsHexString, "hex");
+};
+const orderClaimData = (data) => {
+    return {
+        tokenId: data.tokenId,
+        sourceChain: data.sourceChain,
+        destinationChain: data.destinationChain,
+        destinationUserAddress: data.destinationUserAddress,
+        sourceNftContractAddress: data.sourceNftContractAddress,
+        name: data.name,
+        symbol: data.symbol,
+        royalty: data.royalty,
+        royaltyReceiver: data.royaltyReceiver,
+        metadata: data.metadata,
+        transactionHash: data.transactionHash,
+        tokenAmount: data.tokenAmount,
+        nftType: data.nftType,
+        fee: data.fee,
+        lockTxChain: data.lockTxChain,
+    };
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvaGFuZGxlcnMvaGVkZXJhL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7OztBQUFBLDRDQUErQztBQUMvQyxrREFBMEI7QUFDMUIsbUNBQWtEO0FBQ2xELCtGQUE0RjtBQUM1Riw2RkFBMEY7QUFDMUYsNkVBQTBFO0FBQzFFLGtEQUlrQztBQUNsQyxnQ0FBb0M7QUFDcEMsZ0NBQStCO0FBRy9CLE1BQU0sWUFBWSxHQUFHLElBQUksZUFBUyxDQUFDLDZDQUFxQixDQUFDLEdBQUcsQ0FBQyxDQUFDO0FBRTlELFNBQWdCLGFBQWEsQ0FBQyxFQUM1QixRQUFRLEVBQ1IsZ0JBQWdCLEVBQ2hCLFlBQVksRUFDWixPQUFPLEVBQ1AsVUFBVSxFQUNWLE1BQU0sRUFDTixnQkFBZ0IsRUFDaEIsYUFBYSxHQUNDO0lBQ2QsTUFBTSxLQUFLLEdBQUcsK0NBQXNCLENBQUMsT0FBTyxDQUFDLFlBQVksRUFBRSxRQUFRLENBQUMsQ0FBQztJQUNyRSxNQUFNLFVBQVUsR0FBRyxJQUFBLGdCQUFVLEVBQUM7UUFDNUIsUUFBUTtRQUNSLE1BQU07UUFDTixnQkFBZ0I7UUFDaEIsT0FBTztRQUNQLFVBQVU7S0FDWCxDQUFDLENBQUM7SUFDSCxJQUFJLElBQUksR0FBZ0QsU0FBUyxDQUFDO0lBQ2xFLE9BQU87UUFDTCxTQUFTLENBQUMsR0FBRztZQUNYLE9BQU8sQ0FBQyxHQUFHLENBQUMsVUFBVSxFQUFFLEdBQUcsQ0FBQyxDQUFDO1lBQzdCLElBQUksR0FBRyxHQUFHLENBQUM7UUFDYixDQUFDO1FBQ0QsS0FBSyxDQUFDLE9BQU8sQ0FBQyxNQUFNLEVBQUUsUUFBUSxFQUFFLFNBQVM7WUFDdkMsTUFBTSxJQUFJLEdBQUcsNkJBQWEsQ0FBQyxPQUFPLENBQUMsUUFBUSxDQUFDLFFBQVEsRUFBRSxNQUFNLENBQUMsQ0FBQztZQUM5RCxNQUFNLElBQUksQ0FBQyxTQUFTLEVBQUUs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
