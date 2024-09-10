@@ -6,7 +6,7 @@ import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
 import { Value } from "../../contractsTypes/icp/nft/nft.types";
 import { DeployCollection, MintNft, ReadClaimed721Event, TNFTList, TSingularNftChain } from "../types";
 export interface ActorArgs {
-    idl: IDL.InterfaceFactory;
+    interfaceFactory: IDL.InterfaceFactory;
     canisterId: string;
     host: string | undefined;
 }
