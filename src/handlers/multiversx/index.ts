@@ -351,6 +351,7 @@ export function multiversxHandler({
         symbol: metadata.symbol,
         royalty: metadata.royalty.toString(),
         lockTxChain: identifier,
+        eventUri: "",
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {

@@ -153,6 +153,7 @@ export async function icpHandler({
         name: nft.name,
         symbol: nft.symbol,
         lockTxChain: identifier,
+        eventUri: "",
       };
     },
     getStorageContract() {
