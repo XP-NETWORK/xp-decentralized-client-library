@@ -133,7 +133,7 @@ export function tonHandler({
 
       throw new Error("Claimed event not found");
     },
-    async deployCollection(signer, da) {
+    async deployNftCollection(signer, da) {
       const nft = client.open(
         await TestnetNftCollection.fromInit(
           da.owner_address,

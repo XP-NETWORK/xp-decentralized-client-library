@@ -339,7 +339,7 @@ export async function cosmWasmHandler({
       );
       return mint;
     },
-    async deployCollection(signer, data, gasArgs) {
+    async deployNftCollection(signer, data, gasArgs) {
       const sender = (await signer.getAccounts())[0];
       const client = await SigningCosmWasmClient.connectWithSigner(rpc, signer);
       const msg = {

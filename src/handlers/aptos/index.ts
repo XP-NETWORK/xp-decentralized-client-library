@@ -21,7 +21,7 @@ export function aptosHandler({
       if (!bd) throw new Error("Failed to fetch bridge data");
       return bd.validators.data.length;
     },
-    async deployCollection(signer, da) {
+    async deployNftCollection(signer, da) {
       const transaction = await aptos.createCollectionTransaction({
         creator: signer,
         description: `Testnet Collection: ${da.name}(${da.symbol}) by XP Network.`,

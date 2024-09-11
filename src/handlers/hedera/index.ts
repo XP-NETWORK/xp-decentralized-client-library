@@ -218,7 +218,7 @@ export function hederaHandler({
         },
       );
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const rif = proxy.connect(signer);
       const deploy = await rif.deployNft(da.name, da.symbol, {
         ...ga,

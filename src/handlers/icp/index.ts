@@ -159,7 +159,7 @@ export async function icpHandler({
         throw new Error(`Failed to approve, ${approval?.Err}`);
       return approval.Ok.toString();
     },
-    async deployCollection(signer, _da) {
+    async deployNftCollection(signer, _da) {
       const encoded = init({ IDL })[0].encodeValue({
         icrc3_args: [
           {

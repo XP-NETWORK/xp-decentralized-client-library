@@ -11,7 +11,7 @@ import BigNumber from "bignumber.js";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   TSingularNftChain,
@@ -57,7 +57,7 @@ export type TTezosHandler = TSingularNftChain<
   TezosToolkit
 > &
   MintNft<TezosSigner, TezosMintArgs, Partial<SendParams>, string> &
-  DeployCollection<
+  DeployNFTCollection<
     TezosSigner,
     {
       name: string;

@@ -5,7 +5,7 @@ import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
 import { Value } from "../../contractsTypes/icp/nft/nft.types";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   TNFTList,
@@ -45,7 +45,7 @@ export type TICPHandler = TSingularNftChain<
   HttpAgent
 > &
   MintNft<HttpAgent, TICPMintArgs, undefined, string> &
-  DeployCollection<
+  DeployNFTCollection<
     HttpAgent,
     { name: string; symbol: string },
     undefined,

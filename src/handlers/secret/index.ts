@@ -55,7 +55,7 @@ export function secretHandler({
         ret: tx,
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const code = da.codeId ?? nftCodeId;
       if (!code) {
         throw new Error("Code not found");

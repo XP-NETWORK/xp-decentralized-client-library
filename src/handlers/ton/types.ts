@@ -3,7 +3,7 @@ import { TonClient } from "@ton/ton";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/ton/tonBridge";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   TSingularNftChain,
@@ -35,7 +35,7 @@ export type TTonHandler = TSingularNftChain<
   TonClient
 > &
   MintNft<Sender, TonMintArgs, never, undefined> &
-  DeployCollection<Sender, TonDeployArgs, never, string> &
+  DeployNFTCollection<Sender, TonDeployArgs, never, string> &
   ReadClaimed721Event;
 
 export type TTonParams = {

@@ -1,6 +1,7 @@
 import {
   Bridge__factory,
   ERC721Royalty__factory,
+  ERC1155Royalty__factory,
 } from "../../contractsTypes/evm";
 import { retryFn } from "../utils";
 
@@ -86,10 +87,20 @@ export function evmHandler({
         lock_tx_chain: claimed.args.lockTxChain,
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const contract = await new ERC721Royalty__factory(signer).deploy(
         da.name,
         da.symbol,
+        da.owner ?? signer,
+        {
+          ...ga,
+          from: await signer.getAddress(),
+        },
+      );
+      return await contract.getAddress();
+    },
+    async deploySFTCollection(signer, da, ga) {
+      const contract = await new ERC1155Royalty__factory(signer).deploy(
         da.owner ?? signer,
         {
           ...ga,

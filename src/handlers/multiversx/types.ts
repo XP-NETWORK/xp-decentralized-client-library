@@ -2,7 +2,7 @@ import { Transaction } from "@multiversx/sdk-core/out";
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   ReadClaimed1155Event,
@@ -61,7 +61,7 @@ export type TMultiversXHandler = TSingularNftChain<
     { gasLimit: number; value: number },
     string
   > &
-  DeployCollection<
+  DeployNFTCollection<
     TMultiversXSigner,
     { name: string; ticker: string },
     { gasLimit: number },

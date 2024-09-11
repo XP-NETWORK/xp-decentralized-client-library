@@ -105,7 +105,7 @@ export function multiversxHandler({
         royalty: BigInt(royalties),
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const builtInSC =
         "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
       const args: TypedValue[] = [

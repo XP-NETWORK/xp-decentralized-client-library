@@ -285,7 +285,7 @@ export function tezosHandler({
         gasArgs,
       );
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const metadata = new MichelsonMap<string, bytes>();
       metadata.set("", tas.bytes(char2Bytes("tezos-storage:data")));
       metadata.set(
