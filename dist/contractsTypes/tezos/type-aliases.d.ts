@@ -44,7 +44,7 @@ export type mutez = BigNumber & {
 export type tez = BigNumber & {
     __type: 'tez';
 };
-type MapKey = Array<unknown> | object | string | boolean | number;
+type MapKey = Array<any> | object | string | boolean | number;
 export type MMap<K extends MapKey, V> = Omit<MichelsonMap<K, V>, 'get'> & {
     get: (key: K) => V;
 };

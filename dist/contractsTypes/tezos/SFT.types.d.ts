@@ -71,12 +71,12 @@ type contractTypes = {
     methodsObject: MethodsObject;
     storage: Storage;
     code: {
-        __type: 'MultiAssetCode';
+        __type: 'SFTCode';
         protocol: string;
         code: object[];
     };
 };
-export type MultiAssetContractType = ContractAbstractionFromContractType<contractTypes>;
-export type MultiAssetWalletType = WalletContractAbstractionFromContractType<contractTypes>;
+export type SFTContractType = ContractAbstractionFromContractType<contractTypes>;
+export type SFTWalletType = WalletContractAbstractionFromContractType<contractTypes>;
 export {};
-//# sourceMappingURL=MultiAsset.types.d.ts.map
+//# sourceMappingURL=SFT.types.d.ts.map
