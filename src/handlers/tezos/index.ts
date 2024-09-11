@@ -408,6 +408,7 @@ export function tezosHandler({
             source_nft_address: {
               addr: tas.address(sourceNft),
             },
+            metadata_uri: metaDataUri,
           });
         },
         extraArgs,
