@@ -172,6 +172,7 @@ export function aptosHandler({
         transactionHash: transactionHash,
         symbol: data.symbol,
         lockTxChain: identifier,
+        eventUri: "",
       };
     },
     async claimSft(signer, claimData, sigs) {

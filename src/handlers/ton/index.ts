@@ -197,6 +197,7 @@ export function tonHandler({
             tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
             nftType, // Sigular or multiple ( 721 / 1155)
             sourceChain, // Source chain of NFT
+            metaDataUri,
           } = loadLockedEvent(msg.body.asSlice());
 
           const fee = await storage.chainFee(
@@ -250,6 +251,7 @@ export function tonHandler({
             royalty: nft.royalty.toString(),
             transactionHash: hash,
             lockTxChain: identifier,
+            eventUri: metaDataUri.asSlice().loadStringRefTail(),
           };
         }
       }

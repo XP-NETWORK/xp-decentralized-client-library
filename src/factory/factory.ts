@@ -13,6 +13,7 @@ import { multiversxHandler } from "../handlers/multiversx";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
+import { checkHttpOrIpfs } from "../handlers/utils";
 import { TChainParams } from "./config";
 
 export namespace Chain {
@@ -70,6 +71,18 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         data.sourceNftContractAddress,
         undefined,
       );
+      if (data.destinationChain === "TEZOS") {
+        console.log("data.metadata", data.metadata);
+        console.log("ogNftData.metadata", ogNftData.metadata);
+        console.log("data.eventUri", data.eventUri);
+
+        data.metadata = checkHttpOrIpfs(data.metadata, data.eventUri);
+        ogNftData.metadata = checkHttpOrIpfs(ogNftData.metadata, data.eventUri);
+
+        console.log("data.metadata", data.metadata);
+        console.log("ogNftData.metadata", ogNftData.metadata);
+      }
+
       return {
         ...data,
         ...ogNftData,

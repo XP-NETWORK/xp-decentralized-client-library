@@ -190,6 +190,7 @@ export function secretHandler({
         royalty: nft.royalty.toString(),
         transactionHash: txHash,
         lockTxChain: identifier,
+        eventUri: "",
       };
     },
     async claimSft(signer, claimData, sigs, extraArgs) {
