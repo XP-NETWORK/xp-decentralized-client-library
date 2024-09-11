@@ -272,9 +272,6 @@ export async function icpHandler({
       return storage;
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
-      if (ifBrowserSigners(signer)) {
-        throw new Error("Browser Signer not supported");
-      }
       const bcWithSigner = await createBridgeActor(bridge, {
         agent: signer,
       });
