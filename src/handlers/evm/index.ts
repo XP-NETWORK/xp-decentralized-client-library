@@ -124,6 +124,22 @@ export function evmHandler({
       await response.wait();
       return response;
     },
+    async mintSft(signer, ma, amt, gas) {
+      const minter = ERC1155Royalty__factory.connect(ma.contract, signer);
+      const response = await minter.mint(
+        await signer.getAddress(),
+        ma.tokenId,
+        amt,
+        ma.royalty,
+        ma.royaltyReceiver,
+        ma.uri,
+        {
+          ...gas,
+        },
+      );
+      await response.wait();
+      return response;
+    },
     getProvider() {
       return provider;
     },
