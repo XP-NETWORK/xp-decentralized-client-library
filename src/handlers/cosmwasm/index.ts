@@ -254,7 +254,6 @@ export async function cosmWasmHandler({
         royalty: nft.royalty.toString(),
         transactionHash: txHash,
         lockTxChain: identifier,
-        eventUri: "",
       };
     },
     async lockNft(

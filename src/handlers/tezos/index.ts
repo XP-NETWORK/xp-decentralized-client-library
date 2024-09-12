@@ -250,7 +250,6 @@ export function tezosHandler({
         token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
-        metadata_uri: metaDataUri,
       } = data;
       const fee = await storage.chainFee(destinationChain);
       const royaltyReceiver = await storage.chainRoyalty(destinationChain);
@@ -279,7 +278,6 @@ export function tezosHandler({
         royalty: nft.royalty.toString(),
         metadata: nft.metadata,
         lockTxChain: identifier,
-        eventUri: metaDataUri,
       };
     },
     async mintNft(signer, ma, gasArgs) {

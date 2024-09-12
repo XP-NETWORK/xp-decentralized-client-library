@@ -161,7 +161,6 @@ export function evmHandler({
         symbol: data.symbol,
         royalty: data.royalty.toString(),
         lockTxChain: identifier,
-        eventUri: locked.args.metaDataUri,
       };
     },
     getBalance(signer) {
