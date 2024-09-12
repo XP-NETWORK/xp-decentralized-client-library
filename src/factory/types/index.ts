@@ -10,6 +10,7 @@ import {
   TMultiversXHandler,
   TMultiversXParams,
 } from "../../handlers/multiversx/types";
+import { TNearHandler, TNearParams } from "../../handlers/near/types";
 import { TSecretHandler, TSecretParams } from "../../handlers/secret/types";
 import { TTezosHandler, TTezosParams } from "../../handlers/tezos/types";
 import { TTonHandler, TTonParams } from "../../handlers/ton/types";
@@ -23,6 +24,7 @@ export type TTonMeta = [TTonHandler, TTonParams];
 export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
 export type TAptosMeta = [TAptosHandler, TAptosParams];
 export type TICPMeta = [TICPHandler, TICPParams];
+export type TNearMeta = [TNearHandler, TNearParams];
 
 export type MetaMap = {
   BSC: TEvmMeta;
@@ -37,4 +39,5 @@ export type MetaMap = {
   TERRA: TCosmWasmMeta;
   APTOS: TAptosMeta;
   ICP: TICPMeta;
+  NEAR: TNearMeta;
 };

@@ -1,44 +1,51 @@
-import { Contract } from "near-api-js";
+import { Contract, connect } from "near-api-js";
 import { NEAR_NOMINATION } from "near-api-js/lib/utils/format";
 import { unimplemented } from "../../utils";
 import { TNFTData } from "../types";
 import { fetchHttpOrIpfs } from "../utils";
 import { TNearHandler, TNearParams } from "./types";
 
-export function multiversxHandler({
-  provider,
+export async function multiversxHandler({
+  networkId,
+  nodeUrl,
   bridge,
   storage,
   identifier,
-}: TNearParams): TNearHandler {
+}: TNearParams): Promise<TNearHandler> {
+  const provider = await connect({
+    networkId,
+    nodeUrl,
+  });
   const bc = new Contract(provider.connection, bridge, {
     changeMethods: ["lock_nft", "claim_nft"],
     useLocalViewExecution: false,
     viewMethods: ["validator_count"],
   });
+
+  async function nftData(nonce: string, collection: string) {
+    const contract = new Contract(provider.connection, collection, {
+      viewMethods: ["nft_token", "nft_metadata"],
+      changeMethods: [],
+      useLocalViewExecution: false,
+    });
+    //@ts-ignore ik it works.
+    const nft_metadata = await contract.nft_token({ token_id: nonce });
+    //@ts-ignore ik it works.
+    const collection_metadata = await contract.nft_metadata();
+    return {
+      name: nft_metadata.metadata.title,
+      symbol: collection_metadata.symbol,
+      metadata: nft_metadata.metadata.media || nft_metadata.metadata.extra,
+      royalty: BigInt(
+        Object.values(nft_metadata.metadata.royalty).reduce(
+          //@ts-ignore ik it works
+          (e: number, c: number) => c + e,
+        ) as number,
+      ),
+    };
+  }
   return {
-    async nftData(nonce, collection) {
-      const contract = new Contract(provider.connection, collection, {
-        viewMethods: ["nft_token", "nft_metadata"],
-        changeMethods: [],
-        useLocalViewExecution: false,
-      });
-      //@ts-ignore ik it works.
-      const nft_metadata = await contract.nft_token({ token_id: nonce });
-      //@ts-ignore ik it works.
-      const collection_metadata = await contract.nft_metadata();
-      return {
-        name: nft_metadata.metadata.title,
-        symbol: collection_metadata.symbol,
-        metadata: nft_metadata.metadata.media || nft_metadata.metadata.extra,
-        royalty: BigInt(
-          Object.values(nft_metadata.metadata.royalty).reduce(
-            //@ts-ignore ik it works
-            (e: number, c: number) => c + e,
-          ) as number,
-        ),
-      };
-    },
+    nftData,
     async deployNftCollection(_signer, _da, _ga) {
       unimplemented();
     },
@@ -149,10 +156,7 @@ export function multiversxHandler({
         symbol: "",
       };
       if (sourceChain === "NEAR") {
-        metadata = await this.nftData(
-          tokenId,
-          parsed.source_nft_contract_address,
-        );
+        metadata = await nftData(tokenId, parsed.source_nft_contract_address);
       }
 
       const imgUri = (await fetchHttpOrIpfs(metadata.metadata)).image;

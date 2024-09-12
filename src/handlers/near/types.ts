@@ -55,10 +55,9 @@ export type TNearHandler = TSingularNftChain<
   ReadClaimed721Event;
 
 export type TNearParams = {
-  provider: Near;
-  gatewayURL: string;
+  nodeUrl: string;
   bridge: string;
   storage: BridgeStorage;
-  chainId: string;
+  networkId: string;
   identifier: string;
 };

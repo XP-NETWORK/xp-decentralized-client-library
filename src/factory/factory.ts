@@ -29,6 +29,7 @@ export namespace Chain {
   export const APTOS = "APTOS";
   export const ICP = "ICP";
   export const BASE = "BASE";
+  export const NEAR = "NEAR";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -45,6 +46,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.TERRA, chainParams.terraParams);
   cToP.set(Chain.APTOS, chainParams.aptosParams);
   cToP.set(Chain.ICP, chainParams.icpParams);
+  cToP.set(Chain.NEAR, chainParams.nearParams);
   return cToP;
 }
 

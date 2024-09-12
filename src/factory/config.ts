@@ -11,6 +11,7 @@ import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
 import { TICPParams } from "../handlers/icp/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
+import { TNearParams } from "../handlers/near/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
 import { TTonParams } from "../handlers/ton/types";
@@ -30,6 +31,7 @@ export interface TChainParams {
   aptosParams: TAptosParams;
   moonbeamParams: TEvmParams;
   icpParams: TICPParams;
+  nearParams: TNearParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -101,6 +103,13 @@ export namespace ChainFactoryConfigs {
         }),
         bridge: Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai"),
         identifier: "ICP",
+        storage,
+      },
+      nearParams: {
+        bridge: "xp-bridge-test.testnet",
+        networkId: "testnet",
+        nodeUrl: "https://rpc.testnet.near.org",
+        identifier: "NEAR",
         storage,
       },
     } satisfies Partial<TChainParams>;
