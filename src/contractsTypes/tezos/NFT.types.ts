@@ -3,17 +3,32 @@ import { ContractAbstractionFromContractType, WalletContractAbstractionFromContr
 import { address, BigMap, bytes, contract, MMap, nat } from './type-aliases';
 
 export type Storage = {
-    ledger: BigMap<nat, address>;
-    operators: BigMap<{
-        0: address;
-        1: address;
-    }, Array<nat>>;
-    token_metadata: BigMap<nat, {
+  ledger: BigMap<nat, address>;
+  operators: BigMap<
+    {
+      0: address;
+      1: address;
+    },
+    Array<nat>
+  >;
+  tokens: {
+    token_metadata: BigMap<
+      nat,
+      {
         token_id: nat;
         token_info: MMap<string, bytes>;
-    }>;
-    metadata: BigMap<string, bytes>;
-    admin: address;
+      }
+    >;
+  };
+  token_metadata: BigMap<
+    nat,
+    {
+      token_id: nat;
+      token_info: MMap<string, bytes>;
+    }
+  >;
+  metadata: BigMap<string, bytes>;
+  admin: address;
 };
 
 type Methods = {

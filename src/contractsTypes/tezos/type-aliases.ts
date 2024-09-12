@@ -76,7 +76,8 @@ export const tas = {
 	chest: createStringTypeTas<chest>(),
 	chest_key: createStringTypeTas<chest_key>(),
 	timestamp: (value: string | Date): timestamp => new Date(value).toISOString() as timestamp,
-
+	signature: createStringTypeTas<signature>(),
+	key: createStringTypeTas<key>(),
 	int: createBigNumberTypeTas<int>(),
 	nat: createBigNumberTypeTas<nat>(),
 	mutez: createBigNumberTypeTas<mutez>(),

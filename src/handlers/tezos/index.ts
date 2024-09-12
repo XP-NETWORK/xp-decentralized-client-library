@@ -13,7 +13,7 @@ import {
 } from "@taquito/utils";
 import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { bytes, tas } from "../../contractsTypes/tezos/type-aliases";
+import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
 
 import {
   ContractAbstraction,
@@ -157,9 +157,21 @@ export function tezosHandler({
   const getNftTokenMetaData = async (contract: string, tokenId: bigint) => {
     const nftContract = await Tezos.contract.at<NFTContractType>(contract);
 
-    const tokenMetaData = await (
-      await nftContract.storage()
-    ).tokens.token_metadata.get(tas.nat(tokenId.toString()));
+    let tokenMetaData: {
+      token_id: nat;
+      token_info: MMap<string, bytes>;
+    };
+
+    try {
+      tokenMetaData = await (
+        await nftContract.storage()
+      ).tokens.token_metadata.get(tas.nat(tokenId.toString()));
+    } catch (ex) {
+      tokenMetaData = await (await nftContract.storage()).token_metadata.get(
+        tas.nat(tokenId.toString()),
+      );
+    }
+
     const metaDataInHex = tokenMetaData.token_info.get("");
     return bytes2Char(metaDataInHex);
   };
