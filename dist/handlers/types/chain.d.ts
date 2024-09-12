@@ -152,7 +152,6 @@ export type TNftTransferDetailsObject = {
     nftType: string;
     fee: string;
     lockTxChain: string;
-    eventUri: string;
 };
 /**
  * Represents a type that defines a function to get claim data.
