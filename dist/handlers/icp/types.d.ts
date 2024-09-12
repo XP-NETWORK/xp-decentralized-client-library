@@ -4,7 +4,7 @@ import { Principal } from "@dfinity/principal";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
 import { Value } from "../../contractsTypes/icp/nft/nft.types";
-import { DeployCollection, MintNft, ReadClaimed721Event, TNFTList, TSingularNftChain } from "../types";
+import { DeployNFTCollection, MintNft, ReadClaimed721Event, TNFTList, TSingularNftChain } from "../types";
 export interface ActorArgs {
     interfaceFactory: IDL.InterfaceFactory;
     canisterId: string;
@@ -27,7 +27,7 @@ export type TICPMintArgs = {
     owner: string;
 };
 export type TICPClaimArgs = ClaimData;
-export type TICPHandler = TSingularNftChain<HttpAgent | BrowserSigners, TICPClaimArgs, undefined, string, HttpAgent> & MintNft<HttpAgent, TICPMintArgs, undefined, string> & DeployCollection<HttpAgent, {
+export type TICPHandler = TSingularNftChain<HttpAgent | BrowserSigners, TICPClaimArgs, undefined, string, HttpAgent> & MintNft<HttpAgent, TICPMintArgs, undefined, string> & DeployNFTCollection<HttpAgent, {
     name: string;
     symbol: string;
 }, undefined, string> & ReadClaimed721Event & TNFTList<[string, Value][]>;

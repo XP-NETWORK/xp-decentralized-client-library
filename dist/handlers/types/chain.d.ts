@@ -3,9 +3,17 @@ import { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
 export type MintNft<Signer, MintArgs, GasArgs, RetTx> = {
     mintNft: (signer: Signer, ma: MintArgs, gasArgs?: GasArgs) => Promise<RetTx>;
 };
-export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = {
-    deployCollection: (signer: Signer, da: DeployArgs, ga?: GasArgs) => Promise<RetTx>;
+export type MintSft<Signer, MintArgs, GasArgs, RetTx> = {
+    mintSft: (signer: Signer, ma: MintArgs, amount: bigint, gasArgs?: GasArgs) => Promise<RetTx>;
 };
+export type Mint<Signer, MintArgs, GasArgs, RetTx> = MintNft<Signer, MintArgs, GasArgs, RetTx> & MintSft<Signer, MintArgs, GasArgs, RetTx>;
+export type DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
+    deployNftCollection: (signer: Signer, da: DeployArgs, ga?: GasArgs) => Promise<RetTx>;
+};
+export type DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
+    deploySFTCollection: (signer: Signer, da: DeployArgs, ga?: GasArgs) => Promise<RetTx>;
+};
+export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> & DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx>;
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers

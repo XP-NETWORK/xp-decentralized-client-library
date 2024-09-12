@@ -3,7 +3,7 @@ import { CosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
+import { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
 export type TCosmWasmParams = {
     bridge: string;
     chainId: string;
@@ -25,7 +25,7 @@ export type CosmWasmExtraArgs = {
     memo?: string;
     funds?: Coin[];
 };
-export type TCosmWasmHandler = TSingularNftChain<OfflineDirectSigner, TCosmWasmClaimArgs, CosmWasmExtraArgs, ExecuteResult, CosmWasmClient> & MintNft<OfflineDirectSigner, TCosmWasmMintArgs, CosmWasmExtraArgs, ExecuteResult> & DeployCollection<OfflineDirectSigner, {
+export type TCosmWasmHandler = TSingularNftChain<OfflineDirectSigner, TCosmWasmClaimArgs, CosmWasmExtraArgs, ExecuteResult, CosmWasmClient> & MintNft<OfflineDirectSigner, TCosmWasmMintArgs, CosmWasmExtraArgs, ExecuteResult> & DeployNFTCollection<OfflineDirectSigner, {
     name: string;
     symbol: string;
     codeId?: number;

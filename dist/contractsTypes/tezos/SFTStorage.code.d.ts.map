@@ -1,1 +1,1 @@
-{"version":3,"file":"SFTStorage.code.d.ts","sourceRoot":"","sources":["../../../src/contractsTypes/tezos/SFTStorage.code.ts"],"names":[],"mappings":"AAAA,eAAO,MAAM,cAAc,EAAE;IACzB,MAAM,EAAE,gBAAgB,CAAC;IACzB,QAAQ,EAAE,MAAM,CAAC;IACjB,IAAI,EAAE,MAAM,EAAE,CAAC;CAOlB,CAAC"}
+{"version":3,"file":"SFTStorage.code.d.ts","sourceRoot":"","sources":["../../../src/contractsTypes/tezos/SFTStorage.code.ts"],"names":[],"mappings":"AACA,eAAO,MAAM,cAAc,EAAE;IAAE,MAAM,EAAE,gBAAgB,CAAC;IAAC,QAAQ,EAAE,MAAM,CAAC;IAAC,IAAI,EAAE,MAAM,EAAE,CAAA;CAIxF,CAAC"}

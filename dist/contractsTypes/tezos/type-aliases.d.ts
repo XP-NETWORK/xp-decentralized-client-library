@@ -44,7 +44,7 @@ export type mutez = BigNumber & {
 export type tez = BigNumber & {
     __type: 'tez';
 };
-type MapKey = Array<unknown> | object | string | boolean | number;
+type MapKey = Array<any> | object | string | boolean | number;
 export type MMap<K extends MapKey, V> = Omit<MichelsonMap<K, V>, 'get'> & {
     get: (key: K) => V;
 };
@@ -81,10 +81,10 @@ export declare const tas: {
     bytes: (value: string) => bytes;
     contract: (value: string) => contract;
     chest: (value: string) => chest;
-    signature: (value: string) => signature;
-    key: (value: string) => key;
     chest_key: (value: string) => chest_key;
     timestamp: (value: string | Date) => timestamp;
+    signature: (value: string) => signature;
+    key: (value: string) => key;
     int: (value: number | BigNumber | string) => int;
     nat: (value: number | BigNumber | string) => nat;
     mutez: (value: number | BigNumber | string) => mutez;

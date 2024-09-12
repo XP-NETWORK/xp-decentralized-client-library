@@ -12,6 +12,10 @@ export type Storage = {
             token_info: MMap<string, bytes>;
         }>;
     };
+    token_metadata: BigMap<nat, {
+        token_id: nat;
+        token_info: MMap<string, bytes>;
+    }>;
     metadata: BigMap<string, bytes>;
     admin: address;
 };
