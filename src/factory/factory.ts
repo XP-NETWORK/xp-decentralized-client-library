@@ -11,6 +11,7 @@ import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
 import { icpHandler } from "../handlers/icp";
 import { multiversxHandler } from "../handlers/multiversx";
+import { nearHandler } from "../handlers/near";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
@@ -121,4 +122,7 @@ CHAIN_INFO.set(Chain.APTOS, {
 });
 CHAIN_INFO.set(Chain.ICP, {
   constructor: icpHandler,
+});
+CHAIN_INFO.set(Chain.NEAR, {
+  constructor: nearHandler,
 });

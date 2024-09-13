@@ -1,11 +1,11 @@
 import { Contract, connect } from "near-api-js";
-import { NEAR_NOMINATION } from "near-api-js/lib/utils/format";
+import { parseNearAmount } from "near-api-js/lib/utils/format";
 import { unimplemented } from "../../utils";
 import { TNFTData } from "../types";
 import { fetchHttpOrIpfs } from "../utils";
 import { TNearHandler, TNearParams } from "./types";
 
-export async function multiversxHandler({
+export async function nearHandler({
   networkId,
   nodeUrl,
   bridge,
@@ -92,7 +92,7 @@ export async function multiversxHandler({
             media: ma.uri,
           },
         },
-        attachedDeposit: NEAR_NOMINATION / 1000n,
+        attachedDeposit: BigInt(parseNearAmount("0.007") ?? 0),
         gas: gasArgs ? BigInt(gasArgs.gasLimit) : undefined,
       });
       return call.transaction.hash;
@@ -125,7 +125,7 @@ export async function multiversxHandler({
           account_id: bridge,
           msg: null,
         },
-        attachedDeposit: 0n,
+        attachedDeposit: BigInt(parseNearAmount("0.005") ?? 0),
       });
       return approve.transaction.hash;
     },
@@ -186,7 +186,7 @@ export async function multiversxHandler({
       destinationChain,
       to,
       tokenId,
-      metadata_uri,
+      _metadata_uri,
     ) {
       const locked = await signer.functionCall({
         contractId: bridge,
@@ -194,10 +194,12 @@ export async function multiversxHandler({
         args: {
           source_nft_contract_address: sourceNft,
           destination_chain: destinationChain,
-          destination_user_address: to,
-          token_id: tokenId,
-          metadata_uri,
+          destination_address: to,
+          token_id: tokenId.toString(),
+          // metadata_uri,
         },
+        gas: 100000000000000n,
+        attachedDeposit: BigInt(parseNearAmount("2") ?? 0),
       });
       return {
         ret: locked,

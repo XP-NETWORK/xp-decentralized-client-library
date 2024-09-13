@@ -313,6 +313,11 @@
   dependencies:
     "@noble/hashes" "^1.3.1"
 
+"@dfinity/utils@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@dfinity/utils/-/utils-2.5.0.tgz#142c04eac630a5cef7a925a12690e694aaecc196"
+  integrity sha512-M4kVOdJvpJJdXrB3CgF4nXkDGOGCo0KeR5Z6QznNPpPwlz9FEThvVWZz+6y9Fs6ksWg1G8Oj7Fxbul5BMn2iAg==
+
 "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
