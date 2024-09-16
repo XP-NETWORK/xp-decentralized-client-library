@@ -108,7 +108,7 @@ export namespace ChainFactoryConfigs {
       nearParams: {
         bridge: "xp-bridge-test.testnet",
         networkId: "testnet",
-        nodeUrl: "https://rpc.testnet.near.org",
+        nodeUrl: "https://archival-rpc.testnet.near.org",
         identifier: "NEAR",
         storage,
       },

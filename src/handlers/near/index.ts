@@ -37,7 +37,7 @@ export async function nearHandler({
       symbol: collection_metadata.symbol,
       metadata: nft_metadata.metadata.media || nft_metadata.metadata.extra,
       royalty: BigInt(
-        Object.values(nft_metadata.metadata.royalty).reduce(
+        Object.values(nft_metadata.metadata.royalty || { a: 0 }).reduce(
           //@ts-ignore ik it works
           (e: number, c: number) => c + e,
         ) as number,
