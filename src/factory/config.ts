@@ -138,9 +138,16 @@ export namespace ChainFactoryConfigs {
         bridgeAddress: "EQDn9dWuVp18AMnFc7yrEx6TxDwrbFI8FZYElkY7Exe1QcQO",
         client: new TonClient({
           endpoint:
-            "https://toncenter.com/api/v2/jsonRPC?api_key=05645d6b549f33bf80cee8822bd63df720c6781bd00020646deb7b2b2cd53b73",
+            "https://toncenter.com/api/v2/jsonRPC?api_key=78b6f2e7cbe2900dd39ab51a3f8fe3090154973343929991ed9b4f63fbeb45a5",
         }),
         storage,
+      },
+      tezosParams: {
+        bridge: "KT1N3qtcfxzNMhdRMphvtDCKLEDwVLhZ8Cpq",
+        identifier: Chain.TEZOS,
+        storage,
+        Tezos: new TezosToolkit("https://mainnet.ecadinfra.com"),
+        tzktApi: "https://api.tzkt.io/",
       },
     } satisfies Partial<TChainParams>;
   }
