@@ -186,7 +186,7 @@ export async function nearHandler({
       destinationChain,
       to,
       tokenId,
-      _metadata_uri,
+      metadata_uri,
     ) {
       const locked = await signer.functionCall({
         contractId: bridge,
@@ -196,7 +196,7 @@ export async function nearHandler({
           destination_chain: destinationChain,
           destination_address: to,
           token_id: tokenId.toString(),
-          // metadata_uri,
+          metadata_uri,
         },
         gas: 100000000000000n,
         attachedDeposit: BigInt(parseNearAmount("2") ?? 0),
