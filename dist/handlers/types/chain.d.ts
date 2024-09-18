@@ -162,6 +162,17 @@ export type TNftTransferDetailsObject = {
     lockTxChain: string;
     imgUri?: string;
 };
+export type LockEvent = {
+    tokenId: string;
+    destinationChain: string;
+    destinationUserAddress: string;
+    sourceNftContractAddress: string;
+    tokenAmount: string;
+    nftType: string;
+    sourceChain: string;
+    transactionHash: string;
+    metaDataUri: string;
+};
 /**
  * Represents a type that defines a function to get claim data.
  */
@@ -171,7 +182,7 @@ export type TGetClaimData = {
      * @param txHash - The transaction hash.
      * @returns A promise that resolves to an object containing claim data @type {TNftTransferDetailsObject}.
      */
-    getClaimData: (txHash: string) => Promise<TNftTransferDetailsObject>;
+    decodeLockedEvent: (txHash: string) => Promise<LockEvent>;
 };
 /**
  * Represents a type for locking SFT (Semi Fungible Token) on a specific chain.
@@ -223,6 +234,9 @@ export type TGetValidatorCount = {
 export type TGetStorage = {
     getStorageContract: () => BridgeStorage;
 };
+export type TGetChainIdentifier = {
+    identifier: string;
+};
 export type TGetProvider<T> = {
     getProvider: () => T;
 };
@@ -236,7 +250,7 @@ export type TMapTransferDetailsToChainClaimData<To> = {
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider> & TMapTransferDetailsToChainClaimData<ClaimData> & TGetValidatorCount & TGetStorage;
+export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider> & TMapTransferDetailsToChainClaimData<ClaimData> & TGetValidatorCount & TGetStorage & TGetChainIdentifier;
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
