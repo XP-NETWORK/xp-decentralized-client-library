@@ -1,20 +1,4 @@
 import { hash } from "@stablelib/blake2b";
-
-import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
-import * as api from "@tzkt/sdk-api";
-import { eventsGetContractEvents } from "@tzkt/sdk-api";
-
-import {
-  b58cdecode,
-  b58cencode,
-  char2Bytes,
-  prefix,
-  validateAddress,
-} from "@taquito/utils";
-import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
-import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
-
 import {
   ContractAbstraction,
   ContractMethod,
@@ -27,10 +11,24 @@ import {
   TransactionWalletOperation,
   Wallet,
 } from "@taquito/taquito";
+import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
+import {
+  b58cdecode,
+  b58cencode,
+  char2Bytes,
+  prefix,
+  validateAddress,
+} from "@taquito/utils";
+import * as api from "@tzkt/sdk-api";
+import { eventsGetContractEvents } from "@tzkt/sdk-api";
 import axios from "axios";
+import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
+import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
+import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
 import { raise } from "../ton";
 import { TNFTData } from "../types";
+import { fetchHttpOrIpfs } from "../utils/index";
 import { TTezosHandler, TTezosParams, TezosSigner } from "./types";
 
 export function tezosHandler({
@@ -467,9 +465,10 @@ export function tezosHandler({
       try {
         const isUrl = URLCanParse(tokenMd);
         if (isUrl) {
-          const metaData: { symbol?: string } = await http
-            .get(tokenMd)
-            .then((res) => res.data);
+          const metaData: { symbol?: string } = await fetchHttpOrIpfs(
+            tokenMd,
+            http,
+          );
           symbol = metaData.symbol ?? symbol;
         }
         symbol = JSON.parse(tokenMd).symbol ?? symbol;
@@ -490,7 +489,7 @@ export function tezosHandler({
         };
 
         if (isUrl) {
-          metaData = (await http.get(metaDataOrURL)).data;
+          metaData = await fetchHttpOrIpfs(metaDataOrURL, http);
         } else {
           metaData = JSON.parse(metaDataOrURL);
         }
