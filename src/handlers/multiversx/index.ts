@@ -318,7 +318,9 @@ export function multiversxHandler({
       const tx = await apin.getTransaction(
         transactionOnNetworkMultisig.contractResults.items[0].hash,
       );
-      console.log(`HyperBlock Nonce: ${tx.hyperblockNonce}`);
+      console.log(
+        `HyperBlock Nonce: ${transactionOnNetworkMultisig.hyperblockNonce} ${tx.hyperblockNonce}`,
+      );
       const transactionOutcomeMultisig =
         converter.transactionOnNetworkToOutcome(tx);
       const [event] = findEventsByFirstTopic(
