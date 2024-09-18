@@ -269,7 +269,7 @@ export function tezosHandler({
         tokenAmount,
         nftType,
         sourceChain,
-        transactionHash: claimData?.transactionId?.toString() ?? "",
+        transactionHash: txHash,
         sourceNftContractAddress,
         fee: fee.toString(),
         royaltyReceiver,
