@@ -30,7 +30,6 @@ import {
 import axios from "axios";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
 import { raise } from "../ton";
-import { TNFTData } from "../types";
 import { TTezosHandler, TTezosParams, TezosSigner } from "./types";
 
 export function tezosHandler({
@@ -176,6 +175,7 @@ export function tezosHandler({
     return bytes2Char(metaDataInHex);
   };
   return {
+    identifier,
     getStorageContract() {
       return storage;
     },
@@ -229,7 +229,7 @@ export function tezosHandler({
         extraArgs,
       );
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const txs = await api.operationsGetTransactionByHash(txHash);
       const tx = txs[0] ?? raise("No such txn found");
       const op = await eventsGetContractEvents({
@@ -250,18 +250,8 @@ export function tezosHandler({
         token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
+        metadata_uri,
       } = data;
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let nft: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (validateAddress(sourceNftContractAddress) === 3) {
-        nft = await this.nftData(tokenId, sourceNftContractAddress, {});
-      }
       return {
         tokenId,
         destinationChain,
@@ -271,13 +261,8 @@ export function tezosHandler({
         sourceChain,
         transactionHash: claimData?.transactionId?.toString() ?? "",
         sourceNftContractAddress,
-        fee: fee.toString(),
-        royaltyReceiver,
-        name: nft.name,
-        symbol: nft.symbol,
-        royalty: nft.royalty.toString(),
-        metadata: nft.metadata,
         lockTxChain: identifier,
+        metaDataUri: metadata_uri,
       };
     },
     async mintNft(signer, ma, gasArgs) {

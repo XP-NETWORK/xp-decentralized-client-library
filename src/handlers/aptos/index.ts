@@ -1,7 +1,6 @@
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import { HexString } from "aptos";
 import { raise } from "../ton";
-import { TNFTData } from "../types";
 import { BridgeClient } from "./bridge-client";
 import { TAptosHandler, TAptosParams } from "./types";
 
@@ -16,6 +15,7 @@ export function aptosHandler({
   const bc = new BridgeClient(aptos, bridge);
 
   return {
+    identifier,
     async getValidatorCount() {
       const bd = await bc.getBridgeData();
       if (!bd) throw new Error("Failed to fetch bridge data");
@@ -123,7 +123,7 @@ export function aptosHandler({
         symbol: data.current_collection?.collection_name ?? "ANFT",
       };
     },
-    async getClaimData(transactionHash) {
+    async decodeLockedEvent(transactionHash) {
       const tx = await aptos.waitForTransaction({ transactionHash });
       const events = await aptos.getEvents({
         options: {
@@ -138,22 +138,6 @@ export function aptosHandler({
         e.type.includes("aptos_nft_bridge::LockedEvent"),
       );
       if (!event) throw new Error("Event not found");
-      const destinationChain = hexStringToUtf8(event.data.destination_chain);
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let data: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      try {
-        data = await this.nftData(
-          hexStringToUtf8(event.data.source_nft_contract_address),
-          "",
-          undefined,
-        );
-      } catch (e) {}
       return {
         tokenAmount: event.data.token_amount,
         sourceChain: hexStringToUtf8(event.data.self_chain),
@@ -164,14 +148,9 @@ export function aptosHandler({
         destinationChain: hexStringToUtf8(event.data.destination_chain),
         destinationUserAddress: event.data.destination_user_address,
         nftType: hexStringToUtf8(event.data.nft_type),
-        fee: fee.toString(),
-        royaltyReceiver,
-        metadata: data.metadata,
-        name: data.name,
-        royalty: data.royalty.toString(),
         transactionHash: transactionHash,
-        symbol: data.symbol,
         lockTxChain: identifier,
+        metaDataUri: "",
       };
     },
     async claimSft(signer, claimData, sigs) {

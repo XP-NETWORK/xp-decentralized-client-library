@@ -1,8 +1,6 @@
 import { Contract, connect } from "near-api-js";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
 import { unimplemented } from "../../utils";
-import { TNFTData } from "../types";
-import { fetchHttpOrIpfs } from "../utils";
 import { TNearHandler, TNearParams } from "./types";
 
 export async function nearHandler({
@@ -45,6 +43,7 @@ export async function nearHandler({
     };
   }
   return {
+    identifier,
     nftData,
     async deployNftCollection(_signer, _da, _ga) {
       unimplemented();
@@ -129,7 +128,7 @@ export async function nearHandler({
       });
       return approve.transaction.hash;
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const receipts = await provider.connection.provider.txStatusReceipts(
         txHash,
         bridge,
@@ -147,20 +146,6 @@ export async function nearHandler({
       const tokenId = parsed.token_id;
       const tokenAmount = parsed.token_amount.toString();
 
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let metadata: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (sourceChain === "NEAR") {
-        metadata = await nftData(tokenId, parsed.source_nft_contract_address);
-      }
-
-      const imgUri = (await fetchHttpOrIpfs(metadata.metadata)).image;
-
       return {
         destinationChain,
         destinationUserAddress: parsed.destination_user_address,
@@ -170,14 +155,8 @@ export async function nearHandler({
         sourceNftContractAddress: parsed.source_nft_contract_address,
         sourceChain,
         transactionHash: txHash,
-        fee: fee.toString(),
-        royaltyReceiver,
-        metadata: metadata.metadata,
-        name: metadata.name,
-        symbol: metadata.symbol,
-        royalty: metadata.royalty.toString(),
         lockTxChain: identifier,
-        imgUri: imgUri,
+        metaDataUri: parsed.metadata_uri,
       };
     },
     async lockNft(

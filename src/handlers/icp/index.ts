@@ -12,7 +12,6 @@ import { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledge
 import { idlFactory as NftIdl } from "../../contractsTypes/icp/nft/nft";
 import { init } from "../../contractsTypes/icp/nft/nft";
 import { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
-import { TNFTData } from "../types";
 import { NftByteCode } from "./nft.wasm.gz.hex";
 import { BrowserSigners, TICPHandler, TICPParams } from "./types";
 
@@ -86,6 +85,7 @@ export async function icpHandler({
   const bc = await createBridgeActor(bridge, { agent });
   await agent.fetchRootKey();
   return {
+    identifier,
     async nftList(owner, contract) {
       const nft = await createNftActor(contract, { agent });
       const tokens = await nft.icrc7_tokens_of(
@@ -236,36 +236,21 @@ export async function icpHandler({
         symbol: symbol === "" ? "TICP" : symbol,
       };
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const [le] = await bc.get_locked_data(txHash);
       if (!le) throw new Error("No locked event found for the hash");
-
-      const fee = await storage.chainFee(le.destination_chain);
-      const royaltyReceiver = await storage.chainRoyalty(le.destination_chain);
-
-      const nft: TNFTData = {
-        metadata: "",
-        name: "TICP",
-        royalty: 0n,
-        symbol: "TICP",
-      };
 
       return {
         destinationChain: le.destination_chain,
         destinationUserAddress: le.destination_user_address,
-        fee: fee.toString(),
-        royaltyReceiver,
-        royalty: "0",
         sourceNftContractAddress: le.source_nft_contract_address.toString(),
         nftType: le.nft_type,
         sourceChain: le.source_chain,
         tokenId: le.token_id.toString(),
         tokenAmount: le.token_amount.toString(),
         transactionHash: txHash,
-        metadata: nft.metadata,
-        name: nft.name,
-        symbol: nft.symbol,
         lockTxChain: identifier,
+        metaDataUri: "",
       };
     },
     getStorageContract() {

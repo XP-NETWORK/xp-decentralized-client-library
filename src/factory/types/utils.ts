@@ -1,7 +1,9 @@
 import { MetaMap } from ".";
 import type {
   TClaimSFT,
+  TGetChainIdentifier,
   TGetClaimData,
+  TGetStorage,
   TNftTransferDetailsObject,
 } from "../../handlers/index";
 
@@ -19,7 +21,7 @@ export type TInferChainH<K extends TSupportedChain> = MetaMap[K][0];
 export type TChainFactory = {
   inner: <T extends TSupportedChain>(chain: T) => Promise<TInferChainH<T>>;
   getClaimData: (
-    chain: TGetClaimData,
+    chain: TGetClaimData & TGetStorage & TGetChainIdentifier,
     txHash: string,
   ) => Promise<TNftTransferDetailsObject>;
 };

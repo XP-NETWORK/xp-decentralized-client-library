@@ -4,7 +4,6 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 
 import { Bridge, CosmNft } from "@xp/cosmos-client";
-import { TNFTData } from "../types";
 import { CosmWasmExtraArgs, TCosmWasmHandler, TCosmWasmParams } from "./types";
 
 export async function cosmWasmHandler({
@@ -58,6 +57,7 @@ export async function cosmWasmHandler({
   }
   const bc = new Bridge.BridgeQueryClient(provider, bridge);
   return {
+    identifier,
     async approveNft(signer, tokenId, contract, extraArgs) {
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,
@@ -195,7 +195,7 @@ export async function cosmWasmHandler({
         transaction_hash: input.transactionHash,
       };
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const tx = await provider.getTx(txHash);
       if (!tx) {
         throw new Error("Transaction not found");
@@ -223,21 +223,6 @@ export async function cosmWasmHandler({
         source_chain: sourceChain, // Source chain of NFT
       } = JSON.parse(data.value);
 
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-
-      let nft: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-
-      try {
-        await provider.getAccount(sourceNftContractAddress);
-        nft = await nftData(tokenId, sourceNftContractAddress, {});
-      } catch (e) {}
-
       return {
         destinationChain,
         destinationUserAddress,
@@ -246,14 +231,9 @@ export async function cosmWasmHandler({
         tokenAmount,
         nftType,
         sourceChain,
-        fee: fee.toString(),
-        royaltyReceiver: royaltyReceiver,
-        metadata: nft.metadata,
-        name: nft.name,
-        symbol: nft.symbol,
-        royalty: nft.royalty.toString(),
         transactionHash: txHash,
         lockTxChain: identifier,
+        metaDataUri: "",
       };
     },
     async lockNft(

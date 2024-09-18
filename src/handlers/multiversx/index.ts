@@ -33,7 +33,6 @@ import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
-import { TNFTData } from "../types";
 import { fetchHttpOrIpfs } from "../utils";
 import {
   TMultiversXHandler,
@@ -91,6 +90,7 @@ export function multiversxHandler({
     };
   };
   return {
+    identifier,
     async nftData(nonce, collection) {
       const nftDetails =
         await provider.getDefinitionOfTokenCollection(collection);
@@ -309,7 +309,7 @@ export function multiversxHandler({
     async approveNft(_signer, _tokenId, _contract) {
       return Promise.resolve("Not Required for MultiversX");
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       await txWatcher.awaitCompleted(txHash);
       const transactionOnNetworkMultisig = await provider.getTransaction(
         txHash,
@@ -331,23 +331,6 @@ export function multiversxHandler({
       const tokenId = parsed.token_id.toString();
       const tokenAmount = parsed.token_amount.toString();
 
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let metadata: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (sourceChain === "MULTIVERSX") {
-        metadata = await this.nftData(
-          tokenId,
-          parsed.source_nft_contract_address,
-        );
-      }
-
-      const imgUri = (await fetchHttpOrIpfs(metadata.metadata)).image;
-
       return {
         destinationChain,
         destinationUserAddress:
@@ -358,14 +341,7 @@ export function multiversxHandler({
         sourceNftContractAddress: parsed.source_nft_contract_address,
         sourceChain,
         transactionHash: txHash,
-        fee: fee.toString(),
-        royaltyReceiver,
-        metadata: metadata.metadata,
-        name: metadata.name,
-        symbol: metadata.symbol,
-        royalty: metadata.royalty.toString(),
-        lockTxChain: identifier,
-        imgUri: imgUri,
+        metaDataUri: "",
       };
     },
     async lockNft(signer, sourceNft, destinationChain, to, tokenId) {

@@ -15,6 +15,7 @@ import { nearHandler } from "../handlers/near";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
+import { fetchHttpOrIpfs } from "../handlers/utils";
 import { TChainParams } from "./config";
 
 export namespace Chain {
@@ -67,7 +68,10 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       return handler;
     },
     async getClaimData(chain, txHash) {
-      const data = await chain.getClaimData(txHash);
+      const storage = chain.getStorageContract();
+      const data = await chain.decodeLockedEvent(txHash);
+      const royaltyReceiver = await storage.chainRoyalty(data.destinationChain);
+      const fee = await storage.chainFee(data.destinationChain);
       const sc = await this.inner(
         data.sourceChain as unknown as TSupportedChain,
       );
@@ -76,10 +80,15 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         data.sourceNftContractAddress,
         undefined,
       );
+      const imgUri = (await fetchHttpOrIpfs(ogNftData.metadata)).image;
       return {
         ...data,
         ...ogNftData,
         royalty: ogNftData.royalty.toString(),
+        royaltyReceiver: royaltyReceiver,
+        fee: fee.toString(),
+        imgUri,
+        lockTxChain: chain.identifier,
       };
     },
   };

@@ -15,6 +15,7 @@ export function evmHandler({
   identifier,
 }: TEvmParams): TEvmHandler {
   return {
+    identifier,
     async claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(
@@ -143,7 +144,7 @@ export function evmHandler({
     getProvider() {
       return provider;
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const receipt = await provider.getTransactionReceipt(txHash);
       if (!receipt) {
         throw new Error("Transaction not found");
@@ -163,15 +164,6 @@ export function evmHandler({
       if (!locked) {
         throw new Error("Failed to parse log");
       }
-      const fee = await storage.chainFee(locked.args.destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(
-        locked.args.destinationChain,
-      );
-      const data = await this.nftData(
-        locked.args.tokenId,
-        locked.args.sourceNftContractAddress,
-        {},
-      );
       return {
         destinationChain: locked.args.destinationChain,
         destinationUserAddress: locked.args.destinationUserAddress,
@@ -180,14 +172,9 @@ export function evmHandler({
         tokenAmount: locked.args.tokenAmount.toString(),
         nftType: locked.args.nftType,
         sourceChain: locked.args.sourceChain,
-        fee: fee.toString(),
-        royaltyReceiver: royaltyReceiver,
-        transactionHash: txHash,
-        metadata: data.metadata,
-        name: data.name,
-        symbol: data.symbol,
-        royalty: data.royalty.toString(),
         lockTxChain: identifier,
+        metaDataUri: locked.args.metaDataUri,
+        transactionHash: txHash,
       };
     },
     getBalance(signer) {
