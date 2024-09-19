@@ -1,3 +1,5 @@
+import { HttpAgent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
@@ -6,7 +8,9 @@ import { TAptosParams } from "../handlers/aptos/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
+import { TICPParams } from "../handlers/icp/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
+import { TNearParams } from "../handlers/near/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
 import { TTonParams } from "../handlers/ton/types";
@@ -23,6 +27,8 @@ export interface TChainParams {
     terraParams: TCosmWasmParams;
     aptosParams: TAptosParams;
     moonbeamParams: TEvmParams;
+    icpParams: TICPParams;
+    nearParams: TNearParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {
@@ -69,6 +75,19 @@ export declare namespace ChainFactoryConfigs {
             identifier: string;
             gatewayURL: string;
             provider: ProxyNetworkProvider;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        icpParams: {
+            agent: HttpAgent;
+            bridge: Principal;
+            identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        nearParams: {
+            bridge: string;
+            networkId: string;
+            nodeUrl: string;
+            identifier: string;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
     };
