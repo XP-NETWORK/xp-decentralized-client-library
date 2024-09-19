@@ -3,32 +3,23 @@ import { ContractAbstractionFromContractType, WalletContractAbstractionFromContr
 import { address, BigMap, bytes, contract, MMap, nat } from './type-aliases';
 
 export type Storage = {
-  ledger: BigMap<nat, address>;
-  operators: BigMap<
-    {
-      0: address;
-      1: address;
-    },
-    Array<nat>
-  >;
-  tokens: {
-    token_metadata: BigMap<
-      nat,
-      {
+    ledger: BigMap<nat, address>;
+    operators: BigMap<{
+        0: address;
+        1: address;
+    }, Array<nat>>;
+    tokens: {
+        token_metadata: BigMap<nat, {
+            token_id: nat;
+            token_info: MMap<string, bytes>;
+        }>
+    };
+    token_metadata: BigMap<nat, {
         token_id: nat;
         token_info: MMap<string, bytes>;
-      }
-    >;
-  };
-  token_metadata: BigMap<
-    nat,
-    {
-      token_id: nat;
-      token_info: MMap<string, bytes>;
-    }
-  >;
-  metadata: BigMap<string, bytes>;
-  admin: address;
+    }>;
+    metadata: BigMap<string, bytes>;
+    admin: address;
 };
 
 type Methods = {
@@ -43,11 +34,11 @@ type Methods = {
         token_id: nat,
     ) => Promise<void>;
     mint: (param: Array<{
-            token_id: nat;
-            token_uri: string;
-            to: address;
-            amt: nat;
-        }>) => Promise<void>;
+        token_id: nat;
+        token_uri: string;
+        to: address;
+        amt: nat;
+    }>) => Promise<void>;
     balance_of: (
         requests: Array<{
             owner: address;
@@ -56,13 +47,13 @@ type Methods = {
         callback: contract,
     ) => Promise<void>;
     transfer: (param: Array<{
-            from_: address;
-            txs: Array<{
-                to_: address;
-                token_id: nat;
-                amount: nat;
-            }>;
-        }>) => Promise<void>;
+        from_: address;
+        txs: Array<{
+            to_: address;
+            token_id: nat;
+            amount: nat;
+        }>;
+    }>) => Promise<void>;
 };
 
 type MethodsObject = {
@@ -77,11 +68,11 @@ type MethodsObject = {
         token_id: nat,
     }) => Promise<void>;
     mint: (param: Array<{
-            token_id: nat;
-            token_uri: string;
-            to: address;
-            amt: nat;
-        }>) => Promise<void>;
+        token_id: nat;
+        token_uri: string;
+        to: address;
+        amt: nat;
+    }>) => Promise<void>;
     balance_of: (params: {
         requests: Array<{
             owner: address;
@@ -90,13 +81,13 @@ type MethodsObject = {
         callback: contract,
     }) => Promise<void>;
     transfer: (param: Array<{
-            from_: address;
-            txs: Array<{
-                to_: address;
-                token_id: nat;
-                amount: nat;
-            }>;
-        }>) => Promise<void>;
+        from_: address;
+        txs: Array<{
+            to_: address;
+            token_id: nat;
+            amount: nat;
+        }>;
+    }>) => Promise<void>;
 };
 
 type contractTypes = { methods: Methods, methodsObject: MethodsObject, storage: Storage, code: { __type: 'NFTCode', protocol: string, code: object[] } };
