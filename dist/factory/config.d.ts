@@ -129,6 +129,13 @@ export declare namespace ChainFactoryConfigs {
             client: TonClient;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        tezosParams: {
+            bridge: string;
+            identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+            Tezos: TezosToolkit;
+            tzktApi: string;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map

@@ -81,10 +81,10 @@ export declare const tas: {
     bytes: (value: string) => bytes;
     contract: (value: string) => contract;
     chest: (value: string) => chest;
-    chest_key: (value: string) => chest_key;
-    timestamp: (value: string | Date) => timestamp;
     signature: (value: string) => signature;
     key: (value: string) => key;
+    chest_key: (value: string) => chest_key;
+    timestamp: (value: string | Date) => timestamp;
     int: (value: number | BigNumber | string) => int;
     nat: (value: number | BigNumber | string) => nat;
     mutez: (value: number | BigNumber | string) => mutez;
