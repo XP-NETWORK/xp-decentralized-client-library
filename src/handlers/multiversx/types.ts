@@ -68,7 +68,12 @@ export type TMultiversXHandler = TSingularNftChain<
     string
   > &
   ReadClaimed721Event &
-  ReadClaimed1155Event;
+  ReadClaimed1155Event &
+  TGetTransactionStatus;
+
+type TGetTransactionStatus = {
+  getTransactionStatus(txHash: string): Promise<string>;
+};
 
 export type TMultiversXParams = {
   provider: INetworkProvider;

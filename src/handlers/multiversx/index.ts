@@ -85,7 +85,7 @@ export function multiversxHandler({
       )
     ).data;
     return {
-      metaData: atob(response.uris[0]),
+      metaData: atob(response.uris[1]),
       royalties: response.royalties ?? 0,
     };
   };
@@ -540,6 +540,11 @@ export function multiversxHandler({
         ).balance.toString(),
       );
       return bal;
+    },
+    async getTransactionStatus(txHash) {
+      return (await waitForTransaction(txHash)).isSuccessful()
+        ? "success"
+        : "failed";
     },
   };
 }
