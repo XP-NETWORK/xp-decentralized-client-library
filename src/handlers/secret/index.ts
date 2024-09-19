@@ -2,7 +2,6 @@ import { StdSignature, toBase64 } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
-import { TNFTData } from "../types";
 import { TSecretHandler, TSecretParams } from "./types";
 
 export function secretHandler({
@@ -14,6 +13,7 @@ export function secretHandler({
   identifier,
 }: TSecretParams): TSecretHandler {
   return {
+    identifier,
     getProvider() {
       return provider;
     },
@@ -55,7 +55,7 @@ export function secretHandler({
         ret: tx,
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const code = da.codeId ?? nftCodeId;
       if (!code) {
         throw new Error("Code not found");
@@ -138,7 +138,7 @@ export function secretHandler({
     getStorageContract() {
       return storage;
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const eventId = "LockedEventInfo";
       const tx = await provider.query.getTx(txHash);
       if (!tx) {
@@ -160,20 +160,6 @@ export function secretHandler({
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
       } = JSON.parse(log.value);
-
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-
-      let nft: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (sourceNftContractAddress.startsWith("secret")) {
-        nft = await this.nftData(tokenId, sourceNftContractAddress, {});
-      }
-
       return {
         destinationChain,
         destinationUserAddress,
@@ -182,14 +168,9 @@ export function secretHandler({
         tokenAmount: tokenAmount.toString(),
         nftType,
         sourceChain,
-        fee: fee.toString(),
-        royaltyReceiver: royaltyReceiver,
-        metadata: nft.metadata,
-        name: nft.name,
-        symbol: nft.symbol,
-        royalty: nft.royalty.toString(),
         transactionHash: txHash,
         lockTxChain: identifier,
+        metaDataUri: "",
       };
     },
     async claimSft(signer, claimData, sigs, extraArgs) {

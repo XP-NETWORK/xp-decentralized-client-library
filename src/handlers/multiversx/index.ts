@@ -1,5 +1,6 @@
 import {
   TransactionEventsParser,
+  TransactionWatcher,
   findEventsByFirstTopic,
 } from "@multiversx/sdk-core";
 import {
@@ -25,16 +26,14 @@ import {
   TransactionPayload,
   TransactionsConverter,
   TypedValue,
-  VariadicValue,
 } from "@multiversx/sdk-core/out";
-
+import { ApiNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
-
 import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
-import { TNFTData } from "../types";
+import { fetchHttpOrIpfs } from "../utils";
 import {
   TMultiversXHandler,
   TMultiversXParams,
@@ -54,6 +53,8 @@ export function multiversxHandler({
     address: Address.fromString(bridge),
     abi: abiRegistry,
   });
+  const apin = new ApiNetworkProvider(gatewayURL.replace("gateway", "api"));
+  const txWatcher = new TransactionWatcher(apin);
 
   const eventsParser = new TransactionEventsParser({
     abi: abiRegistry,
@@ -75,22 +76,21 @@ export function multiversxHandler({
     nonce: number,
   ): Promise<{ royalties: number; metaData: string }> => {
     const nonceAsHex = new Nonce(nonce).hex();
-    const response = (
-      await (
-        await http.get(
-          `${gatewayURL.replace(
-            "gateway",
-            "api",
-          )}/nfts/${collection}-${nonceAsHex}`,
-        )
-      ).data
+    const response = await (
+      await http.get(
+        `${gatewayURL.replace(
+          "gateway",
+          "api",
+        )}/nfts/${collection}-${nonceAsHex}`,
+      )
     ).data;
     return {
-      metaData: atob(response.uris[1]),
-      royalties: response.royalties,
+      metaData: atob(response.uris[0]),
+      royalties: response.royalties ?? 0,
     };
   };
   return {
+    identifier,
     async nftData(nonce, collection) {
       const nftDetails =
         await provider.getDefinitionOfTokenCollection(collection);
@@ -105,7 +105,7 @@ export function multiversxHandler({
         royalty: BigInt(royalties),
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const builtInSC =
         "erd1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u";
       const args: TypedValue[] = [
@@ -282,6 +282,7 @@ export function multiversxHandler({
 
       const signed = await signer.signTransaction(tx);
       const hash = await provider.sendTransaction(signed);
+      await waitForTransaction(hash);
       return hash;
     },
     transform(input) {
@@ -302,17 +303,26 @@ export function multiversxHandler({
         tokenId: input.tokenId,
         transactionHash: input.transactionHash,
         lockTxChain: input.lockTxChain,
+        imgUri: input.imgUri || "",
       };
     },
     async approveNft(_signer, _tokenId, _contract) {
       return Promise.resolve("Not Required for MultiversX");
     },
-    async getClaimData(txHash) {
-      await waitForTransaction(txHash);
-      const transactionOnNetworkMultisig =
-        await provider.getTransaction(txHash);
+    async decodeLockedEvent(txHash) {
+      await txWatcher.awaitCompleted(txHash);
+      const transactionOnNetworkMultisig = await provider.getTransaction(
+        txHash,
+        true,
+      );
+      const tx = await apin.getTransaction(
+        transactionOnNetworkMultisig.contractResults.items[0].hash,
+      );
+      console.log(
+        `HyperBlock Nonce: ${transactionOnNetworkMultisig.hyperblockNonce} ${tx.hyperblockNonce}`,
+      );
       const transactionOutcomeMultisig =
-        converter.transactionOnNetworkToOutcome(transactionOnNetworkMultisig);
+        converter.transactionOnNetworkToOutcome(tx);
       const [event] = findEventsByFirstTopic(
         transactionOutcomeMultisig,
         "Locked",
@@ -323,17 +333,6 @@ export function multiversxHandler({
       const tokenId = parsed.token_id.toString();
       const tokenAmount = parsed.token_amount.toString();
 
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let metadata: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (sourceChain === "MULTIVERSX") {
-        metadata = await this.nftData(tokenId, tokenAmount);
-      }
       return {
         destinationChain,
         destinationUserAddress:
@@ -344,16 +343,10 @@ export function multiversxHandler({
         sourceNftContractAddress: parsed.source_nft_contract_address,
         sourceChain,
         transactionHash: txHash,
-        fee: fee.toString(),
-        royaltyReceiver,
-        metadata: metadata.metadata,
-        name: metadata.name,
-        symbol: metadata.symbol,
-        royalty: metadata.royalty.toString(),
-        lockTxChain: identifier,
+        metaDataUri: "",
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId, _) {
+    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -365,7 +358,8 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      const noncec = `@0${tokenId}`;
+      const nonce = new Nonce(Number(tokenId)).hex();
+      const noncec = `@${nonce}`;
       const quantity = "@" + "01";
       const destination_address = `@${ba.hex()}`;
       const method = `@${Buffer.from("lock721").toString("hex")}`;
@@ -405,6 +399,8 @@ export function multiversxHandler({
       const userAccount = new Account(userAddress);
       const userOnNetwork = await provider.getAccount(userAddress);
       userAccount.update(userOnNetwork);
+
+      const imgUri = (await fetchHttpOrIpfs(claimData.metadata)).image;
 
       const structClaimData = new StructType("ClaimData", [
         new FieldDefinition("token_id", "name of the nft", new BytesType()),
@@ -462,6 +458,7 @@ export function multiversxHandler({
           "Chain identifier on which nft was locked",
           new BytesType(),
         ),
+        new FieldDefinition("img_uri", "uri of the image", new BytesType()),
       ]);
 
       const claimDataArgs = new Struct(structClaimData, [
@@ -488,12 +485,7 @@ export function multiversxHandler({
           "source_nft_contract_address",
         ),
         new Field(new BytesValue(Buffer.from(claimData.name)), "name"),
-        new Field(
-          new BytesValue(
-            Buffer.from(`N${claimData.sourceChain.toUpperCase()}`),
-          ),
-          "symbol",
-        ),
+        new Field(new BytesValue(Buffer.from(claimData.symbol)), "symbol"),
         new Field(new BigUIntValue(Number(claimData.royalty)), "royalty"),
         new Field(
           new AddressValue(new Address(claimData.royaltyReceiver)),
@@ -511,6 +503,7 @@ export function multiversxHandler({
           new BytesValue(Buffer.from(claimData.lockTxChain)),
           "lock_tx_chain",
         ),
+        new Field(new BytesValue(Buffer.from(imgUri)), "img_uri"),
       ]);
       const data = [
         claimDataArgs,
@@ -525,11 +518,6 @@ export function multiversxHandler({
             ),
           };
         }),
-
-        VariadicValue.fromItems(
-          new BytesValue(Buffer.from(claimData.metadata, "utf-8")),
-          new BytesValue(Buffer.from(claimData.metadata, "utf-8")),
-        ),
       ];
       const transaction = multiversXBridgeContract.methods
         .claimNft721(data)

@@ -9,10 +9,13 @@ import { aptosHandler } from "../handlers/aptos";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
+import { icpHandler } from "../handlers/icp";
 import { multiversxHandler } from "../handlers/multiversx";
+import { nearHandler } from "../handlers/near";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
+import { fetchHttpOrIpfs } from "../handlers/utils";
 import { TChainParams } from "./config";
 
 export namespace Chain {
@@ -26,7 +29,9 @@ export namespace Chain {
   export const MATIC = "MATIC";
   export const HEDERA = "HEDERA";
   export const APTOS = "APTOS";
+  export const ICP = "ICP";
   export const BASE = "BASE";
+  export const NEAR = "NEAR";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -42,6 +47,8 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.TON, chainParams.tonParams);
   cToP.set(Chain.TERRA, chainParams.terraParams);
   cToP.set(Chain.APTOS, chainParams.aptosParams);
+  cToP.set(Chain.ICP, chainParams.icpParams);
+  cToP.set(Chain.NEAR, chainParams.nearParams);
   return cToP;
 }
 
@@ -61,7 +68,10 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       return handler;
     },
     async getClaimData(chain, txHash) {
-      const data = await chain.getClaimData(txHash);
+      const storage = chain.getStorageContract();
+      const data = await chain.decodeLockedEvent(txHash);
+      const royaltyReceiver = await storage.chainRoyalty(data.destinationChain);
+      const fee = await storage.chainFee(data.destinationChain);
       const sc = await this.inner(
         data.sourceChain as unknown as TSupportedChain,
       );
@@ -70,11 +80,15 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         data.sourceNftContractAddress,
         undefined,
       );
-
+      const imgUri = (await fetchHttpOrIpfs(ogNftData.metadata)).image;
       return {
         ...data,
         ...ogNftData,
         royalty: ogNftData.royalty.toString(),
+        royaltyReceiver: royaltyReceiver,
+        fee: fee.toString(),
+        imgUri,
+        lockTxChain: chain.identifier,
       };
     },
   };
@@ -114,4 +128,10 @@ CHAIN_INFO.set(Chain.TERRA, {
 });
 CHAIN_INFO.set(Chain.APTOS, {
   constructor: aptosHandler,
+});
+CHAIN_INFO.set(Chain.ICP, {
+  constructor: icpHandler,
+});
+CHAIN_INFO.set(Chain.NEAR, {
+  constructor: nearHandler,
 });

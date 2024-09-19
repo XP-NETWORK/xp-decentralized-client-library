@@ -13,7 +13,7 @@ import { Bridge } from "../../contractsTypes/evm";
 import { PayableOverrides } from "../../contractsTypes/evm/common";
 import { TEvmParams } from "../evm/types";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   TApproveNFT,
@@ -43,7 +43,7 @@ export type THederaHandler = TSingularNftChain<
     PayableOverrides,
     ContractTransactionResponse | TransactionResponseJSON
   > &
-  DeployCollection<
+  DeployNFTCollection<
     Signer,
     {
       name: string;

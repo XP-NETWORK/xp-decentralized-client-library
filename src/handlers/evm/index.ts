@@ -1,6 +1,7 @@
 import {
   Bridge__factory,
   ERC721Royalty__factory,
+  ERC1155Royalty__factory,
 } from "../../contractsTypes/evm";
 import { retryFn } from "../utils";
 
@@ -14,6 +15,7 @@ export function evmHandler({
   identifier,
 }: TEvmParams): TEvmHandler {
   return {
+    identifier,
     async claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(
@@ -86,10 +88,20 @@ export function evmHandler({
         lock_tx_chain: claimed.args.lockTxChain,
       };
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const contract = await new ERC721Royalty__factory(signer).deploy(
         da.name,
         da.symbol,
+        da.owner ?? signer,
+        {
+          ...ga,
+          from: await signer.getAddress(),
+        },
+      );
+      return await contract.getAddress();
+    },
+    async deploySFTCollection(signer, da, ga) {
+      const contract = await new ERC1155Royalty__factory(signer).deploy(
         da.owner ?? signer,
         {
           ...ga,
@@ -113,10 +125,26 @@ export function evmHandler({
       await response.wait();
       return response;
     },
+    async mintSft(signer, ma, amt, gas) {
+      const minter = ERC1155Royalty__factory.connect(ma.contract, signer);
+      const response = await minter.mint(
+        await signer.getAddress(),
+        ma.tokenId,
+        amt,
+        ma.royalty,
+        ma.royaltyReceiver,
+        ma.uri,
+        {
+          ...gas,
+        },
+      );
+      await response.wait();
+      return response;
+    },
     getProvider() {
       return provider;
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const receipt = await provider.getTransactionReceipt(txHash);
       if (!receipt) {
         throw new Error("Transaction not found");
@@ -136,15 +164,6 @@ export function evmHandler({
       if (!locked) {
         throw new Error("Failed to parse log");
       }
-      const fee = await storage.chainFee(locked.args.destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(
-        locked.args.destinationChain,
-      );
-      const data = await this.nftData(
-        locked.args.tokenId,
-        locked.args.sourceNftContractAddress,
-        {},
-      );
       return {
         destinationChain: locked.args.destinationChain,
         destinationUserAddress: locked.args.destinationUserAddress,
@@ -153,14 +172,9 @@ export function evmHandler({
         tokenAmount: locked.args.tokenAmount.toString(),
         nftType: locked.args.nftType,
         sourceChain: locked.args.sourceChain,
-        fee: fee.toString(),
-        royaltyReceiver: royaltyReceiver,
-        transactionHash: txHash,
-        metadata: data.metadata,
-        name: data.name,
-        symbol: data.symbol,
-        royalty: data.royalty.toString(),
         lockTxChain: identifier,
+        metaDataUri: locked.args.metaDataUri,
+        transactionHash: txHash,
       };
     },
     getBalance(signer) {

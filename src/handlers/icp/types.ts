@@ -1,13 +1,26 @@
-import { HttpAgent } from "@dfinity/agent";
+import { ActorSubclass, HttpAgent } from "@dfinity/agent";
+import { IDL } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.did";
+import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
+import { Value } from "../../contractsTypes/icp/nft/nft.types";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
+  TNFTList,
   TSingularNftChain,
 } from "../types";
+
+export interface ActorArgs {
+  interfaceFactory: IDL.InterfaceFactory;
+  canisterId: string;
+  host: string | undefined;
+}
+export interface BrowserSigners {
+  createActor: <Type>(args: ActorArgs) => Promise<ActorSubclass<Type>>;
+  getPrincipal(): Promise<Principal>;
+}
 
 export type TICPParams = {
   agent: HttpAgent;
@@ -25,17 +38,18 @@ export type TICPMintArgs = {
 export type TICPClaimArgs = ClaimData;
 
 export type TICPHandler = TSingularNftChain<
-  HttpAgent,
+  HttpAgent | BrowserSigners,
   TICPClaimArgs,
   undefined,
   string,
   HttpAgent
 > &
   MintNft<HttpAgent, TICPMintArgs, undefined, string> &
-  DeployCollection<
+  DeployNFTCollection<
     HttpAgent,
     { name: string; symbol: string },
     undefined,
     string
   > &
-  ReadClaimed721Event;
+  ReadClaimed721Event &
+  TNFTList<[string, Value][]>;

@@ -1,7 +1,7 @@
 import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   ReadClaimed1155Event,
@@ -41,7 +41,7 @@ export type TSecretHandler = TNftChain<
   MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> &
   ReadClaimed721Event &
   ReadClaimed1155Event &
-  DeployCollection<
+  DeployNFTCollection<
     SecretNetworkClient,
     { name: string; symbol: string; codeId?: number },
     TxOptions,

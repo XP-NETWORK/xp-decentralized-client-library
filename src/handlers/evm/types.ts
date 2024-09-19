@@ -10,7 +10,7 @@ import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 import { PayableOverrides } from "../../contractsTypes/evm/common";
 import {
   DeployCollection,
-  MintNft,
+  Mint,
   ReadClaimed721Event,
   ReadClaimed1155Event,
   TApproveNFT,
@@ -24,7 +24,7 @@ export type TEvmHandler = TNftChain<
   ContractTransactionResponse,
   Provider
 > &
-  MintNft<
+  Mint<
     Signer,
     {
       contract: string;

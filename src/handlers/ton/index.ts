@@ -1,6 +1,5 @@
 import { Address, Dictionary, beginCell, toNano } from "@ton/core";
 
-import axios from "axios";
 import {
   Bridge,
   SignerAndSignature,
@@ -11,7 +10,7 @@ import {
 import { NftCollection } from "../../contractsTypes/ton/tonNftCollection";
 
 import { NftItem } from "../../contractsTypes/ton/tonNftContract";
-import { TNFTData } from "../types";
+import { fetchHttpOrIpfs } from "../utils";
 import { TestnetNftCollection } from "./nftc";
 import { buildJettonContent } from "./tep64";
 import { TTonHandler, TTonParams } from "./types";
@@ -26,23 +25,6 @@ export function tonHandler({
   storage,
   identifier,
 }: TTonParams): TTonHandler {
-  const http = axios.create();
-
-  async function fetchHttpOrIpfs(uri: string) {
-    const url = new URL(uri);
-    if (url.protocol === "http:" || url.protocol === "https:") {
-      const response = await http.get(uri);
-      return response.data;
-    }
-    if (url.protocol === "ipfs:") {
-      const response = await http.get(
-        `https://ipfs.io/ipfs/${uri.replace("ipfs://", "")}`,
-      );
-      return response.data;
-    }
-    throw new Error("Unsupported protocol");
-  }
-
   const bridge = client.open(
     Bridge.fromAddress(Address.parseFriendly(bridgeAddress).address),
   );
@@ -57,6 +39,7 @@ export function tonHandler({
   }
 
   return {
+    identifier,
     getStorageContract() {
       return storage;
     },
@@ -150,7 +133,7 @@ export function tonHandler({
 
       throw new Error("Claimed event not found");
     },
-    async deployCollection(signer, da) {
+    async deployNftCollection(signer, da) {
       const nft = client.open(
         await TestnetNftCollection.fromInit(
           da.owner_address,
@@ -174,7 +157,7 @@ export function tonHandler({
       }
       return nft.address.toString();
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const txs = await client.getTransactions(bridge.address, {
         hash: txHash,
         limit: 15,
@@ -197,14 +180,8 @@ export function tonHandler({
             tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
             nftType, // Sigular or multiple ( 721 / 1155)
             sourceChain, // Source chain of NFT
+            metaDataUri,
           } = loadLockedEvent(msg.body.asSlice());
-
-          const fee = await storage.chainFee(
-            destinationChain.asSlice().loadStringRefTail(),
-          );
-          const royaltyReceiver = await storage.chainRoyalty(
-            destinationChain.asSlice().loadStringRefTail(),
-          );
 
           const getSourceNftContractAddress = () => {
             try {
@@ -216,22 +193,6 @@ export function tonHandler({
               return sourceNftContractAddress.asSlice().loadStringTail();
             }
           };
-
-          let nft: TNFTData = {
-            metadata: "",
-            name: "",
-            royalty: 0n,
-            symbol: "",
-          };
-
-          try {
-            nft = await this.nftData(
-              tokenId.toString(),
-              getSourceNftContractAddress(),
-              undefined,
-            );
-          } catch (_) {}
-
           return {
             destinationChain: destinationChain.asSlice().loadStringRefTail(),
             destinationUserAddress: destinationUserAddress
@@ -242,14 +203,9 @@ export function tonHandler({
             tokenAmount: tokenAmount.toString(),
             nftType: nftType.toString(),
             sourceChain: sourceChain.toString(),
-            fee: fee.toString(),
-            royaltyReceiver: royaltyReceiver.toString(),
-            metadata: nft.metadata,
-            name: nft.name,
-            symbol: nft.symbol,
-            royalty: nft.royalty.toString(),
             transactionHash: hash,
             lockTxChain: identifier,
+            metaDataUri: metaDataUri.asSlice().loadStringRefTail(),
           };
         }
       }

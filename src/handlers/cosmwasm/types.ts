@@ -4,7 +4,7 @@ import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import {
-  DeployCollection,
+  DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
   TSingularNftChain,
@@ -47,7 +47,7 @@ export type TCosmWasmHandler = TSingularNftChain<
     CosmWasmExtraArgs,
     ExecuteResult
   > &
-  DeployCollection<
+  DeployNFTCollection<
     OfflineDirectSigner,
     { name: string; symbol: string; codeId?: number },
     CosmWasmExtraArgs,

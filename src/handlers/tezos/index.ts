@@ -1,4 +1,20 @@
 import { hash } from "@stablelib/blake2b";
+
+import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
+import * as api from "@tzkt/sdk-api";
+import { eventsGetContractEvents } from "@tzkt/sdk-api";
+
+import {
+  b58cdecode,
+  b58cencode,
+  char2Bytes,
+  prefix,
+  validateAddress,
+} from "@taquito/utils";
+import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
+import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
+import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
+
 import {
   ContractAbstraction,
   ContractMethod,
@@ -174,6 +190,7 @@ export function tezosHandler({
     return bytes2Char(metaDataInHex);
   };
   return {
+    identifier,
     getStorageContract() {
       return storage;
     },
@@ -227,7 +244,7 @@ export function tezosHandler({
         extraArgs,
       );
     },
-    async getClaimData(txHash) {
+    async decodeLockedEvent(txHash) {
       const txs = await api.operationsGetTransactionByHash(txHash);
       const tx = txs[0] ?? raise("No such txn found");
       const op = await eventsGetContractEvents({
@@ -248,18 +265,8 @@ export function tezosHandler({
         token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
+        metadata_uri,
       } = data;
-      const fee = await storage.chainFee(destinationChain);
-      const royaltyReceiver = await storage.chainRoyalty(destinationChain);
-      let nft: TNFTData = {
-        metadata: "",
-        name: "",
-        royalty: 0n,
-        symbol: "",
-      };
-      if (validateAddress(sourceNftContractAddress) === 3) {
-        nft = await this.nftData(tokenId, sourceNftContractAddress, {});
-      }
       return {
         tokenId,
         destinationChain,
@@ -269,13 +276,8 @@ export function tezosHandler({
         sourceChain,
         transactionHash: txHash,
         sourceNftContractAddress,
-        fee: fee.toString(),
-        royaltyReceiver,
-        name: nft.name,
-        symbol: nft.symbol,
-        royalty: nft.royalty.toString(),
-        metadata: nft.metadata,
         lockTxChain: identifier,
+        metaDataUri: metadata_uri,
       };
     },
     async mintNft(signer, ma, gasArgs) {
@@ -295,7 +297,7 @@ export function tezosHandler({
         gasArgs,
       );
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const metadata = new MichelsonMap<string, bytes>();
       metadata.set("", tas.bytes(char2Bytes("tezos-storage:data")));
       metadata.set(

@@ -5,13 +5,42 @@ export type MintNft<Signer, MintArgs, GasArgs, RetTx> = {
   mintNft: (signer: Signer, ma: MintArgs, gasArgs?: GasArgs) => Promise<RetTx>;
 };
 
-export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = {
-  deployCollection: (
+export type MintSft<Signer, MintArgs, GasArgs, RetTx> = {
+  mintSft: (
+    signer: Signer,
+    ma: MintArgs,
+    amount: bigint,
+    gasArgs?: GasArgs,
+  ) => Promise<RetTx>;
+};
+
+export type Mint<Signer, MintArgs, GasArgs, RetTx> = MintNft<
+  Signer,
+  MintArgs,
+  GasArgs,
+  RetTx
+> &
+  MintSft<Signer, MintArgs, GasArgs, RetTx>;
+
+export type DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
+  deployNftCollection: (
     signer: Signer,
     da: DeployArgs,
     ga?: GasArgs,
   ) => Promise<RetTx>;
 };
+
+export type DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
+  deploySFTCollection: (
+    signer: Signer,
+    da: DeployArgs,
+    ga?: GasArgs,
+  ) => Promise<RetTx>;
+};
+
+export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> =
+  DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> &
+    DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx>;
 
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
@@ -186,6 +215,19 @@ export type TNftTransferDetailsObject = {
   nftType: string;
   fee: string;
   lockTxChain: string;
+  imgUri?: string;
+};
+
+export type LockEvent = {
+  tokenId: string;
+  destinationChain: string;
+  destinationUserAddress: string;
+  sourceNftContractAddress: string;
+  tokenAmount: string;
+  nftType: string;
+  sourceChain: string;
+  transactionHash: string;
+  metaDataUri: string;
 };
 
 /**
@@ -197,7 +239,7 @@ export type TGetClaimData = {
    * @param txHash - The transaction hash.
    * @returns A promise that resolves to an object containing claim data @type {TNftTransferDetailsObject}.
    */
-  getClaimData: (txHash: string) => Promise<TNftTransferDetailsObject>;
+  decodeLockedEvent: (txHash: string) => Promise<LockEvent>;
 };
 
 /**
@@ -262,6 +304,10 @@ export type TGetStorage = {
   getStorageContract: () => BridgeStorage;
 };
 
+export type TGetChainIdentifier = {
+  identifier: string;
+};
+
 export type TGetProvider<T> = {
   getProvider: () => T;
 };
@@ -287,7 +333,8 @@ export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
     TGetProvider<Provider> &
     TMapTransferDetailsToChainClaimData<ClaimData> &
     TGetValidatorCount &
-    TGetStorage;
+    TGetStorage &
+    TGetChainIdentifier;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
@@ -313,3 +360,21 @@ export type TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
 export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
   TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> &
     TMultipleNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider>;
+
+/**
+ * Represents a type that has the methods required to fetch NFTs from a chain for a user, and a certain contract. This type should be implemented for all chains, that do not have a working indexer.
+ * @template NFT The type of the NFT. It could be anything that represents an NFT on that particular chain.
+ */
+export type TNFTList<NFT> = {
+  nftList: (
+    owner: string,
+    contract: string,
+  ) => Promise<
+    {
+      readonly native: NFT;
+      readonly uri: string;
+      readonly collectionIdent: string;
+      readonly tokenId: string;
+    }[]
+  >;
+};

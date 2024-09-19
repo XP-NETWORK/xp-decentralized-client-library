@@ -1,3 +1,5 @@
+import { HttpAgent } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
@@ -7,11 +9,14 @@ import { TAptosParams } from "../handlers/aptos/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
+import { TICPParams } from "../handlers/icp/types";
 import { TMultiversXParams } from "../handlers/multiversx/types";
+import { TNearParams } from "../handlers/near/types";
 import { TSecretParams } from "../handlers/secret/types";
 import { TTezosParams } from "../handlers/tezos/types";
 import { TTonParams } from "../handlers/ton/types";
 import { Chain } from "./factory";
+
 export interface TChainParams {
   bscParams: TEvmParams;
   ethParams: TEvmParams;
@@ -25,6 +30,8 @@ export interface TChainParams {
   terraParams: TCosmWasmParams;
   aptosParams: TAptosParams;
   moonbeamParams: TEvmParams;
+  icpParams: TICPParams;
+  nearParams: TNearParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -76,18 +83,33 @@ export namespace ChainFactoryConfigs {
         bridge: "KT1Fh6VH8BxA9xgJCn8hGZRxoo2vY3hrbqeV",
         identifier: "TEZOS",
         storage,
-        Tezos: new TezosToolkit("https://ghostnet.smartpy.io"),
+        Tezos: new TezosToolkit("https://rpc.ghostnet.teztnets.com"),
         tzktApi: "https://api.ghostnet.tzkt.io/",
       },
       multiversxParams: {
         bridge:
-          "erd1qqqqqqqqqqqqqpgqn5vhjcu3mrctgaj85zx2c5lpph32q408lwzqrl4vys",
+          "erd1qqqqqqqqqqqqqpgqhrd7fhw946fsq2kpl753xxthvy4jawvnd9yq03u2hq",
         chainId: "D",
         identifier: "MULTIVERSX",
         gatewayURL: "https://devnet-gateway.multiversx.com",
         provider: new ProxyNetworkProvider(
           "https://devnet-gateway.multiversx.com",
         ),
+        storage,
+      },
+      icpParams: {
+        agent: new HttpAgent({
+          host: "https://tools.xp.network",
+        }),
+        bridge: Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai"),
+        identifier: "ICP",
+        storage,
+      },
+      nearParams: {
+        bridge: "xp-bridge-test.testnet",
+        networkId: "testnet",
+        nodeUrl: "https://archival-rpc.testnet.near.org",
+        identifier: "NEAR",
         storage,
       },
     } satisfies Partial<TChainParams>;

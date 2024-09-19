@@ -35,6 +35,7 @@ export function hederaHandler({
   });
   let hsdk: typeof import("@hashgraph/sdk") | undefined = undefined;
   return {
+    identifier,
     injectSDK(sdk) {
       console.log("INJECTED", sdk);
       hsdk = sdk;
@@ -52,7 +53,7 @@ export function hederaHandler({
       console.log(mint);
       return mint;
     },
-    getClaimData: web3Helper.getClaimData,
+    decodeLockedEvent: web3Helper.decodeLockedEvent,
     getProvider: web3Helper.getProvider,
     transform: web3Helper.transform,
     getValidatorCount: web3Helper.getValidatorCount,
@@ -218,7 +219,7 @@ export function hederaHandler({
         },
       );
     },
-    async deployCollection(signer, da, ga) {
+    async deployNftCollection(signer, da, ga) {
       const rif = proxy.connect(signer);
       const deploy = await rif.deployNft(da.name, da.symbol, {
         ...ga,
