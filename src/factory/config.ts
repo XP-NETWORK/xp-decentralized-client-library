@@ -171,6 +171,14 @@ export namespace ChainFactoryConfigs {
         Tezos: new TezosToolkit("https://mainnet.ecadinfra.com"),
         tzktApi: "https://api.tzkt.io/",
       },
+      icpParams: {
+        agent: new HttpAgent({
+          host: "https://ic0.app",
+        }),
+        bridge: Principal.fromText("6gfde-pqaaa-aaaal-al76q-cai"),
+        identifier: "ICP",
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
