@@ -256,7 +256,14 @@ export async function icpHandler({
     getStorageContract() {
       return storage;
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+    ) {
       const bcWithSigner = await createBridgeActor(bridge, {
         agent: signer,
       });
@@ -265,6 +272,7 @@ export async function icpHandler({
         tokenId,
         destinationChain,
         to,
+        metaDataUri,
       );
       return {
         hash: () => hash,
