@@ -90,9 +90,15 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(IDL.Bool)],
         ['query'],
       ),
+    'get_claim_nonce' : IDL.Func([], [IDL.Nat], ['query']),
     'get_claimed_data' : IDL.Func(
         [IDL.Text],
         [IDL.Opt(ClaimedEvent)],
+        ['query'],
+      ),
+    'get_hash_from_claim_nonce' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Opt(IDL.Text)],
         ['query'],
       ),
     'get_hash_from_nonce' : IDL.Func([IDL.Nat], [IDL.Opt(IDL.Text)], ['query']),
