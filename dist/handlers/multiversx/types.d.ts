@@ -45,7 +45,10 @@ export type TMultiversXHandler = TSingularNftChain<TMultiversXSigner, TMultivers
     ticker: string;
 }, {
     gasLimit: number;
-}, string> & ReadClaimed721Event & ReadClaimed1155Event;
+}, string> & ReadClaimed721Event & ReadClaimed1155Event & TGetTransactionStatus;
+type TGetTransactionStatus = {
+    getTransactionStatus(txHash: string): Promise<string>;
+};
 export type TMultiversXParams = {
     provider: INetworkProvider;
     gatewayURL: string;
@@ -54,4 +57,5 @@ export type TMultiversXParams = {
     chainId: string;
     identifier: string;
 };
+export {};
 //# sourceMappingURL=types.d.ts.map
