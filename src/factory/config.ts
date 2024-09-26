@@ -139,7 +139,7 @@ export namespace ChainFactoryConfigs {
     return {
       bscParams: {
         identifier: Chain.BSC,
-        provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
+        provider: new JsonRpcProvider("https://binance.llamarpc.com"),
         bridge: ethers.getAddress("0x289FDdDce5119C41B82C969135212061D5E7Dce5"),
         royaltySalePrice: 10000,
         storage,
