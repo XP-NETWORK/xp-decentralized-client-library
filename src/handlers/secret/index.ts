@@ -123,6 +123,7 @@ export function secretHandler({
         token_amount: input.tokenAmount,
         token_id: input.tokenId,
         transaction_hash: input.transactionHash,
+        lock_tx_chain: input.lockTxChain,
       };
     },
     async getValidatorCount() {
@@ -376,6 +377,7 @@ export function secretHandler({
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
             token_id: tokenId.toString(),
+            metadata_uri: metaDataUri,
             collection_code_info: {
               code_id: Number.parseInt(
                 contract_info?.code_id ?? raise("Code id not found"),
@@ -429,6 +431,7 @@ export function secretHandler({
               code_hash:
                 codeHashResponse.code_hash ?? raise("Code hash not found"),
             },
+            metadata_uri: metaDataUri,
             destination_chain: destinationChain,
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
