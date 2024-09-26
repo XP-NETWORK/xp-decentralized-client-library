@@ -4,6 +4,7 @@ import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
+import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
 import { TAptosParams } from "../handlers/aptos/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
@@ -77,6 +78,18 @@ export namespace ChainFactoryConfigs {
           "https://rpc.api.moonbase.moonbeam.network",
         ),
         royaltySalePrice: 10000,
+        storage,
+      },
+      secretParams: {
+        bridge: "secret1evanrnzez3cwhuwgevmjmd8jl8k4jfhkfgt3x2",
+        bridgeCodeHash: "",
+        chainId: "pulsar-3",
+        identifier: "SECRET",
+        nftCodeId: 10395,
+        provider: new SecretNetworkClient({
+          chainId: "pulsar-3",
+          url: "https://api.pulsar.scrttestnet.com",
+        }),
         storage,
       },
       tezosParams: {
