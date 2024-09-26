@@ -4,6 +4,7 @@ import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
+import { SecretNetworkClient } from "secretjs";
 import { TAptosParams } from "../handlers/aptos/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
@@ -60,6 +61,15 @@ export declare namespace ChainFactoryConfigs {
             identifier: string;
             provider: JsonRpcProvider;
             royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        secretParams: {
+            bridge: string;
+            bridgeCodeHash: string;
+            chainId: string;
+            identifier: string;
+            nftCodeId: number;
+            provider: SecretNetworkClient;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         tezosParams: {
