@@ -46,7 +46,13 @@ export type TSecretHandler = TNftChain<
     { name: string; symbol: string; codeId?: number },
     TxOptions,
     string
-  >;
+  > & {
+    setViewingKey: (
+      signer: SecretNetworkClient,
+      contract: string,
+      vk: string,
+    ) => Promise<TxResponse>;
+  };
 
 export type TSecretParams = {
   provider: SecretNetworkClient;
