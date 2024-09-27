@@ -175,27 +175,25 @@ export function multiversxHandler({
       await waitForTransaction(hash);
       const response = (
         await axios.get(
-          `${gatewayURL.replace("gateway", "api")}/transactions/${hash}`,
+          `${gatewayURL.replace(
+            "gateway",
+            "api",
+          )}/transactions/${hash}?withScResults=true`,
         )
       ).data;
-      const event = response.results
+      const event = response.logs.events.find(
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        .flatMap((e: any) => e.logs?.events)
-        .find(
-          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-          (e: any) =>
-            e.identifier === "callBack" &&
-            Buffer.from(e.topics[0], "base64").toString("utf-8") ===
-              "Claimed721",
-        );
+        (e: any) =>
+          Buffer.from(e.topics[0], "base64").toString("utf-8") === "Claimed721",
+      );
       return {
-        transaction_hash: Buffer.from(event.topics[2], "base64").toString(
+        transaction_hash: Buffer.from(event.topics[3], "base64").toString(
           "utf-8",
         ),
-        nft_contract: Buffer.from(event.topics[3], "base64").toString("utf-8"),
-        source_chain: Buffer.from(event.topics[1], "base64").toString("utf-8"),
-        token_id: Buffer.from(event.topics[4], "base64").toString("hex"),
-        lock_tx_chain: Buffer.from(event.topics[5], "base64").toString("hex"),
+        nft_contract: Buffer.from(event.topics[4], "base64").toString("utf-8"),
+        lock_tx_chain: Buffer.from(event.topics[1], "base64").toString("utf-8"),
+        source_chain: Buffer.from(event.topics[2], "base64").toString("hex"),
+        token_id: Buffer.from(event.topics[5], "base64").toString("hex"),
       };
     },
     async readClaimed1155Event(hash) {
