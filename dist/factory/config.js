@@ -49,7 +49,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             secretParams: {
-                bridge: "secret1evanrnzez3cwhuwgevmjmd8jl8k4jfhkfgt3x2",
+                bridge: "secret1grl2nduhjkvags56ewgcn80ymmmke8tfrm9zg9",
                 bridgeCodeHash: "",
                 chainId: "pulsar-3",
                 identifier: "SECRET",
