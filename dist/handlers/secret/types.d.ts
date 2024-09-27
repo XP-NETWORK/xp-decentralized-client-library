@@ -26,7 +26,9 @@ export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, Tx
     name: string;
     symbol: string;
     codeId?: number;
-}, TxOptions, string>;
+}, TxOptions, string> & {
+    setViewingKey: (signer: SecretNetworkClient, contract: string, vk: string) => Promise<TxResponse>;
+};
 export type TSecretParams = {
     provider: SecretNetworkClient;
     bridge: string;
