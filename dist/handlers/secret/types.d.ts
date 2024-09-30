@@ -1,6 +1,6 @@
 import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNftChain } from "../types";
+import { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNFTList, TNftChain } from "../types";
 export type TSecretClaimArgs = {
     token_id: string;
     source_chain: string;
@@ -23,18 +23,15 @@ export type SecretMintArgs = {
     tokenId: string;
     owner: string;
 };
-export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> & ReadClaimed721Event & ReadClaimed1155Event & DeployNFTCollection<SecretNetworkClient, {
+export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> & ReadClaimed721Event & ReadClaimed1155Event & TNFTList<Record<string, unknown>, {
+    viewingKey: string;
+    codeHash?: string;
+}> & DeployNFTCollection<SecretNetworkClient, {
     name: string;
     symbol: string;
     codeId?: number;
 }, TxOptions, string> & {
     setViewingKey: (signer: SecretNetworkClient, contract: string, vk: string) => Promise<TxResponse>;
-    nftList: (owner: string, viewingKey: string, contract: string, codeHash?: string) => Promise<{
-        readonly native: Record<string, unknown>;
-        readonly uri: string;
-        readonly collectionIdent: string;
-        readonly tokenId: string;
-    }[]>;
 };
 export type TSecretParams = {
     provider: SecretNetworkClient;

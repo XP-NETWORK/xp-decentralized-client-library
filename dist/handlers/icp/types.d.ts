@@ -30,5 +30,5 @@ export type TICPClaimArgs = ClaimData;
 export type TICPHandler = TSingularNftChain<HttpAgent | BrowserSigners, TICPClaimArgs, undefined, string, HttpAgent> & MintNft<HttpAgent, TICPMintArgs, undefined, string> & DeployNFTCollection<HttpAgent, {
     name: string;
     symbol: string;
-}, undefined, string> & ReadClaimed721Event & TNFTList<[string, Value][]>;
+}, undefined, string> & ReadClaimed721Event & TNFTList<[string, Value][], null>;
 //# sourceMappingURL=types.d.ts.map

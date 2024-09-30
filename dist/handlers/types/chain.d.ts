@@ -271,8 +271,8 @@ export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TSingular
  * Represents a type that has the methods required to fetch NFTs from a chain for a user, and a certain contract. This type should be implemented for all chains, that do not have a working indexer.
  * @template NFT The type of the NFT. It could be anything that represents an NFT on that particular chain.
  */
-export type TNFTList<NFT> = {
-    nftList: (owner: string, contract: string) => Promise<{
+export type TNFTList<NFT, EA> = {
+    nftList: (owner: string, contract: string, extraArgs: EA) => Promise<{
         readonly native: NFT;
         readonly uri: string;
         readonly collectionIdent: string;
