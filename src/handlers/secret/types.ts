@@ -29,6 +29,7 @@ export type SecretMintArgs = {
   contractAddress: string;
   uri: string;
   tokenId: string;
+  owner: string;
 };
 
 export type TSecretHandler = TNftChain<
@@ -52,6 +53,20 @@ export type TSecretHandler = TNftChain<
       contract: string,
       vk: string,
     ) => Promise<TxResponse>;
+    nftList: (
+      owner: string,
+
+      viewingKey: string,
+      contract: string,
+      codeHash?: string,
+    ) => Promise<
+      {
+        readonly native: Record<string, unknown>;
+        readonly uri: string;
+        readonly collectionIdent: string;
+        readonly tokenId: string;
+      }[]
+    >;
   };
 
 export type TSecretParams = {

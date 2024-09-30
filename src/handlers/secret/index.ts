@@ -17,6 +17,61 @@ export function secretHandler({
     getProvider() {
       return provider;
     },
+    async nftList(owner, viewingKey, contract, codeHash) {
+      const { token_list } = await provider.query.snip721.GetOwnedTokens({
+        auth: {
+          viewer: {
+            address: owner,
+            viewing_key: viewingKey,
+          },
+        },
+        contract: {
+          address: contract,
+          codeHash: codeHash || "",
+        },
+        owner: owner,
+      });
+      if (token_list.tokens.length === 0) {
+        return [];
+      }
+      const response: {
+        readonly native: Record<string, unknown>;
+        readonly uri: string;
+        readonly collectionIdent: string;
+        readonly tokenId: string;
+      }[] = [];
+      await Promise.all(
+        token_list.tokens.map(async (token) => {
+          const tokenInfo = await provider.query.snip721.GetTokenInfo({
+            contract: {
+              address: contract,
+              codeHash: codeHash || "",
+            },
+            auth: {
+              viewer: {
+                address: owner,
+                viewing_key: viewingKey,
+              },
+            },
+            token_id: token,
+          });
+
+          response.push({
+            collectionIdent: contract,
+            uri: tokenInfo.all_nft_info.info?.token_uri || "",
+            tokenId: token,
+            native: {
+              contract: contract,
+              contractHash: codeHash || "",
+              tokenId: token,
+              viewingKey,
+              metadata: tokenInfo.all_nft_info.info?.token_uri || "",
+            },
+          });
+        }),
+      );
+      return response;
+    },
     async setViewingKey(signer, contract, vk) {
       const tx = await signer.tx.snip721.setViewingKey(
         {
@@ -113,7 +168,7 @@ export function secretHandler({
             mint_nft: {
               public_metadata: { token_uri: ma.uri },
               token_id: ma.tokenId,
-              owner: signer.address,
+              owner: ma.owner,
             },
           },
           sender: signer.address,
