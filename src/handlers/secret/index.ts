@@ -18,15 +18,21 @@ export function secretHandler({
       return provider;
     },
     async setViewingKey(signer, contract, vk) {
-      const tx = await provider.tx.snip721.setViewingKey({
-        contract_address: contract,
-        msg: {
-          set_viewing_key: {
-            key: vk,
+      const tx = await signer.tx.snip721.setViewingKey(
+        {
+          contract_address: contract,
+          msg: {
+            set_viewing_key: {
+              key: vk,
+            },
           },
+          sender: signer.address,
         },
-        sender: signer.address,
-      });
+        {
+          gasLimit: 300_000,
+          // ...extraArgs,
+        },
+      );
       return tx;
     },
     async claimNft(signer, claimData, sigs, extraArgs) {
