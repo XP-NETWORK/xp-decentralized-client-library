@@ -17,17 +17,17 @@ export function secretHandler({
     getProvider() {
       return provider;
     },
-    async nftList(owner, viewingKey, contract, codeHash) {
+    async nftList(owner, contract, ea) {
       const { token_list } = await provider.query.snip721.GetOwnedTokens({
         auth: {
           viewer: {
             address: owner,
-            viewing_key: viewingKey,
+            viewing_key: ea.viewingKey,
           },
         },
         contract: {
           address: contract,
-          codeHash: codeHash || "",
+          codeHash: ea.codeHash || "",
         },
         owner: owner,
       });
@@ -45,12 +45,12 @@ export function secretHandler({
           const tokenInfo = await provider.query.snip721.GetTokenInfo({
             contract: {
               address: contract,
-              codeHash: codeHash || "",
+              codeHash: ea.codeHash || "",
             },
             auth: {
               viewer: {
                 address: owner,
-                viewing_key: viewingKey,
+                viewing_key: ea.viewingKey,
               },
             },
             token_id: token,
@@ -62,9 +62,9 @@ export function secretHandler({
             tokenId: token,
             native: {
               contract: contract,
-              contractHash: codeHash || "",
+              contractHash: ea.codeHash || "",
               tokenId: token,
-              viewingKey,
+              viewingKey: ea.viewingKey,
               metadata: tokenInfo.all_nft_info.info?.token_uri || "",
             },
           });

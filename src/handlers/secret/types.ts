@@ -5,6 +5,7 @@ import {
   MintNft,
   ReadClaimed721Event,
   ReadClaimed1155Event,
+  TNFTList,
   TNftChain,
 } from "../types";
 
@@ -42,6 +43,7 @@ export type TSecretHandler = TNftChain<
   MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> &
   ReadClaimed721Event &
   ReadClaimed1155Event &
+  TNFTList<Record<string, unknown>, { viewingKey: string; codeHash?: string }> &
   DeployNFTCollection<
     SecretNetworkClient,
     { name: string; symbol: string; codeId?: number },
@@ -53,20 +55,6 @@ export type TSecretHandler = TNftChain<
       contract: string,
       vk: string,
     ) => Promise<TxResponse>;
-    nftList: (
-      owner: string,
-
-      viewingKey: string,
-      contract: string,
-      codeHash?: string,
-    ) => Promise<
-      {
-        readonly native: Record<string, unknown>;
-        readonly uri: string;
-        readonly collectionIdent: string;
-        readonly tokenId: string;
-      }[]
-    >;
   };
 
 export type TSecretParams = {
