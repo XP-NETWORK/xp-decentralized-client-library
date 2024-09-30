@@ -21,6 +21,7 @@ export type SecretMintArgs = {
     contractAddress: string;
     uri: string;
     tokenId: string;
+    owner: string;
 };
 export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, TxOptions, TxResponse, SecretNetworkClient> & MintNft<SecretNetworkClient, SecretMintArgs, TxOptions, TxResponse> & ReadClaimed721Event & ReadClaimed1155Event & DeployNFTCollection<SecretNetworkClient, {
     name: string;
@@ -28,6 +29,12 @@ export type TSecretHandler = TNftChain<SecretNetworkClient, TSecretClaimArgs, Tx
     codeId?: number;
 }, TxOptions, string> & {
     setViewingKey: (signer: SecretNetworkClient, contract: string, vk: string) => Promise<TxResponse>;
+    nftList: (owner: string, viewingKey: string, contract: string, codeHash?: string) => Promise<{
+        readonly native: Record<string, unknown>;
+        readonly uri: string;
+        readonly collectionIdent: string;
+        readonly tokenId: string;
+    }[]>;
 };
 export type TSecretParams = {
     provider: SecretNetworkClient;
