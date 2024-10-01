@@ -13,6 +13,9 @@ export type DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
 export type DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
     deploySFTCollection: (signer: Signer, da: DeployArgs, ga?: GasArgs) => Promise<RetTx>;
 };
+export type TValidateAddress = {
+    validateAddress: (address: string) => Promise<boolean>;
+};
 export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> = DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> & DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx>;
 /**
  * Represents a function that locks an NFT on the chain inside the bridge smart contract.
@@ -250,7 +253,7 @@ export type TMapTransferDetailsToChainClaimData<To> = {
  * @template ExtraArgs The type of the extra arguments. It could be anything that might be required as extra arguments on a chain.
  * @template RetTx The type of the return value after a transaction.
  */
-export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider> & TMapTransferDetailsToChainClaimData<ClaimData> & TGetValidatorCount & TGetStorage & TGetChainIdentifier;
+export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TApproveNFT<Signer, ExtraArgs, RetTx> & TLockNFT<Signer, ExtraArgs, RetTx> & TGetNFTData<ExtraArgs> & TClaimNFT<Signer, ClaimData, ExtraArgs, RetTx> & TGetBalance<Signer, ExtraArgs> & TGetClaimData & TGetProvider<Provider> & TMapTransferDetailsToChainClaimData<ClaimData> & TGetValidatorCount & TGetStorage & TGetChainIdentifier & TValidateAddress;
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
  * @template Signer The type of the signer. ie {Signer} on EVM from ethers
