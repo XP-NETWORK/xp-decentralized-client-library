@@ -2,7 +2,7 @@ import { StdSignature, toBase64 } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
-import { TSecretHandler, TSecretParams } from "./types";
+import { GetOwnedTokensResponse, TSecretHandler, TSecretParams } from "./types";
 
 export function secretHandler({
   bridge,
@@ -18,7 +18,7 @@ export function secretHandler({
       return provider;
     },
     async nftList(owner, contract, ea) {
-      const { token_list } = await provider.query.snip721.GetOwnedTokens({
+      const res = (await provider.query.snip721.GetOwnedTokens({
         auth: {
           viewer: {
             address: owner,
@@ -30,8 +30,12 @@ export function secretHandler({
           codeHash: ea.codeHash || "",
         },
         owner: owner,
-      });
-      if (!token_list || token_list.tokens.length === 0) {
+      })) as GetOwnedTokensResponse;
+      if (typeof res === "string") {
+        throw new Error(res);
+      }
+      const { token_list } = res;
+      if (token_list.tokens.length === 0) {
         return [];
       }
       const response: {
