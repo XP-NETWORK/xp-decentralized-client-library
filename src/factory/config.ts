@@ -85,7 +85,7 @@ export namespace ChainFactoryConfigs {
         bridgeCodeHash: "",
         chainId: "pulsar-3",
         identifier: "SECRET",
-        nftCodeId: 10395,
+        nftCodeId: 10416,
         provider: new SecretNetworkClient({
           chainId: "pulsar-3",
           url: "https://api.pulsar.scrttestnet.com",

@@ -142,6 +142,16 @@ export function secretHandler({
         symbol: da.symbol,
         owner: signer.address,
         destination_user_address: signer.address,
+        source_chain: "",
+        destination_chain: "",
+        token_id: "0",
+        token_amount: "1",
+        royalty: 0,
+        lock_tx_chain: "",
+        metadata: "",
+        transaction_hash: "",
+        royalty_receiver: signer.address,
+        source_nft_contract_address: "",
         entropy: "bruh",
         config: {
           public_token_supply: true,
@@ -159,6 +169,7 @@ export function secretHandler({
           ...ga,
         },
       );
+      console.log(contract);
       const contractAddress = contract.arrayLog?.find(
         (log) => log.type === "message" && log.key === "contract_address",
       )?.value;
