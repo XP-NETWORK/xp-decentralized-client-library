@@ -31,7 +31,7 @@ export function secretHandler({
         },
         owner: owner,
       });
-      if (token_list.tokens.length === 0) {
+      if (!token_list || token_list.tokens.length === 0) {
         return [];
       }
       const response: {
