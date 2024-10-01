@@ -40,6 +40,14 @@ export function tonHandler({
 
   return {
     identifier,
+    validateAddress(address) {
+      try {
+        Address.parse(address);
+        return Promise.resolve(true);
+      } catch {
+        return Promise.resolve(false);
+      }
+    },
     getStorageContract() {
       return storage;
     },

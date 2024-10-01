@@ -1,4 +1,4 @@
-import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, isBcsAddress } from "@aptos-labs/ts-sdk";
 import { HexString } from "aptos";
 import { raise } from "../ton";
 import { BridgeClient } from "./bridge-client";
@@ -15,6 +15,9 @@ export function aptosHandler({
   const bc = new BridgeClient(aptos, bridge);
 
   return {
+    validateAddress(address) {
+      return Promise.resolve(isBcsAddress(address));
+    },
     identifier,
     async getValidatorCount() {
       const bd = await bc.getBridgeData();

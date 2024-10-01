@@ -56,6 +56,32 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
   const map = mapNonceToParams(cp);
   const helpers = new Map<TSupportedChain, TInferChainH<TSupportedChain>>();
   return {
+    async lockNft(
+      sourceChain,
+      signer,
+      sourceNftContractAddress,
+      destinationChain,
+      to,
+      tokenId,
+      metadataUri,
+      extraArgs,
+    ) {
+      const destination = await this.inner(destinationChain);
+      const valid = await destination.validateAddress(to);
+      if (!valid) {
+        throw new Error("Invalid destination user address");
+      }
+      const lock = await sourceChain.lockNft(
+        signer,
+        sourceNftContractAddress,
+        destinationChain,
+        to,
+        tokenId,
+        metadataUri,
+        extraArgs,
+      );
+      return lock;
+    },
     async inner(chain) {
       const helper = helpers.get(chain);
       if (helper) {

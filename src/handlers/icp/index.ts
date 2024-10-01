@@ -85,6 +85,14 @@ export async function icpHandler({
   const bc = await createBridgeActor(bridge, { agent });
   await agent.fetchRootKey();
   return {
+    validateAddress(address) {
+      try {
+        Principal.fromText(address);
+        return Promise.resolve(true);
+      } catch {
+        return Promise.resolve(false);
+      }
+    },
     identifier,
     async nftList(owner, contract) {
       const nft = await createNftActor(contract, { agent });

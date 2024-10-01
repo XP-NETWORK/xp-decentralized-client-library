@@ -1,3 +1,4 @@
+import { isAddress } from "ethers";
 import {
   Bridge__factory,
   ERC721Royalty__factory,
@@ -16,6 +17,9 @@ export function evmHandler({
 }: TEvmParams): TEvmHandler {
   return {
     identifier,
+    validateAddress(address) {
+      return Promise.resolve(isAddress(address));
+    },
     async claimNft(wallet, claimData, sigs, extraArgs) {
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(

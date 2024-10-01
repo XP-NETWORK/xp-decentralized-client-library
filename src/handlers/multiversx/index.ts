@@ -91,6 +91,14 @@ export function multiversxHandler({
   };
   return {
     identifier,
+    validateAddress(address) {
+      try {
+        Address.newFromBech32(address);
+        return Promise.resolve(true);
+      } catch {
+        return Promise.resolve(false);
+      }
+    },
     async nftData(nonce, collection) {
       const nftDetails =
         await provider.getDefinitionOfTokenCollection(collection);

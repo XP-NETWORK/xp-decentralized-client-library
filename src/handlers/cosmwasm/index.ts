@@ -58,6 +58,14 @@ export async function cosmWasmHandler({
   const bc = new Bridge.BridgeQueryClient(provider, bridge);
   return {
     identifier,
+    async validateAddress(address) {
+      try {
+        await provider.getAccount(address);
+        return true;
+      } catch {
+        return false;
+      }
+    },
     async approveNft(signer, tokenId, contract, extraArgs) {
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,

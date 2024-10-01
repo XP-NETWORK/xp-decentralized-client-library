@@ -1,4 +1,4 @@
-import { StdSignature, toBase64 } from "secretjs";
+import { StdSignature, toBase64, validateAddress } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
@@ -16,6 +16,9 @@ export function secretHandler({
     identifier,
     getProvider() {
       return provider;
+    },
+    validateAddress(address) {
+      return Promise.resolve(validateAddress(address).isValid);
     },
     async nftList(owner, contract, ea) {
       const res = (await provider.query.snip721.GetOwnedTokens({

@@ -38,6 +38,10 @@ export type DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
   ) => Promise<RetTx>;
 };
 
+export type TValidateAddress = {
+  validateAddress: (address: string) => Promise<boolean>;
+};
+
 export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> =
   DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> &
     DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx>;
@@ -334,7 +338,8 @@ export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
     TMapTransferDetailsToChainClaimData<ClaimData> &
     TGetValidatorCount &
     TGetStorage &
-    TGetChainIdentifier;
+    TGetChainIdentifier &
+    TValidateAddress;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.

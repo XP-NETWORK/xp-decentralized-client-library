@@ -51,6 +51,12 @@ export async function nearHandler({
     getProvider() {
       return provider;
     },
+    validateAddress(address) {
+      if (address.includes(".near") || address.includes(".testnet")) {
+        return Promise.resolve(true);
+      }
+      return Promise.resolve(false);
+    },
     async readClaimed721Event(hash) {
       const receipts = await provider.connection.provider.txStatusReceipts(
         hash,
