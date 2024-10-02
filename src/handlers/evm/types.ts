@@ -4,6 +4,7 @@ import {
   Overrides,
   Provider,
   Signer,
+  Wallet,
 } from "ethers";
 import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 
@@ -36,7 +37,7 @@ export type TEvmHandler = TNftChain<
     PayableOverrides,
     ContractTransactionResponse
   > &
-  TApproveNFT<Signer, PayableOverrides, ContractTransactionResponse> &
+  TApproveNFT<Signer | Wallet, PayableOverrides, ContractTransactionResponse> &
   DeployCollection<
     Signer,
     {

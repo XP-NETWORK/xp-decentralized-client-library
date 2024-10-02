@@ -80,10 +80,10 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1Fh6VH8BxA9xgJCn8hGZRxoo2vY3hrbqeV",
+        bridge: "KT1Gm6qaUmfuVnGJmfY46K6hiUzgFP8DLcke",
         identifier: "TEZOS",
         storage,
-        Tezos: new TezosToolkit("https://rpc.ghostnet.teztnets.com"),
+        Tezos: new TezosToolkit("https://ghostnet.ecadinfra.com"),
         tzktApi: "https://api.ghostnet.tzkt.io/",
       },
       multiversxParams: {
@@ -126,7 +126,7 @@ export namespace ChainFactoryConfigs {
     return {
       bscParams: {
         identifier: Chain.BSC,
-        provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
+        provider: new JsonRpcProvider("https://binance.llamarpc.com"),
         bridge: ethers.getAddress("0x289FDdDce5119C41B82C969135212061D5E7Dce5"),
         royaltySalePrice: 10000,
         storage,
@@ -165,7 +165,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1N3qtcfxzNMhdRMphvtDCKLEDwVLhZ8Cpq",
+        bridge: "KT1M4hZZG2zcRT1aohZsSmXcoeAVpwG9Xz3N",
         identifier: Chain.TEZOS,
         storage,
         Tezos: new TezosToolkit("https://mainnet.ecadinfra.com"),

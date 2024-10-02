@@ -285,7 +285,7 @@ export async function icpHandler({
         agent: signer,
       });
       await lc.icrc2_approve({
-        amount: BigInt(claimData.fee + 10_000n),
+        amount: BigInt(claimData.fee + 10_000n + 14638409n),
         spender: {
           owner: bridge,
           subaccount: [],
