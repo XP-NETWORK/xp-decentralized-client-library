@@ -124,7 +124,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             tezosParams: {
-                bridge: "KT1M4hZZG2zcRT1aohZsSmXcoeAVpwG9Xz3N",
+                bridge: "KT1UMVUP3XBpPrMUwuC6DXjEcLgZykV7p1PW",
                 identifier: factory_1.Chain.TEZOS,
                 storage,
                 Tezos: new taquito_1.TezosToolkit("https://mainnet.ecadinfra.com"),
