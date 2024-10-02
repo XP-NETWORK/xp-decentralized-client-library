@@ -165,7 +165,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1M4hZZG2zcRT1aohZsSmXcoeAVpwG9Xz3N",
+        bridge: "KT1UMVUP3XBpPrMUwuC6DXjEcLgZykV7p1PW",
         identifier: Chain.TEZOS,
         storage,
         Tezos: new TezosToolkit("https://mainnet.ecadinfra.com"),
