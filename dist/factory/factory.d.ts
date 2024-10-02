@@ -14,6 +14,7 @@ export declare namespace Chain {
     const ICP = "ICP";
     const BASE = "BASE";
     const NEAR = "NEAR";
+    const MOONBEAM = "MOONBEAM";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
