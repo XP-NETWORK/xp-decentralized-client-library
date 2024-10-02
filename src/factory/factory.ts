@@ -32,6 +32,7 @@ export namespace Chain {
   export const ICP = "ICP";
   export const BASE = "BASE";
   export const NEAR = "NEAR";
+  export const MOONBEAM = "MOONBEAM";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -49,6 +50,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.APTOS, chainParams.aptosParams);
   cToP.set(Chain.ICP, chainParams.icpParams);
   cToP.set(Chain.NEAR, chainParams.nearParams);
+  cToP.set(Chain.MOONBEAM, chainParams.moonbeamParams);
   return cToP;
 }
 
@@ -132,6 +134,9 @@ CHAIN_INFO.set(Chain.MATIC, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.BASE, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.MOONBEAM, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.HEDERA, {
