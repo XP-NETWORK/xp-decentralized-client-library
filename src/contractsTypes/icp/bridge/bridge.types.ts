@@ -43,31 +43,32 @@ export interface LockedEvent {
 export interface SignerAndSignature { 'signature' : string, 'signer' : string }
 export interface Validator { 'address' : Principal, 'pending_rewards' : bigint }
 export interface XPBridge {
-  'acceptCycles' : ActorMethod<[], undefined>,
-  'add_validator' : ActorMethod<
+  acceptCycles: ActorMethod<[], undefined>;
+  add_validator: ActorMethod<
     [AddValidator, Array<SignerAndSignature>],
     undefined
-  >,
-  'availableCycles' : ActorMethod<[], bigint>,
-  'blacklist_validator' : ActorMethod<
+  >;
+  availableCycles: ActorMethod<[], bigint>;
+  blacklist_validator: ActorMethod<
     [BlacklistValidator, Array<SignerAndSignature>],
     undefined
-  >,
-  'claim_nft' : ActorMethod<[ClaimData, Array<SignerAndSignature>], string>,
-  'claim_validator_rewards' : ActorMethod<[string], [bigint, bigint]>,
-  'encode_add_validator' : ActorMethod<[AddValidator], Uint8Array | number[]>,
-  'encode_blacklist_validator' : ActorMethod<
+  >;
+  claim_nft: ActorMethod<[ClaimData, Array<SignerAndSignature>], string>;
+  claim_validator_rewards: ActorMethod<[string], [bigint, bigint]>;
+  encode_add_validator: ActorMethod<[AddValidator], Uint8Array | number[]>;
+  encode_blacklist_validator: ActorMethod<
     [BlacklistValidator],
     Uint8Array | number[]
-  >,
-  'encode_claim_data' : ActorMethod<[ClaimData], Uint8Array | number[]>,
-  'get_blacklisted_validators' : ActorMethod<[string], [] | [boolean]>,
-  'get_claimed_data' : ActorMethod<[string], [] | [ClaimedEvent]>,
-  'get_locked_data' : ActorMethod<[string], [] | [LockedEvent]>,
-  'get_validator' : ActorMethod<[string], [] | [Validator]>,
-  'get_validator_count' : ActorMethod<[], bigint>,
-  'init' : ActorMethod<[], undefined>,
-  'lock_nft' : ActorMethod<[Principal, bigint, string, string, string], string>,
+  >;
+  encode_claim_data: ActorMethod<[ClaimData], Uint8Array | number[]>;
+  get_blacklisted_validators: ActorMethod<[string], [] | [boolean]>;
+  get_claimed_data: ActorMethod<[string], [] | [ClaimedEvent]>;
+  get_locked_data: ActorMethod<[string], [] | [LockedEvent]>;
+  get_validator: ActorMethod<[string], [] | [Validator]>;
+  get_validator_count: ActorMethod<[], bigint>;
+  get_nonce: ActorMethod<[], bigint>;
+  init: ActorMethod<[], undefined>;
+  lock_nft: ActorMethod<[Principal, bigint, string, string, string], string>;
 }
 export interface _SERVICE extends XPBridge {}
 export declare const idlFactory: IDL.InterfaceFactory;
