@@ -74,7 +74,7 @@ export interface XPBridge {
     'get_validator': ActorMethod<[string], [] | [Validator]>;
     'get_validator_count': ActorMethod<[], bigint>;
     'init': ActorMethod<[], undefined>;
-    'lock_nft': ActorMethod<[Principal, bigint, string, string], string>;
+    'lock_nft': ActorMethod<[Principal, bigint, string, string, string], string>;
 }
 export interface _SERVICE extends XPBridge {
 }
