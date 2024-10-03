@@ -45,7 +45,7 @@ async function createLedgerActor(contract, { agent }) {
             host: undefined,
         });
     }
-    return agent_1.Actor.createActor(bridge_1.idlFactory, {
+    return agent_1.Actor.createActor(ledger_1.idlFactory, {
         canisterId: contract,
         agent,
     });
