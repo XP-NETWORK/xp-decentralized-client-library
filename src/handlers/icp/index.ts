@@ -59,7 +59,7 @@ export async function createLedgerActor(
       host: undefined,
     });
   }
-  return Actor.createActor<LedgerService>(BridgeIdl, {
+  return Actor.createActor<LedgerService>(LedgerIDL, {
     canisterId: contract,
     agent,
   });
