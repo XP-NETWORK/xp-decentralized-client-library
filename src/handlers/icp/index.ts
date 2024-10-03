@@ -10,7 +10,6 @@ import { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridg
 import { idlFactory as LedgerIDL } from "../../contractsTypes/icp/ledger/ledger";
 import { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
 import { idlFactory as NftIdl } from "../../contractsTypes/icp/nft/nft";
-import { init } from "../../contractsTypes/icp/nft/nft";
 import { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
 import { NftByteCode } from "./nft.wasm.gz.hex";
 import { BrowserSigners, TICPHandler, TICPParams } from "./types";
@@ -168,31 +167,27 @@ export async function icpHandler({
       return approval.Ok.toString();
     },
     async deployNftCollection(signer, _da) {
-      const encoded = init({ IDL })[0].encodeValue({
-        icrc3_args: [
+      const enc = IDL.encode(
+        [
+          IDL.Record({
+            owner: IDL.Principal,
+            name: IDL.Text,
+            symbol: IDL.Text,
+          }),
+        ],
+        [
           {
-            maxRecordsToArchive: 10_000,
-            archiveIndexType: {
-              Stable: [],
-            },
-            maxArchivePages: 62500,
-            settleToRecords: 2000,
-            archiveCycles: 2_000_000_000_000,
-            maxActiveRecords: 4000,
-            maxRecordsInArchiveInstance: 5_000_000,
-            archiveControllers: [],
-            supportedBlocks: [[]],
-            deployer: await signer.getPrincipal(),
+            owner: await signer.getPrincipal(),
+            name: _da.name,
+            symbol: _da.symbol,
           },
         ],
-        icrc37_args: [],
-        icrc7_args: [],
-      });
+      );
       const actor = await Actor.createAndInstallCanister(
         NftIdl,
         {
           module: Buffer.from(NftByteCode, "hex"),
-          arg: encoded,
+          arg: enc,
         },
         {
           agent: signer,
