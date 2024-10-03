@@ -98,7 +98,7 @@ export const idlFactory = ({ IDL }) => {
     'get_validator_count' : IDL.Func([], [IDL.Nat], ['query']),
     'init' : IDL.Func([], [], []),
     'lock_nft' : IDL.Func(
-        [IDL.Principal, IDL.Nat, IDL.Text, IDL.Text],
+        [IDL.Principal, IDL.Nat, IDL.Text, IDL.Text, IDL.Text],
         [IDL.Text],
         [],
       ),

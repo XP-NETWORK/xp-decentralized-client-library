@@ -163,7 +163,7 @@ export async function icpHandler({
       ]);
       const [approval] = approvals[0];
       if (!approval || "Err" in approval)
-        throw new Error(`Failed to approve, ${approval?.Err}`);
+        throw new Error(`Failed to approve, ${JSON.stringify(approval?.Err)}`);
       return approval.Ok.toString();
     },
     async deployNftCollection(signer, _da) {
@@ -259,7 +259,14 @@ export async function icpHandler({
     getStorageContract() {
       return storage;
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metadataUri,
+    ) {
       const bcWithSigner = await createBridgeActor(bridge, {
         agent: signer,
       });
@@ -268,6 +275,7 @@ export async function icpHandler({
         tokenId,
         destinationChain,
         to,
+        metadataUri,
       );
       return {
         hash: () => hash,
