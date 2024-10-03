@@ -48,6 +48,24 @@ export async function nearHandler({
     async deployNftCollection(_signer, _da, _ga) {
       unimplemented();
     },
+    async nftList(owner, contract) {
+      const nft = new Contract(provider.connection, contract, {
+        changeMethods: [],
+        viewMethods: ["nft_tokens_for_owner"],
+        useLocalViewExecution: false,
+      });
+      //@ts-ignore
+      const tokens = await nft.nft_tokens_for_owner({ account_id: owner });
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      return tokens.map((e: any) => {
+        return {
+          native: e,
+          uri: e.metadata.media || e.metadata.extra,
+          tokenId: e.token_id,
+          collectionIdent: contract,
+        };
+      });
+    },
     getProvider() {
       return provider;
     },

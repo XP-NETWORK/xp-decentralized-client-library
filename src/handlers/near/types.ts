@@ -5,6 +5,7 @@ import {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,
+  TNFTList,
   TSingularNftChain,
 } from "../types";
 
@@ -52,7 +53,8 @@ export type TNearHandler = TSingularNftChain<
     { gasLimit: number },
     string
   > &
-  ReadClaimed721Event;
+  ReadClaimed721Event &
+  TNFTList<Record<string, unknown>, undefined>;
 
 export type TNearParams = {
   nodeUrl: string;
