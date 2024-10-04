@@ -255,7 +255,15 @@ export function multiversxHandler({
       const hash = await provider.sendTransaction(signed);
       return { hash: () => hash, ret: hash };
     },
-    async lockSft(signer, sourceNft, destinationChain, to, tokenId, amt) {
+    async lockSft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      amt,
+      metaDataUri,
+    ) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -279,10 +287,10 @@ export function multiversxHandler({
       )}`;
       const destination_user_address = `@${Buffer.from(to).toString("hex")}`;
       const source_nft_contract_address = collectionIdentifiers;
-
+      const metadata_uri = `@${Buffer.from(metaDataUri).toString("hex")}`;
       const tx3 = new Transaction({
         data: new TransactionPayload(
-          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${quantity}${nonce}`,
+          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${quantity}${nonce}${metadata_uri}`,
         ),
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
@@ -475,7 +483,14 @@ export function multiversxHandler({
         metaDataUri: "",
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+    ) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -499,10 +514,11 @@ export function multiversxHandler({
       )}`;
       const destination_user_address = `@${Buffer.from(to).toString("hex")}`;
       const source_nft_contract_address = collectionIdentifiers;
+      const metadata_uri = `@${Buffer.from(metaDataUri).toString("hex")}`;
 
       const tx3 = new Transaction({
         data: new TransactionPayload(
-          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${nonce}`,
+          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${nonce}${metadata_uri}`,
         ),
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
