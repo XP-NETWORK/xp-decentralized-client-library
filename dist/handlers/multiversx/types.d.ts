@@ -1,7 +1,7 @@
-import { Transaction } from "@multiversx/sdk-core/out";
+import { StructType, Transaction } from "@multiversx/sdk-core/out";
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TSingularNftChain } from "../types";
+import { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNftChain } from "../types";
 export type TMultiversXSigner = {
     signTransaction(transaction: Transaction): Promise<Transaction>;
     getAddress: () => Promise<string>;
@@ -37,7 +37,7 @@ export type NftIssueArgs = {
     readonly attrs?: string;
     readonly ticker: string;
 };
-export type TMultiversXHandler = TSingularNftChain<TMultiversXSigner, TMultiversXClaimArgs, unknown, string, INetworkProvider> & MintNft<TMultiversXSigner, NftIssueArgs, {
+export type TMultiversXHandler = TNftChain<TMultiversXSigner, TMultiversXClaimArgs, unknown, string, INetworkProvider> & MintNft<TMultiversXSigner, NftIssueArgs, {
     gasLimit: number;
     value: number;
 }, string> & DeployNFTCollection<TMultiversXSigner, {
@@ -57,5 +57,6 @@ export type TMultiversXParams = {
     chainId: string;
     identifier: string;
 };
+export declare const StructClaimDataType: StructType;
 export {};
 //# sourceMappingURL=types.d.ts.map
