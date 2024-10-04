@@ -1,4 +1,11 @@
-import { Transaction } from "@multiversx/sdk-core/out";
+import {
+  AddressType,
+  BigUIntType,
+  BytesType,
+  FieldDefinition,
+  StructType,
+  Transaction,
+} from "@multiversx/sdk-core/out";
 import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import {
@@ -6,7 +13,7 @@ import {
   MintNft,
   ReadClaimed721Event,
   ReadClaimed1155Event,
-  TSingularNftChain,
+  TNftChain,
 } from "../types";
 
 // Custom Interface because there is no such signer interface in mx-sdk.
@@ -48,7 +55,7 @@ export type NftIssueArgs = {
   readonly ticker: string;
 };
 
-export type TMultiversXHandler = TSingularNftChain<
+export type TMultiversXHandler = TNftChain<
   TMultiversXSigner,
   TMultiversXClaimArgs,
   unknown,
@@ -83,3 +90,50 @@ export type TMultiversXParams = {
   chainId: string;
   identifier: string;
 };
+
+export const StructClaimDataType = new StructType("ClaimData", [
+  new FieldDefinition("token_id", "name of the nft", new BytesType()),
+  new FieldDefinition("source_chain", "attributes of the nft", new BytesType()),
+  new FieldDefinition(
+    "destination_chain",
+    "attributes of the nft",
+    new BytesType(),
+  ),
+  new FieldDefinition(
+    "destination_user_address",
+    "attributes of the nft",
+    new AddressType(),
+  ),
+  new FieldDefinition(
+    "source_nft_contract_address",
+    "attributes of the nft",
+    new BytesType(),
+  ),
+  new FieldDefinition("name", "attributes of the nft", new BytesType()),
+  new FieldDefinition("symbol", "attributes of the nft", new BytesType()),
+  new FieldDefinition("royalty", "attributes of the nft", new BigUIntType()),
+  new FieldDefinition(
+    "royalty_receiver",
+    "attributes of the nft",
+    new AddressType(),
+  ),
+  new FieldDefinition("attrs", "attributes of the nft", new BytesType()),
+  new FieldDefinition(
+    "transaction_hash",
+    "attributes of the nft",
+    new BytesType(),
+  ),
+  new FieldDefinition(
+    "token_amount",
+    "attributes of the nft",
+    new BigUIntType(),
+  ),
+  new FieldDefinition("nft_type", "attributes of the nft", new BytesType()),
+  new FieldDefinition("fee", "attributes of the nft", new BigUIntType()),
+  new FieldDefinition(
+    "lock_tx_chain",
+    "Chain identifier on which nft was locked",
+    new BytesType(),
+  ),
+  new FieldDefinition("img_uri", "uri of the image", new BytesType()),
+]);
