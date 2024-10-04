@@ -60,10 +60,10 @@ export function secretHandler({
           uri: tokenInfo.all_nft_info.info?.token_uri || "",
           tokenId: token,
           type: "NFT",
-          amount: 1n,
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
+            amount: 1n,
             tokenId: token,
             viewingKey: ea.viewingKey,
             metadata: tokenInfo.all_nft_info.info?.token_uri || "",
@@ -118,12 +118,12 @@ export function secretHandler({
             tokenInfo.token_id_private_info.token_id_info.public_metadata
               .token_uri || "",
           tokenId: token.token_id,
-          amount: BigInt(token.amount),
           type: "SFT",
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
             tokenId: token,
+            amount: BigInt(token.amount),
             viewingKey: ea.viewingKey,
             metadata:
               tokenInfo.token_id_private_info.token_id_info.public_metadata

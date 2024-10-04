@@ -52,4 +52,4 @@ export type TICPHandler = TSingularNftChain<
     string
   > &
   ReadClaimed721Event &
-  TNFTList<[string, Value][], null>;
+  TNFTList<{ md: [string, Value][] }, null>;

@@ -119,10 +119,12 @@ export async function icpHandler({
           return {
             tokenId: tid.toString(),
             uri: metadata,
-            native: md,
+            native: {
+              amount: 1n,
+              md,
+            },
             collectionIdent: contract,
             type: "NFT",
-            amount: 1n,
           } as const;
         }),
       );
