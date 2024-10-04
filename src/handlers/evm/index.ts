@@ -4,6 +4,7 @@ import {
   ERC721Royalty__factory,
   ERC1155Royalty__factory,
 } from "../../contractsTypes/evm";
+import { getPolygonGas } from "../gasFactories/polygon";
 import { retryFn } from "../utils";
 
 import { TEvmHandler, TEvmParams } from "./types";
@@ -21,6 +22,23 @@ export function evmHandler({
       return Promise.resolve(isAddress(address));
     },
     async claimNft(wallet, claimData, sigs, extraArgs) {
+      if (identifier === "MATIC") {
+        const gas = await getPolygonGas();
+        const contract = Bridge__factory.connect(bridge, wallet);
+        const ret = await contract.claimNFT721(
+          claimData,
+          sigs.map((e) => e.signature),
+          {
+            ...extraArgs,
+            ...gas,
+            value: claimData.fee,
+          },
+        );
+        return {
+          ret: ret,
+          hash: () => ret.hash,
+        };
+      }
       const contract = Bridge__factory.connect(bridge, wallet);
       const ret = await contract.claimNFT721(
         claimData,

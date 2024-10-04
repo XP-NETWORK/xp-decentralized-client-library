@@ -93,10 +93,10 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1Fh6VH8BxA9xgJCn8hGZRxoo2vY3hrbqeV",
+        bridge: "KT1Gm6qaUmfuVnGJmfY46K6hiUzgFP8DLcke",
         identifier: "TEZOS",
         storage,
-        Tezos: new TezosToolkit("https://rpc.ghostnet.teztnets.com"),
+        Tezos: new TezosToolkit("https://ghostnet.ecadinfra.com"),
         tzktApi: "https://api.ghostnet.tzkt.io/",
       },
       multiversxParams: {
@@ -178,11 +178,19 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       tezosParams: {
-        bridge: "KT1N3qtcfxzNMhdRMphvtDCKLEDwVLhZ8Cpq",
+        bridge: "KT1UMVUP3XBpPrMUwuC6DXjEcLgZykV7p1PW",
         identifier: Chain.TEZOS,
         storage,
         Tezos: new TezosToolkit("https://mainnet.ecadinfra.com"),
         tzktApi: "https://api.tzkt.io/",
+      },
+      icpParams: {
+        agent: new HttpAgent({
+          host: "https://ic0.app",
+        }),
+        bridge: Principal.fromText("6gfde-pqaaa-aaaal-al76q-cai"),
+        identifier: "ICP",
+        storage,
       },
     } satisfies Partial<TChainParams>;
   }
