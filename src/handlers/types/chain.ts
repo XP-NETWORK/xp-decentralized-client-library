@@ -38,6 +38,10 @@ export type DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx> = {
   ) => Promise<RetTx>;
 };
 
+export type TValidateAddress = {
+  validateAddress: (address: string) => Promise<boolean>;
+};
+
 export type DeployCollection<Signer, DeployArgs, GasArgs, RetTx> =
   DeployNFTCollection<Signer, DeployArgs, GasArgs, RetTx> &
     DeploySFTCollection<Signer, DeployArgs, GasArgs, RetTx>;
@@ -334,7 +338,8 @@ export type TSingularNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
     TMapTransferDetailsToChainClaimData<ClaimData> &
     TGetValidatorCount &
     TGetStorage &
-    TGetChainIdentifier;
+    TGetChainIdentifier &
+    TValidateAddress;
 
 /**
  * Represents a type that has all the methods required to implement on a chain that can be used in the bridge to transfer Semi Fungible Tokens. It is a combination of some of the types defined above.
@@ -365,10 +370,11 @@ export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> =
  * Represents a type that has the methods required to fetch NFTs from a chain for a user, and a certain contract. This type should be implemented for all chains, that do not have a working indexer.
  * @template NFT The type of the NFT. It could be anything that represents an NFT on that particular chain.
  */
-export type TNFTList<NFT> = {
+export type TNFTList<NFT, EA> = {
   nftList: (
     owner: string,
     contract: string,
+    extraArgs: EA,
   ) => Promise<
     {
       readonly native: NFT;

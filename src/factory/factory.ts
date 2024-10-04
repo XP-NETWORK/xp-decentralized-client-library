@@ -32,6 +32,7 @@ export namespace Chain {
   export const ICP = "ICP";
   export const BASE = "BASE";
   export const NEAR = "NEAR";
+  export const MOONBEAM = "MOONBEAM";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -49,6 +50,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.APTOS, chainParams.aptosParams);
   cToP.set(Chain.ICP, chainParams.icpParams);
   cToP.set(Chain.NEAR, chainParams.nearParams);
+  cToP.set(Chain.MOONBEAM, chainParams.moonbeamParams);
   return cToP;
 }
 
@@ -56,6 +58,32 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
   const map = mapNonceToParams(cp);
   const helpers = new Map<TSupportedChain, TInferChainH<TSupportedChain>>();
   return {
+    async lockNft(
+      sourceChain,
+      signer,
+      sourceNftContractAddress,
+      destinationChain,
+      to,
+      tokenId,
+      metadataUri,
+      extraArgs,
+    ) {
+      const destination = await this.inner(destinationChain);
+      const valid = await destination.validateAddress(to);
+      if (!valid) {
+        throw new Error("Invalid destination user address");
+      }
+      const lock = await sourceChain.lockNft(
+        signer,
+        sourceNftContractAddress,
+        destinationChain,
+        to,
+        tokenId,
+        metadataUri,
+        extraArgs,
+      );
+      return lock;
+    },
     async inner(chain) {
       const helper = helpers.get(chain);
       if (helper) {
@@ -106,6 +134,9 @@ CHAIN_INFO.set(Chain.MATIC, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.BASE, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.MOONBEAM, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.HEDERA, {

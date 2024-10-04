@@ -1,8 +1,8 @@
-import { StdSignature, toBase64 } from "secretjs";
+import { StdSignature, toBase64, validateAddress } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
-import { TSecretHandler, TSecretParams } from "./types";
+import { GetOwnedTokensResponse, TSecretHandler, TSecretParams } from "./types";
 
 export function secretHandler({
   bridge,
@@ -16,6 +16,86 @@ export function secretHandler({
     identifier,
     getProvider() {
       return provider;
+    },
+    validateAddress(address) {
+      return Promise.resolve(validateAddress(address).isValid);
+    },
+    async nftList(owner, contract, ea) {
+      const res = (await provider.query.snip721.GetOwnedTokens({
+        auth: {
+          viewer: {
+            address: owner,
+            viewing_key: ea.viewingKey,
+          },
+        },
+        contract: {
+          address: contract,
+          codeHash: ea.codeHash || "",
+        },
+        owner: owner,
+      })) as GetOwnedTokensResponse;
+      if (typeof res === "string") {
+        throw new Error(res);
+      }
+      const { token_list } = res;
+      if (token_list.tokens.length === 0) {
+        return [];
+      }
+      const response: {
+        readonly native: Record<string, unknown>;
+        readonly uri: string;
+        readonly collectionIdent: string;
+        readonly tokenId: string;
+      }[] = [];
+      await Promise.all(
+        token_list.tokens.map(async (token) => {
+          const tokenInfo = await provider.query.snip721.GetTokenInfo({
+            contract: {
+              address: contract,
+              codeHash: ea.codeHash || "",
+            },
+            auth: {
+              viewer: {
+                address: owner,
+                viewing_key: ea.viewingKey,
+              },
+            },
+            token_id: token,
+          });
+
+          response.push({
+            collectionIdent: contract,
+            uri: tokenInfo.all_nft_info.info?.token_uri || "",
+            tokenId: token,
+            native: {
+              contract: contract,
+              contractHash: ea.codeHash || "",
+              tokenId: token,
+              viewingKey: ea.viewingKey,
+              metadata: tokenInfo.all_nft_info.info?.token_uri || "",
+            },
+          });
+        }),
+      );
+      return response;
+    },
+    async setViewingKey(signer, contract, vk) {
+      const tx = await signer.tx.snip721.setViewingKey(
+        {
+          contract_address: contract,
+          msg: {
+            set_viewing_key: {
+              key: vk,
+            },
+          },
+          sender: signer.address,
+        },
+        {
+          gasLimit: 300_000,
+          // ...extraArgs,
+        },
+      );
+      return tx;
     },
     async claimNft(signer, claimData, sigs, extraArgs) {
       const claim721 = {
@@ -65,6 +145,16 @@ export function secretHandler({
         symbol: da.symbol,
         owner: signer.address,
         destination_user_address: signer.address,
+        source_chain: "",
+        destination_chain: "",
+        token_id: "0",
+        token_amount: "1",
+        royalty: 0,
+        lock_tx_chain: "",
+        metadata: "",
+        transaction_hash: "",
+        royalty_receiver: signer.address,
+        source_nft_contract_address: "",
         entropy: "bruh",
         config: {
           public_token_supply: true,
@@ -82,6 +172,7 @@ export function secretHandler({
           ...ga,
         },
       );
+      console.log(contract);
       const contractAddress = contract.arrayLog?.find(
         (log) => log.type === "message" && log.key === "contract_address",
       )?.value;
@@ -95,7 +186,7 @@ export function secretHandler({
             mint_nft: {
               public_metadata: { token_uri: ma.uri },
               token_id: ma.tokenId,
-              owner: signer.address,
+              owner: ma.owner,
             },
           },
           sender: signer.address,
@@ -123,6 +214,7 @@ export function secretHandler({
         token_amount: input.tokenAmount,
         token_id: input.tokenId,
         transaction_hash: input.transactionHash,
+        lock_tx_chain: input.lockTxChain,
       };
     },
     async getValidatorCount() {
@@ -376,6 +468,7 @@ export function secretHandler({
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
             token_id: tokenId.toString(),
+            metadata_uri: metaDataUri,
             collection_code_info: {
               code_id: Number.parseInt(
                 contract_info?.code_id ?? raise("Code id not found"),
@@ -429,6 +522,7 @@ export function secretHandler({
               code_hash:
                 codeHashResponse.code_hash ?? raise("Code hash not found"),
             },
+            metadata_uri: metaDataUri,
             destination_chain: destinationChain,
             destination_user_address: to,
             source_nft_contract_address: sourceNft,

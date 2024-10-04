@@ -176,6 +176,9 @@ export function tezosHandler({
     getStorageContract() {
       return storage;
     },
+    validateAddress(address) {
+      return Promise.resolve(validateAddress(address) === 3);
+    },
     getProvider() {
       return Tezos;
     },

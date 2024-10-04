@@ -1,3 +1,4 @@
+import { isAddress } from "ethers";
 import {
   Bridge__factory,
   ERC721Royalty__factory,
@@ -17,6 +18,9 @@ export function evmHandler({
 }: TEvmParams): TEvmHandler {
   return {
     identifier,
+    validateAddress(address) {
+      return Promise.resolve(isAddress(address));
+    },
     async claimNft(wallet, claimData, sigs, extraArgs) {
       if (identifier === "MATIC") {
         const gas = await getPolygonGas();

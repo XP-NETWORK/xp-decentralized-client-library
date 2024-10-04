@@ -4,6 +4,7 @@ import type {
   TGetChainIdentifier,
   TGetClaimData,
   TGetStorage,
+  TLockNFT,
   TNftTransferDetailsObject,
 } from "../../handlers/index";
 
@@ -24,6 +25,16 @@ export type TChainFactory = {
     chain: TGetClaimData & TGetStorage & TGetChainIdentifier,
     txHash: string,
   ) => Promise<TNftTransferDetailsObject>;
+  lockNft: <Signer, ExtraArgs, Ret>(
+    sourceChain: TLockNFT<Signer, ExtraArgs, Ret>,
+    signer: Signer,
+    sourceNftContractAddress: string,
+    destinationChain: TSupportedChain,
+    to: string,
+    tokenId: bigint,
+    metadataUri: string,
+    extraArgs?: ExtraArgs,
+  ) => Promise<{ ret: Ret; hash: () => string }>;
 };
 
 export type TParamMap = {

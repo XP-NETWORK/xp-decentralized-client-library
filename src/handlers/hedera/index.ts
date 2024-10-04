@@ -1,6 +1,6 @@
 import { Interface } from "@ethersproject/abi";
 import axios from "axios";
-import { EventLog, Signer, ethers } from "ethers";
+import { EventLog, Signer, ethers, isAddress } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
@@ -39,6 +39,9 @@ export function hederaHandler({
     injectSDK(sdk) {
       console.log("INJECTED", sdk);
       hsdk = sdk;
+    },
+    validateAddress(address) {
+      return Promise.resolve(isAddress(address));
     },
     async mintNft(signer, mintArgs, extraArgs) {
       const ihrc = IHRC__factory.connect(mintArgs.contract, signer);
