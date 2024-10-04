@@ -146,6 +146,12 @@ export declare namespace ChainFactoryConfigs {
             Tezos: TezosToolkit;
             tzktApi: string;
         };
+        icpParams: {
+            agent: HttpAgent;
+            bridge: Principal;
+            identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map

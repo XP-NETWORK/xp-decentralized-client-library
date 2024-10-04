@@ -39,6 +39,8 @@ export interface LockedEvent {
     'destination_chain': string;
     'token_id': bigint;
     'source_nft_contract_address': Principal;
+    'sender_address': string;
+    'metadata_uri': string;
     'nft_type': string;
     'destination_user_address': string;
 }
@@ -67,15 +69,18 @@ export interface XPBridge {
     encode_blacklist_validator: ActorMethod<[
         BlacklistValidator
     ], Uint8Array | number[]>;
-    encode_claim_data: ActorMethod<[ClaimData], Uint8Array | number[]>;
-    get_blacklisted_validators: ActorMethod<[string], [] | [boolean]>;
-    get_claimed_data: ActorMethod<[string], [] | [ClaimedEvent]>;
-    get_locked_data: ActorMethod<[string], [] | [LockedEvent]>;
-    get_validator: ActorMethod<[string], [] | [Validator]>;
-    get_validator_count: ActorMethod<[], bigint>;
-    get_nonce: ActorMethod<[], bigint>;
-    init: ActorMethod<[], undefined>;
-    lock_nft: ActorMethod<[Principal, bigint, string, string, string], string>;
+    'encode_claim_data': ActorMethod<[ClaimData], Uint8Array | number[]>;
+    'get_blacklisted_validators': ActorMethod<[string], [] | [boolean]>;
+    'get_claim_nonce': ActorMethod<[], bigint>;
+    'get_claimed_data': ActorMethod<[string], [] | [ClaimedEvent]>;
+    'get_hash_from_claim_nonce': ActorMethod<[bigint], [] | [string]>;
+    'get_hash_from_nonce': ActorMethod<[bigint], [] | [string]>;
+    'get_locked_data': ActorMethod<[string], [] | [LockedEvent]>;
+    'get_nonce': ActorMethod<[], bigint>;
+    'get_validator': ActorMethod<[string], [] | [Validator]>;
+    'get_validator_count': ActorMethod<[], bigint>;
+    'init': ActorMethod<[], undefined>;
+    'lock_nft': ActorMethod<[Principal, bigint, string, string, string], string>;
 }
 export interface _SERVICE extends XPBridge {
 }
