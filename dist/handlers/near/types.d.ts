@@ -1,7 +1,7 @@
 import { Account, Near } from "near-api-js";
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
+import { DeployNFTCollection, MintNft, ReadClaimed721Event, TNFTList, TSingularNftChain } from "../types";
 export type TNearClaimArgs = {
     token_id: string;
     source_chain: string;
@@ -38,7 +38,7 @@ export type TNearHandler = TSingularNftChain<Account, TNearClaimArgs, unknown, F
     ticker: string;
 }, {
     gasLimit: number;
-}, string> & ReadClaimed721Event;
+}, string> & ReadClaimed721Event & TNFTList<Record<string, unknown>, undefined>;
 export type TNearParams = {
     nodeUrl: string;
     bridge: string;

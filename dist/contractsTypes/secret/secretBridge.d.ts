@@ -42,6 +42,7 @@ export type Lock721 = {
             source_nft_contract_address: string;
             collection_code_info: CodeInfo;
             token_id: string;
+            metadata_uri: string;
         };
     };
 };
@@ -54,6 +55,7 @@ export type Lock1155 = {
             collection_code_info: CodeInfo;
             token_id: string;
             token_amount: string;
+            metadata_uri: string;
         };
     };
 };

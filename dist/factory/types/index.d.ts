@@ -22,6 +22,7 @@ export type MetaMap = {
     BSC: TEvmMeta;
     ETH: TEvmMeta;
     MATIC: TEvmMeta;
+    MOONBEAM: TEvmMeta;
     BASE: TEvmMeta;
     HEDERA: THederaMeta;
     TEZOS: TTezosMeta;
