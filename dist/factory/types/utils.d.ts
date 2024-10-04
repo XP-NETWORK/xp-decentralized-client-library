@@ -1,5 +1,5 @@
 import { MetaMap } from ".";
-import type { TClaimSFT, TGetChainIdentifier, TGetClaimData, TGetStorage, TLockNFT, TNftTransferDetailsObject } from "../../handlers/index";
+import type { TClaimSFT, TGetChainIdentifier, TGetClaimData, TGetStorage, TLockNFT, TLockSFT, TNftTransferDetailsObject } from "../../handlers/index";
 export type TSupportedChain = keyof MetaMap;
 export type TSupportedSftChain = keyof {
     [k in TSupportedChain as MetaMap[k][0] extends TClaimSFT<any, any, any, any> ? k : never]: k;
@@ -10,6 +10,10 @@ export type TChainFactory = {
     inner: <T extends TSupportedChain>(chain: T) => Promise<TInferChainH<T>>;
     getClaimData: (chain: TGetClaimData & TGetStorage & TGetChainIdentifier, txHash: string) => Promise<TNftTransferDetailsObject>;
     lockNft: <Signer, ExtraArgs, Ret>(sourceChain: TLockNFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
+        ret: Ret;
+        hash: () => string;
+    }>;
+    lockSft: <Signer, ExtraArgs, Ret>(sourceChain: TLockSFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
         ret: Ret;
         hash: () => string;
     }>;
