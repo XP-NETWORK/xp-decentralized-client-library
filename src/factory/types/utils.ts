@@ -5,6 +5,7 @@ import type {
   TGetClaimData,
   TGetStorage,
   TLockNFT,
+  TLockSFT,
   TNftTransferDetailsObject,
 } from "../../handlers/index";
 
@@ -32,6 +33,17 @@ export type TChainFactory = {
     destinationChain: TSupportedChain,
     to: string,
     tokenId: bigint,
+    metadataUri: string,
+    extraArgs?: ExtraArgs,
+  ) => Promise<{ ret: Ret; hash: () => string }>;
+  lockSft: <Signer, ExtraArgs, Ret>(
+    sourceChain: TLockSFT<Signer, ExtraArgs, Ret>,
+    signer: Signer,
+    sourceNftContractAddress: string,
+    destinationChain: TSupportedSftChain,
+    to: string,
+    tokenId: bigint,
+    amt: bigint,
     metadataUri: string,
     extraArgs?: ExtraArgs,
   ) => Promise<{ ret: Ret; hash: () => string }>;

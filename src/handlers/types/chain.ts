@@ -273,7 +273,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
     amt: bigint,
     metaDataUri: string,
     extraArgs?: ExtraArgs,
-  ) => Promise<{ tx: RetTx; hash: () => string }>;
+  ) => Promise<{ ret: RetTx; hash: () => string }>;
 };
 
 /**

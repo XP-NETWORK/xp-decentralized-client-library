@@ -222,7 +222,7 @@ export function aptosHandler({
         hash() {
           return lock.hash;
         },
-        tx: lock,
+        ret: lock,
       };
     },
   };
