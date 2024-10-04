@@ -206,7 +206,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
     lockSft: (signer: Signer, sourceNft: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, metaDataUri: string, extraArgs?: ExtraArgs) => Promise<{
-        tx: RetTx;
+        ret: RetTx;
         hash: () => string;
     }>;
 };
