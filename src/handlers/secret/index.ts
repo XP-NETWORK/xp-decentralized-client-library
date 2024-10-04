@@ -544,7 +544,7 @@ export function secretHandler({
         },
       );
       return {
-        tx,
+        ret: tx,
         hash() {
           return tx.transactionHash;
         },

@@ -84,6 +84,34 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       );
       return lock;
     },
+    async lockSft(
+      sourceChain,
+      signer,
+      sourceNftContractAddress,
+      destinationChain,
+      to,
+      tokenId,
+      amt,
+      metadataUri,
+      extraArgs,
+    ) {
+      const destination = await this.inner(destinationChain);
+      const valid = await destination.validateAddress(to);
+      if (!valid) {
+        throw new Error("Invalid destination user address");
+      }
+      const lock = await sourceChain.lockSft(
+        signer,
+        sourceNftContractAddress,
+        destinationChain,
+        to,
+        tokenId,
+        amt,
+        metadataUri,
+        extraArgs,
+      );
+      return lock;
+    },
     async inner(chain) {
       const helper = helpers.get(chain);
       if (helper) {

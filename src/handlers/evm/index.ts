@@ -276,7 +276,7 @@ export function evmHandler({
         },
       );
       return {
-        tx,
+        ret: tx,
         hash() {
           return tx.hash;
         },
