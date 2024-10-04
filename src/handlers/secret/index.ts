@@ -2,6 +2,7 @@ import { StdSignature, toBase64, validateAddress } from "secretjs";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
+import { TokenInfo } from "../types";
 import { GetOwnedTokensResponse, TSecretHandler, TSecretParams } from "./types";
 
 export function secretHandler({
@@ -12,6 +13,127 @@ export function secretHandler({
   nftCodeId,
   identifier,
 }: TSecretParams): TSecretHandler {
+  async function fetchNfts(
+    contract: string,
+    owner: string,
+    ea: { viewingKey: string; codeHash?: string },
+  ) {
+    const res = (await provider.query.snip721.GetOwnedTokens({
+      auth: {
+        viewer: {
+          address: owner,
+          viewing_key: ea.viewingKey,
+        },
+      },
+      contract: {
+        address: contract,
+        codeHash: ea.codeHash || "",
+      },
+      owner: owner,
+    })) as GetOwnedTokensResponse;
+    if (typeof res === "string") {
+      throw new Error(res);
+    }
+    const { token_list } = res;
+    if (token_list.tokens.length === 0) {
+      return [];
+    }
+    const response: TokenInfo<Record<string, unknown>>[] = [];
+    await Promise.all(
+      token_list.tokens.map(async (token) => {
+        const tokenInfo = await provider.query.snip721.GetTokenInfo({
+          contract: {
+            address: contract,
+            codeHash: ea.codeHash || "",
+          },
+          auth: {
+            viewer: {
+              address: owner,
+              viewing_key: ea.viewingKey,
+            },
+          },
+          token_id: token,
+        });
+
+        response.push({
+          collectionIdent: contract,
+          uri: tokenInfo.all_nft_info.info?.token_uri || "",
+          tokenId: token,
+          type: "NFT",
+          amount: 1n,
+          native: {
+            contract: contract,
+            contractHash: ea.codeHash || "",
+            tokenId: token,
+            viewingKey: ea.viewingKey,
+            metadata: tokenInfo.all_nft_info.info?.token_uri || "",
+          },
+        });
+      }),
+    );
+    return response;
+  }
+
+  async function fetchSfts(
+    contract: string,
+    owner: string,
+    ea: { viewingKey: string; codeHash?: string },
+  ) {
+    const res = await provider.query.snip1155.getAllBalances({
+      auth: {
+        viewer: {
+          address: owner,
+          viewing_key: ea.viewingKey,
+        },
+      },
+      contract: {
+        address: contract,
+      },
+      owner: owner,
+    });
+    //@ts-ignore
+    if (res.all_balances.length === 0) {
+      return [];
+    }
+    const response: TokenInfo<Record<string, unknown>>[] = [];
+    await Promise.all(
+      res.all_balances.map(async (token) => {
+        const tokenInfo = await provider.query.snip1155.getPrivateTokenInfo({
+          contract: {
+            address: contract,
+            code_hash: ea.codeHash || "",
+          },
+          auth: {
+            viewer: {
+              address: owner,
+              viewing_key: ea.viewingKey,
+            },
+          },
+          token_id: token.token_id,
+        });
+
+        response.push({
+          collectionIdent: contract,
+          uri:
+            tokenInfo.token_id_private_info.token_id_info.public_metadata
+              .token_uri || "",
+          tokenId: token.token_id,
+          amount: BigInt(token.amount),
+          type: "SFT",
+          native: {
+            contract: contract,
+            contractHash: ea.codeHash || "",
+            tokenId: token,
+            viewingKey: ea.viewingKey,
+            metadata:
+              tokenInfo.token_id_private_info.token_id_info.public_metadata
+                .token_uri || "",
+          },
+        });
+      }),
+    );
+    return response;
+  }
   return {
     identifier,
     getProvider() {
@@ -21,64 +143,59 @@ export function secretHandler({
       return Promise.resolve(validateAddress(address).isValid);
     },
     async nftList(owner, contract, ea) {
-      const res = (await provider.query.snip721.GetOwnedTokens({
-        auth: {
-          viewer: {
-            address: owner,
-            viewing_key: ea.viewingKey,
-          },
-        },
-        contract: {
-          address: contract,
-          codeHash: ea.codeHash || "",
-        },
-        owner: owner,
-      })) as GetOwnedTokensResponse;
-      if (typeof res === "string") {
-        throw new Error(res);
-      }
-      const { token_list } = res;
-      if (token_list.tokens.length === 0) {
-        return [];
-      }
-      const response: {
-        readonly native: Record<string, unknown>;
-        readonly uri: string;
-        readonly collectionIdent: string;
-        readonly tokenId: string;
-      }[] = [];
-      await Promise.all(
-        token_list.tokens.map(async (token) => {
-          const tokenInfo = await provider.query.snip721.GetTokenInfo({
-            contract: {
-              address: contract,
-              codeHash: ea.codeHash || "",
-            },
-            auth: {
-              viewer: {
-                address: owner,
-                viewing_key: ea.viewingKey,
-              },
-            },
-            token_id: token,
-          });
-
-          response.push({
-            collectionIdent: contract,
-            uri: tokenInfo.all_nft_info.info?.token_uri || "",
-            tokenId: token,
-            native: {
-              contract: contract,
-              contractHash: ea.codeHash || "",
-              tokenId: token,
-              viewingKey: ea.viewingKey,
-              metadata: tokenInfo.all_nft_info.info?.token_uri || "",
-            },
-          });
-        }),
-      );
-      return response;
+      const nfts: TokenInfo<Record<string, unknown>>[] = await fetchNfts(
+        contract,
+        owner,
+        ea,
+      ).catch(() => []);
+      const sfts: TokenInfo<Record<string, unknown>>[] = await fetchSfts(
+        contract,
+        owner,
+        ea,
+      ).catch(() => []);
+      return [...nfts, ...sfts];
     },
+    //   const res = (await provider.query.snip1155.getAllBalances();
+    //   if (typeof res === "string") {
+    //     throw new Error(res);
+    //   }
+    //   const { token_list } = res;
+    //   if (token_list.tokens.length === 0) {
+    //     return [];
+    //   }
+    //   await Promise.all(
+    //     token_list.tokens.map(async (token) => {
+    //       const tokenInfo = await provider.query.snip721.GetTokenInfo({
+    //         contract: {
+    //           address: contract,
+    //           codeHash: ea.codeHash || "",
+    //         },
+    //         auth: {
+    //           viewer: {
+    //             address: owner,
+    //             viewing_key: ea.viewingKey,
+    //           },
+    //         },
+    //         token_id: token,
+    //       });
+
+    //       response.push({
+    //         collectionIdent: contract,
+    //         uri: tokenInfo.all_nft_info.info?.token_uri || "",
+    //         tokenId: token,
+    //         type: "nft",
+    //         native: {
+    //           contract: contract,
+    //           contractHash: ea.codeHash || "",
+    //           tokenId: token,
+    //           viewingKey: ea.viewingKey,
+    //           metadata: tokenInfo.all_nft_info.info?.token_uri || "",
+    //         },
+    //       });
+    //     }),
+    //   );
+    //   return response;
+    // },
     async setViewingKey(signer, contract, vk) {
       const tx = await signer.tx.snip721.setViewingKey(
         {

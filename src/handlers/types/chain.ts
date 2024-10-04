@@ -375,12 +375,14 @@ export type TNFTList<NFT, EA> = {
     owner: string,
     contract: string,
     extraArgs: EA,
-  ) => Promise<
-    {
-      readonly native: NFT;
-      readonly uri: string;
-      readonly collectionIdent: string;
-      readonly tokenId: string;
-    }[]
-  >;
+  ) => Promise<TokenInfo<NFT>[]>;
+};
+
+export type TokenInfo<RawTokenInfo> = {
+  readonly native: RawTokenInfo;
+  readonly uri: string;
+  readonly collectionIdent: string;
+  readonly tokenId: string;
+  readonly type: "NFT" | "SFT";
+  readonly amount: bigint;
 };

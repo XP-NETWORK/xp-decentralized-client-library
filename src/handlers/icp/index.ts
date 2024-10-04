@@ -121,6 +121,8 @@ export async function icpHandler({
             uri: metadata,
             native: md,
             collectionIdent: contract,
+            type: "NFT",
+            amount: 1n,
           } as const;
         }),
       );
