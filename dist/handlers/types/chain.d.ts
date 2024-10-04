@@ -275,11 +275,14 @@ export type TNftChain<Signer, ClaimData, ExtraArgs, RetTx, Provider> = TSingular
  * @template NFT The type of the NFT. It could be anything that represents an NFT on that particular chain.
  */
 export type TNFTList<NFT, EA> = {
-    nftList: (owner: string, contract: string, extraArgs: EA) => Promise<{
-        readonly native: NFT;
-        readonly uri: string;
-        readonly collectionIdent: string;
-        readonly tokenId: string;
-    }[]>;
+    nftList: (owner: string, contract: string, extraArgs: EA) => Promise<TokenInfo<NFT>[]>;
+};
+export type TokenInfo<RawTokenInfo> = {
+    readonly native: RawTokenInfo;
+    readonly uri: string;
+    readonly collectionIdent: string;
+    readonly tokenId: string;
+    readonly type: "NFT" | "SFT";
+    readonly amount: bigint;
 };
 //# sourceMappingURL=chain.d.ts.map
