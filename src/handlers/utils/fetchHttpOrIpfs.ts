@@ -16,20 +16,24 @@ async function fetchWithFallback(uri: string, fallbackUri: string) {
 }
 
 export async function fetchHttpOrIpfs(uri: string) {
-  const url = new URL(uri);
-  if (url.protocol === "http:" || url.protocol === "https:") {
-    return fetchWithFallback(
-      uri,
-      `${uri.replace("ipfs.io", "xpnetwork.infura-ipfs.io")}`,
-    );
+  try {
+    const url = new URL(uri);
+    if (url.protocol === "http:" || url.protocol === "https:") {
+      return fetchWithFallback(
+        uri,
+        `${uri.replace("ipfs.io", "xpnetwork.infura-ipfs.io")}`,
+      );
+    }
+    if (url.protocol === "ipfs:") {
+      const ipfsUri = `https://ipfs.io/ipfs/${uri.replace("ipfs://", "")}`;
+      const fallbackIpfsUri = `https://xpnetwork.infura-ipfs.io/ipfs/${uri.replace(
+        "ipfs://",
+        "",
+      )}`;
+      return fetchWithFallback(ipfsUri, fallbackIpfsUri);
+    }
+    throw new Error("Unsupported protocol");
+  } catch {
+    return { image: "" };
   }
-  if (url.protocol === "ipfs:") {
-    const ipfsUri = `https://ipfs.io/ipfs/${uri.replace("ipfs://", "")}`;
-    const fallbackIpfsUri = `https://xpnetwork.infura-ipfs.io/ipfs/${uri.replace(
-      "ipfs://",
-      "",
-    )}`;
-    return fetchWithFallback(ipfsUri, fallbackIpfsUri);
-  }
-  throw new Error("Unsupported protocol");
 }
