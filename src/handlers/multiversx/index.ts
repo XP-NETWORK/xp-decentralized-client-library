@@ -81,7 +81,7 @@ export function multiversxHandler({
       )
     ).data;
     return {
-      metaData: atob(response.uris[1]),
+      metaData: atob(response.uris[1] || response.uris[0]),
       royalties: response.royalties ?? 0,
     };
   };
