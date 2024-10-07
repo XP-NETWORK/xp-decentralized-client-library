@@ -271,6 +271,22 @@ export async function icpHandler({
       tokenId,
       metaDataUri,
     ) {
+      const lc = await createLedgerActor("ryjl3-tyaaa-aaaaa-aaaba-cai", {
+        agent: signer,
+      });
+      await lc.icrc2_approve({
+        amount: BigInt(10_000n + 15000000n),
+        spender: {
+          owner: bridge,
+          subaccount: [],
+        },
+        created_at_time: [],
+        expected_allowance: [],
+        expires_at: [],
+        fee: [],
+        from_subaccount: [],
+        memo: [],
+      });
       const bcWithSigner = await createBridgeActor(bridge, {
         agent: signer,
       });
@@ -292,7 +308,7 @@ export async function icpHandler({
         agent: signer,
       });
       await lc.icrc2_approve({
-        amount: BigInt(claimData.fee + 10_000n + 14638409n),
+        amount: BigInt(claimData.fee + 10_000n + 15000000n),
         spender: {
           owner: bridge,
           subaccount: [],
