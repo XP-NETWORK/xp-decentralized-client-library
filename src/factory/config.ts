@@ -101,7 +101,7 @@ export namespace ChainFactoryConfigs {
       },
       multiversxParams: {
         bridge:
-          "erd1qqqqqqqqqqqqqpgqavkfne0rskfk0vx3pnerest290paguydd9yqyrfz0d",
+          "erd1qqqqqqqqqqqqqpgqdve2u5j36apf7ruhyurywktc6645q3wmd9yq5q3drv",
         chainId: "D",
         identifier: "MULTIVERSX",
         gatewayURL: "https://devnet-gateway.multiversx.com",
