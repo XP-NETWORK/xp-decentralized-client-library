@@ -8,7 +8,7 @@ const retryFn = async <T>(
   try {
     return await func();
   } catch (e) {
-    if (code.includes(selector)) {
+    if (code.includes(selector.slice(2))) {
       return await retryFn(func, ctx, selector, code, retries - 1);
     }
     return undefined;

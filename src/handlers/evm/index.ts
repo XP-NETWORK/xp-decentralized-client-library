@@ -239,7 +239,21 @@ export function evmHandler({
       );
 
       const metadata = await retryFn(
-        () => nft.tokenURI(tokenId),
+        async () => {
+          try {
+            const uri = await nft.tokenURI(tokenId);
+            return uri;
+          } catch (e) {
+            if (
+              String(e).includes(
+                "ERC721Metadata: URI query for nonexistent token",
+              )
+            ) {
+              return undefined;
+            }
+            throw e;
+          }
+        },
         `Trying to fetch tokenURI() for ${contract}`,
         nft.tokenURI.fragment.selector,
         code,
