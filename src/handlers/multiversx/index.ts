@@ -244,7 +244,7 @@ export function multiversxHandler({
       const transaction = multiversXBridgeContract.methods
         .claimNft1155(data)
         .withSender(Address.fromString(await signer.getAddress()))
-        .withChainID("D")
+        .withChainID(chainId)
         .withGasLimit(6_000_000_00)
         .withValue(
           new BigUIntValue(BigInt("50000000000000000") + BigInt(claimData.fee)),
@@ -295,7 +295,7 @@ export function multiversxHandler({
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
         receiver: Address.fromString(await signer.getAddress()),
-        chainID: "D",
+        chainID: chainId,
       });
 
       tx3.setNonce(userAccount.getNonceThenIncrement());
@@ -523,7 +523,7 @@ export function multiversxHandler({
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
         receiver: Address.fromString(await signer.getAddress()),
-        chainID: "D",
+        chainID: chainId,
       });
 
       tx3.setNonce(userAccount.getNonceThenIncrement());
@@ -607,7 +607,7 @@ export function multiversxHandler({
       const transaction = multiversXBridgeContract.methods
         .claimNft721(data)
         .withSender(Address.fromString(await signer.getAddress()))
-        .withChainID("D")
+        .withChainID(chainId)
         .withGasLimit(6_000_000_00)
         .withValue(
           new BigUIntValue(BigInt("50000000000000000") + BigInt(claimData.fee)),
