@@ -242,18 +242,28 @@ export function multiversxHandler({
         }),
       ];
       const transaction = multiversXBridgeContract.methods
-        .claimNft721(data)
+        .claimNft1155(data)
         .withSender(Address.fromString(await signer.getAddress()))
         .withChainID("D")
         .withGasLimit(6_000_000_00)
-        .withValue(new BigUIntValue("50000000000000000"))
+        .withValue(
+          new BigUIntValue(BigInt("50000000000000000") + BigInt(claimData.fee)),
+        )
         .buildTransaction();
       transaction.setNonce(userAccount.getNonceThenIncrement());
       const signed = await signer.signTransaction(transaction);
       const hash = await provider.sendTransaction(signed);
       return { hash: () => hash, ret: hash };
     },
-    async lockSft(signer, sourceNft, destinationChain, to, tokenId, amt) {
+    async lockSft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      amt,
+      metaDataUri,
+    ) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -265,12 +275,10 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      const amount = `@${amt}`;
-      const nonce = new Nonce(Number(tokenId)).hex();
-      const noncec = `@${nonce}`;
-      const quantity = "@" + "01";
+      const nonce = `@${new Nonce(Number(tokenId)).hex()}`;
+      const quantity = `@${new Nonce(Number(amt)).hex()}`;
       const destination_address = `@${ba.hex()}`;
-      const method = `@${Buffer.from("lock721").toString("hex")}`;
+      const method = `@${Buffer.from("lock1155").toString("hex")}`;
       const token_id = `@${Buffer.from(`${sourceNft}-0${tokenId}`).toString(
         "hex",
       )}`;
@@ -279,10 +287,10 @@ export function multiversxHandler({
       )}`;
       const destination_user_address = `@${Buffer.from(to).toString("hex")}`;
       const source_nft_contract_address = collectionIdentifiers;
-
+      const metadata_uri = `@${Buffer.from(metaDataUri).toString("hex")}`;
       const tx3 = new Transaction({
         data: new TransactionPayload(
-          `ESDTNFTTransfer${collectionIdentifiers}${noncec}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${amount}${noncec}`,
+          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${quantity}${nonce}${metadata_uri}`,
         ),
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
@@ -475,7 +483,14 @@ export function multiversxHandler({
         metaDataUri: "",
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, to, tokenId) {
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      to,
+      tokenId,
+      metaDataUri,
+    ) {
       const ba = new Address(bridge);
 
       const userAddress = Address.fromString(await signer.getAddress());
@@ -487,8 +502,7 @@ export function multiversxHandler({
       const collectionIdentifiers = `@${Buffer.from(sourceNft).toString(
         "hex",
       )}`;
-      const nonce = new Nonce(Number(tokenId)).hex();
-      const noncec = `@${nonce}`;
+      const nonce = `@${new Nonce(Number(tokenId)).hex()}`;
       const quantity = "@" + "01";
       const destination_address = `@${ba.hex()}`;
       const method = `@${Buffer.from("lock721").toString("hex")}`;
@@ -500,10 +514,11 @@ export function multiversxHandler({
       )}`;
       const destination_user_address = `@${Buffer.from(to).toString("hex")}`;
       const source_nft_contract_address = collectionIdentifiers;
+      const metadata_uri = `@${Buffer.from(metaDataUri).toString("hex")}`;
 
       const tx3 = new Transaction({
         data: new TransactionPayload(
-          `ESDTNFTTransfer${collectionIdentifiers}${noncec}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${noncec}`,
+          `ESDTNFTTransfer${collectionIdentifiers}${nonce}${quantity}${destination_address}${method}${token_id}${destination_chain}${destination_user_address}${source_nft_contract_address}${nonce}${metadata_uri}`,
         ),
         gasLimit: 600000000,
         sender: Address.fromString(await signer.getAddress()),
@@ -594,7 +609,9 @@ export function multiversxHandler({
         .withSender(Address.fromString(await signer.getAddress()))
         .withChainID("D")
         .withGasLimit(6_000_000_00)
-        .withValue(new BigUIntValue("50000000000000000"))
+        .withValue(
+          new BigUIntValue(BigInt("50000000000000000") + BigInt(claimData.fee)),
+        )
         .buildTransaction();
       transaction.setNonce(userAccount.getNonceThenIncrement());
       const signed = await signer.signTransaction(transaction);
