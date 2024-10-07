@@ -68,7 +68,7 @@ var ChainFactoryConfigs;
                 tzktApi: "https://api.ghostnet.tzkt.io/",
             },
             multiversxParams: {
-                bridge: "erd1qqqqqqqqqqqqqpgqaznmek4nz3vefllj027djygkyhtturyad9yqh8ylnc",
+                bridge: "erd1qqqqqqqqqqqqqpgqavkfne0rskfk0vx3pnerest290paguydd9yqyrfz0d",
                 chainId: "D",
                 identifier: "MULTIVERSX",
                 gatewayURL: "https://devnet-gateway.multiversx.com",
