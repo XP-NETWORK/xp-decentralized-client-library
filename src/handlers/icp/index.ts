@@ -120,7 +120,6 @@ export async function icpHandler({
             tokenId: tid.toString(),
             uri: metadata,
             native: {
-              amount: 1n,
               md,
             },
             collectionIdent: contract,

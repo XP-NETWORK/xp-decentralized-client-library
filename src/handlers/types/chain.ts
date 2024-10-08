@@ -380,7 +380,7 @@ export type TNFTList<NFT, EA> = {
 
 export type TokenInfo<RawTokenInfo> = {
   readonly native: {
-    amount: bigint;
+    amount?: number;
   } & RawTokenInfo;
   readonly uri: string;
   readonly collectionIdent: string;

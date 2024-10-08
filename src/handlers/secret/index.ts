@@ -63,7 +63,6 @@ export function secretHandler({
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
-            amount: 1n,
             tokenId: token,
             viewingKey: ea.viewingKey,
             metadata: tokenInfo.all_nft_info.info?.token_uri || "",
@@ -123,7 +122,7 @@ export function secretHandler({
             contract: contract,
             contractHash: ea.codeHash || "",
             tokenId: token,
-            amount: BigInt(token.amount),
+            amount: Number(token.amount),
             viewingKey: ea.viewingKey,
             metadata:
               tokenInfo.token_id_private_info.token_id_info.public_metadata
