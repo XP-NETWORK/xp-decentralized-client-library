@@ -152,6 +152,14 @@ export declare namespace ChainFactoryConfigs {
             identifier: string;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        multiversxParams: {
+            bridge: string;
+            chainId: string;
+            identifier: string;
+            gatewayURL: string;
+            provider: ProxyNetworkProvider;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
