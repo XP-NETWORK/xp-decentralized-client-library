@@ -211,7 +211,7 @@ export function tezosHandler({
       const storage = await bc.storage();
       return storage.validators_count.toNumber();
     },
-    async approveNft(signer, tokenId, contract, extraArgs) {
+    async approveNft(signer, tokenId, contract, _nftType, extraArgs) {
       const owner = await getAddress(signer);
       return await withContract(
         signer,

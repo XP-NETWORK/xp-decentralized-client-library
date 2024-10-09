@@ -186,7 +186,7 @@ export function hederaHandler({
       }
       return provider.getBalance(signer);
     },
-    async approveNft(signer, tid, contract, extra) {
+    async approveNft(signer, tid, contract, _nftType, extra) {
       if (!isEvmSigner(signer)) {
         // throw new Error("unimplemented");
         if (!hsdk) throw new Error("HSDK Not Injected");

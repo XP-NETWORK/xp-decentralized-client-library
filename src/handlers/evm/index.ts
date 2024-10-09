@@ -296,7 +296,15 @@ export function evmHandler({
         },
       };
     },
-    async approveNft(signer, tokenId, contract, extraArgs) {
+    async approveNft(signer, tokenId, contract, nftType, extraArgs) {
+      if (nftType === "sft") {
+        return ERC1155Royalty__factory.connect(
+          contract,
+          signer,
+        ).setApprovalForAll(bridge, true, {
+          ...extraArgs,
+        });
+      }
       return ERC721Royalty__factory.connect(contract, signer).approve(
         bridge,
         tokenId,

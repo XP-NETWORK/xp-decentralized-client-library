@@ -66,7 +66,7 @@ export async function cosmWasmHandler({
         return false;
       }
     },
-    async approveNft(signer, tokenId, contract, extraArgs) {
+    async approveNft(signer, tokenId, contract, _nftType, extraArgs) {
       const cosmSigner = await SigningCosmWasmClient.connectWithSigner(
         rpc,
         signer,

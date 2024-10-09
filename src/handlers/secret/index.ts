@@ -533,7 +533,7 @@ export function secretHandler({
         lock_tx_chain,
       };
     },
-    async approveNft(signer, tokenId, contract, extraArgs) {
+    async approveNft(signer, tokenId, contract, _nftType, extraArgs) {
       const res = await signer.tx.compute.executeContract(
         {
           sender: signer.address,

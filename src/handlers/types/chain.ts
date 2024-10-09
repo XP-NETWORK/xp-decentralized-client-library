@@ -93,6 +93,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
     signer: Signer,
     tokenId: string,
     contract: string,
+    nftType: "nft" | "sft",
     extraArgs?: ExtraArgs,
   ) => Promise<RetTx>;
 };
