@@ -54,7 +54,7 @@ export type TApproveNFT<Signer, ExtraArgs, RetTx> = {
      * @param extraArgs The extra arguments required for a chain.
      * @returns A promise that resolves to the transaction which is of type {RetTx}.
      */
-    approveNft: (signer: Signer, tokenId: string, contract: string, extraArgs?: ExtraArgs) => Promise<RetTx>;
+    approveNft: (signer: Signer, tokenId: string, contract: string, nftType: "nft" | "sft", extraArgs?: ExtraArgs) => Promise<RetTx>;
 };
 /**
  * Represents a signer and its corresponding signature.
