@@ -192,6 +192,15 @@ export namespace ChainFactoryConfigs {
         identifier: "ICP",
         storage,
       },
+      multiversxParams: {
+        bridge:
+          "erd1qqqqqqqqqqqqqpgqeeywrgux5h7saz98a6g7eu9rqx7ekt67txsqw34867",
+        chainId: "1",
+        identifier: "MULTIVERSX",
+        gatewayURL: "https://gateway.multiversx.com",
+        provider: new ProxyNetworkProvider("https://gateway.multiversx.com"),
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
