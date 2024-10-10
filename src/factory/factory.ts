@@ -136,6 +136,13 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         data.sourceNftContractAddress,
         undefined,
       );
+      if (data.destinationChain === "MULTIVERSX") {
+        ogNftData.name = ogNftData.name.replace(/[^a-zA-Z0-9]/g, "");
+        ogNftData.symbol = ogNftData.symbol
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .toUpperCase()
+          .substring(0, 10);
+      }
       const metadata = ogNftData.metadata || data.metaDataUri;
       const imgUri = (await fetchHttpOrIpfs(metadata)).image;
       return {
