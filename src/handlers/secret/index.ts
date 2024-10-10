@@ -121,7 +121,7 @@ export function secretHandler({
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
-            tokenId: token,
+            tokenId: token.token_id,
             amount: Number(token.amount),
             viewingKey: ea.viewingKey,
             metadata:
