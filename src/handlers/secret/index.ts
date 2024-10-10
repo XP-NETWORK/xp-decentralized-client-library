@@ -121,7 +121,7 @@ export function secretHandler({
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
-            tokenId: token,
+            tokenId: token.token_id,
             amount: Number(token.amount),
             viewingKey: ea.viewingKey,
             metadata:
@@ -385,7 +385,7 @@ export function secretHandler({
       const claim1155 = {
         claim1155: {
           data: {
-            claimData,
+            data: claimData,
             signatures: sigs.map((e) => {
               return {
                 signature: encodeSecp256k1Signature(
