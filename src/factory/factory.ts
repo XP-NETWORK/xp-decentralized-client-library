@@ -136,10 +136,12 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         data.sourceNftContractAddress,
         undefined,
       );
-      const imgUri = (await fetchHttpOrIpfs(ogNftData.metadata)).image;
+      const metadata = ogNftData.metadata || data.metaDataUri;
+      const imgUri = (await fetchHttpOrIpfs(metadata)).image;
       return {
         ...data,
         ...ogNftData,
+        metadata,
         royalty: ogNftData.royalty.toString(),
         royaltyReceiver: royaltyReceiver,
         fee: fee.toString(),
