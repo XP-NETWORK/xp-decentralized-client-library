@@ -1,8 +1,4 @@
-import {
-  TransactionEventsParser,
-  TransactionWatcher,
-  findEventsByFirstTopic,
-} from "@multiversx/sdk-core";
+import { TransactionWatcher } from "@multiversx/sdk-core";
 import {
   AbiRegistry,
   Account,
@@ -19,10 +15,12 @@ import {
   TokenTransfer,
   Transaction,
   TransactionPayload,
-  TransactionsConverter,
   TypedValue,
 } from "@multiversx/sdk-core/out";
-import { ApiNetworkProvider } from "@multiversx/sdk-network-providers/out";
+import {
+  ApiNetworkProvider,
+  TransactionEvent,
+} from "@multiversx/sdk-network-providers/out";
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
 import { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
@@ -52,10 +50,6 @@ export function multiversxHandler({
   const apin = new ApiNetworkProvider(gatewayURL.replace("gateway", "api"));
   const txWatcher = new TransactionWatcher(apin);
 
-  const eventsParser = new TransactionEventsParser({
-    abi: abiRegistry,
-  });
-  const converter = new TransactionsConverter();
   const http = axios.create();
 
   const waitForTransaction = async (hash: string) => {
@@ -457,39 +451,52 @@ export function multiversxHandler({
     },
     async decodeLockedEvent(txHash) {
       await txWatcher.awaitCompleted(txHash);
-      const transactionOnNetworkMultisig = await provider.getTransaction(
-        txHash,
-        true,
-      );
-      const tx = await apin.getTransaction(
-        transactionOnNetworkMultisig.contractResults.items[0].hash,
-      );
-      console.log(
-        `HyperBlock Nonce: ${transactionOnNetworkMultisig.hyperblockNonce} ${tx.hyperblockNonce}`,
-      );
-      const transactionOutcomeMultisig =
-        converter.transactionOnNetworkToOutcome(tx);
-      const [event] = findEventsByFirstTopic(
-        transactionOutcomeMultisig,
-        "Locked",
-      );
-      const parsed = eventsParser.parseEvent({ event });
-      const destinationChain = parsed.destination_chain.toString("utf-8");
-      const sourceChain = parsed.chain.toString("utf-8");
-      const tokenId = parsed.token_id.toString();
-      const tokenAmount = parsed.token_amount.toString();
+      const txo = await provider.getTransaction(txHash, true);
+
+      let event: TransactionEvent[] = [];
+
+      for (const contractEvent of txo.logs.events) {
+        if (contractEvent.topics[0].toString() === "Locked") {
+          event = [contractEvent];
+        }
+
+        if (event.length) break;
+      }
+
+      if (!event.length) {
+        for (const subTx of txo.contractResults.items) {
+          try {
+            event = subTx.logs.events.filter((e) => {
+              return e.topics[0].toString() === "Locked";
+            });
+            if (event.length) break;
+          } catch (ex) {}
+        }
+      }
+
+      const parsed = event[0];
+      const tokenId = Number.parseInt(parsed.topics[1].hex(), 16).toString();
+      const destinationChain = parsed.topics[2].toString();
+      const destinationUserAddress = Buffer.from(
+        parsed.topics[3].hex(),
+        "hex",
+      ).toString();
+      const sourceNftContractAddress = parsed.topics[4].toString();
+      const tokenAmount = parsed.topics[5].valueOf()[0].toString();
+      const nftType = parsed.topics[6].toString();
+      const sourceChain = parsed.topics[7].toString();
+      const metadataUri = parsed.topics[8].toString();
 
       return {
         destinationChain,
-        destinationUserAddress:
-          parsed.destination_user_address.toString("utf-8"),
+        destinationUserAddress,
         tokenAmount,
         tokenId,
-        nftType: parsed.nft_type.toString("utf-8"),
-        sourceNftContractAddress: parsed.source_nft_contract_address,
+        nftType: nftType,
+        sourceNftContractAddress: sourceNftContractAddress,
         sourceChain,
         transactionHash: txHash,
-        metaDataUri: "",
+        metaDataUri: metadataUri,
       };
     },
     async lockNft(
