@@ -14,6 +14,7 @@ import {
   ReadClaimed721Event,
   ReadClaimed1155Event,
   TNftChain,
+  ValidateNftData,
 } from "../types";
 
 // Custom Interface because there is no such signer interface in mx-sdk.
@@ -76,7 +77,8 @@ export type TMultiversXHandler = TNftChain<
   > &
   ReadClaimed721Event &
   ReadClaimed1155Event &
-  TGetTransactionStatus;
+  TGetTransactionStatus &
+  ValidateNftData;
 
 type TGetTransactionStatus = {
   getTransactionStatus(txHash: string): Promise<string>;

@@ -388,3 +388,7 @@ export type TokenInfo<RawTokenInfo> = {
   readonly tokenId: string;
   readonly type: "NFT" | "SFT";
 };
+
+export type ValidateNftData = {
+  validateNftData: (data: TNFTData) => Promise<boolean>;
+};
