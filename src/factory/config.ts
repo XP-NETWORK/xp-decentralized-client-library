@@ -194,7 +194,7 @@ export namespace ChainFactoryConfigs {
       },
       multiversxParams: {
         bridge:
-          "erd1qqqqqqqqqqqqqpgqgpeqtg36880f8rn6r6ngfcu73uq4dkextxsq7zjmm9",
+          "erd1qqqqqqqqqqqqqpgqmads3ruz3ywdq47a2whdgwsxdvtgut84txsqnuwr6c",
         chainId: "1",
         identifier: "MULTIVERSX",
         gatewayURL: "https://gateway.multiversx.com",
