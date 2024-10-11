@@ -141,7 +141,7 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         ogNftData.symbol = ogNftData.symbol
           .replace(/[^a-zA-Z0-9]/g, "")
           .toUpperCase()
-          .substring(0, 10);
+          .substring(0, 8);
       }
       const metadata = ogNftData.metadata || data.metaDataUri;
       const imgUri = (await fetchHttpOrIpfs(metadata)).image;
