@@ -33,6 +33,7 @@ export namespace Chain {
   export const BASE = "BASE";
   export const NEAR = "NEAR";
   export const MOONBEAM = "MOONBEAM";
+  export const BLAST = "BLAST";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -51,6 +52,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.ICP, chainParams.icpParams);
   cToP.set(Chain.NEAR, chainParams.nearParams);
   cToP.set(Chain.MOONBEAM, chainParams.moonbeamParams);
+  cToP.set(Chain.BLAST, chainParams.blastParams);
   return cToP;
 }
 
@@ -202,4 +204,7 @@ CHAIN_INFO.set(Chain.ICP, {
 });
 CHAIN_INFO.set(Chain.NEAR, {
   constructor: nearHandler,
+});
+CHAIN_INFO.set(Chain.BLAST, {
+  constructor: evmHandler,
 });

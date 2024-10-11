@@ -41,4 +41,5 @@ export type MetaMap = {
   APTOS: TAptosMeta;
   ICP: TICPMeta;
   NEAR: TNearMeta;
+  BLAST: TEvmMeta;
 };

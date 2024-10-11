@@ -33,6 +33,7 @@ export interface TChainParams {
   moonbeamParams: TEvmParams;
   icpParams: TICPParams;
   nearParams: TNearParams;
+  blastParams: TEvmParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -123,6 +124,15 @@ export namespace ChainFactoryConfigs {
         networkId: "testnet",
         nodeUrl: "https://archival-rpc.testnet.near.org",
         identifier: "NEAR",
+        storage,
+      },
+      blastParams: {
+        identifier: Chain.BLAST,
+        provider: new JsonRpcProvider(
+          "https://blast-sepolia.blockpi.network/v1/rpc/public",
+        ),
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
         storage,
       },
     } satisfies Partial<TChainParams>;
