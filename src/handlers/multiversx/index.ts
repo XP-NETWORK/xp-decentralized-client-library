@@ -81,10 +81,10 @@ export function multiversxHandler({
   };
   return {
     validateNftData(data) {
-      if (data.name.length > 50 || data.name.length < 3) {
+      if (data.name.length > 3 && data.name.length < 50) {
         throw new Error("Name must be between 3 and 50 characters");
       }
-      if (data.symbol.length > 10 || data.symbol.length < 3) {
+      if (data.symbol.length > 3 && data.symbol.length < 10) {
         throw new Error("Symbol must be between 3 and 10 characters");
       }
       return Promise.resolve(true);
