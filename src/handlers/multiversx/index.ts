@@ -81,10 +81,10 @@ export function multiversxHandler({
   };
   return {
     validateNftData(data) {
-      if (data.name.length > 3 && data.name.length < 50) {
+      if (data.name.length > 50 || data.name.length < 3) {
         throw new Error("Name must be between 3 and 50 characters");
       }
-      if (data.symbol.length > 3 && data.symbol.length < 10) {
+      if (data.symbol.length > 10 || data.symbol.length < 3) {
         throw new Error("Symbol must be between 3 and 10 characters");
       }
       return Promise.resolve(true);
@@ -107,7 +107,7 @@ export function multiversxHandler({
       );
       return {
         name: nftDetails.name,
-        symbol: nftDetails.ticker,
+        symbol: nftDetails.ticker.split("-")[0],
         metadata: metaData,
         royalty: BigInt(royalties),
       };
