@@ -30,6 +30,7 @@ export interface TChainParams {
     moonbeamParams: TEvmParams;
     icpParams: TICPParams;
     nearParams: TNearParams;
+    blastParams: TEvmParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {
@@ -98,6 +99,13 @@ export declare namespace ChainFactoryConfigs {
             networkId: string;
             nodeUrl: string;
             identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        blastParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
     };
