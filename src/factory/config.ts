@@ -1,3 +1,4 @@
+import { Network } from "@aptos-labs/ts-sdk";
 import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
@@ -133,6 +134,13 @@ export namespace ChainFactoryConfigs {
         ),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
         royaltySalePrice: 10000,
+        storage,
+      },
+      aptosParams: {
+        bridge:
+          "eea0db4fdc3d8915808c67268a668f3ee0810e864a40b4bde6c371b09337250a",
+        identifier: "APTOS",
+        network: Network.TESTNET,
         storage,
       },
     } satisfies Partial<TChainParams>;
