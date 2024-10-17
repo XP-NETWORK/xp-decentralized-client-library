@@ -1,5 +1,4 @@
-import { Account, Aptos, PendingTransactionResponse } from "@aptos-labs/ts-sdk";
-import { Network } from "aptos";
+import { Account, Aptos, Network, PendingTransactionResponse } from "@aptos-labs/ts-sdk";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { DeployNFTCollection, MintNft, TNftChain } from "../types";
 import { TClaimData } from "./bridge-client";

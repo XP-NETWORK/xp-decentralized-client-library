@@ -1,3 +1,4 @@
+import { Network } from "@aptos-labs/ts-sdk";
 import { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
@@ -106,6 +107,12 @@ export declare namespace ChainFactoryConfigs {
             provider: JsonRpcProvider;
             bridge: string;
             royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        aptosParams: {
+            bridge: string;
+            identifier: string;
+            network: Network.TESTNET;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
     };
