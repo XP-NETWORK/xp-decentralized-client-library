@@ -175,6 +175,13 @@ export declare namespace ChainFactoryConfigs {
             provider: ProxyNetworkProvider;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        blastParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
