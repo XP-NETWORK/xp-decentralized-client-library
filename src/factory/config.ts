@@ -211,6 +211,15 @@ export namespace ChainFactoryConfigs {
         provider: new ProxyNetworkProvider("https://gateway.multiversx.com"),
         storage,
       },
+      blastParams: {
+        identifier: Chain.BLAST,
+        provider: new JsonRpcProvider(
+          "https://blastl2-mainnet.public.blastapi.io",
+        ),
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
