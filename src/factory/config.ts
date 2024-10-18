@@ -221,9 +221,7 @@ export namespace ChainFactoryConfigs {
       },
       blastParams: {
         identifier: Chain.BLAST,
-        provider: new JsonRpcProvider(
-          "https://blastl2-mainnet.public.blastapi.io",
-        ),
+        provider: new JsonRpcProvider("https://blast.gateway.tenderly.co"),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
         royaltySalePrice: 10000,
         storage,
