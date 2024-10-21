@@ -121,7 +121,7 @@ async function nearHandler({ networkId, nodeUrl, bridge, storage, identifier, })
                 source_chain: input.sourceChain,
                 source_nft_contract_address: input.sourceNftContractAddress,
                 symbol: input.symbol,
-                token_amount: BigInt(input.tokenAmount),
+                token_amount: Number(input.tokenAmount),
                 token_id: input.tokenId,
                 transaction_hash: input.transactionHash,
                 lock_tx_chain: input.lockTxChain,
