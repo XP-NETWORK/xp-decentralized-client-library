@@ -99,7 +99,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             aptosParams: {
-                bridge: "eea0db4fdc3d8915808c67268a668f3ee0810e864a40b4bde6c371b09337250a",
+                bridge: "13f8d626e383e8621a89caeb05c56a95fda38aa2dddfa8c2b1ed063f0edb23c9",
                 identifier: "APTOS",
                 network: ts_sdk_1.Network.TESTNET,
                 storage,

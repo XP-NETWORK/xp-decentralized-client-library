@@ -9,11 +9,11 @@ export type TInferChainH<K extends TSupportedChain> = MetaMap[K][0];
 export type TChainFactory = {
     inner: <T extends TSupportedChain>(chain: T) => Promise<TInferChainH<T>>;
     getClaimData: (chain: TGetClaimData & TGetStorage & TGetChainIdentifier, txHash: string) => Promise<TNftTransferDetailsObject>;
-    lockNft: <Signer, ExtraArgs, Ret>(sourceChain: TLockNFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedChain, to: string, tokenId: bigint, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
+    lockNft: <Signer, ExtraArgs, Ret>(sourceChain: TLockNFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedChain, to: string, tokenId: string, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
         ret: Ret;
         hash: () => string;
     }>;
-    lockSft: <Signer, ExtraArgs, Ret>(sourceChain: TLockSFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedSftChain, to: string, tokenId: bigint, amt: bigint, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
+    lockSft: <Signer, ExtraArgs, Ret>(sourceChain: TLockSFT<Signer, ExtraArgs, Ret>, signer: Signer, sourceNftContractAddress: string, destinationChain: TSupportedSftChain, to: string, tokenId: string, amt: bigint, metadataUri: string, extraArgs?: ExtraArgs) => Promise<{
         ret: Ret;
         hash: () => string;
     }>;
