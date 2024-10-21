@@ -1,7 +1,8 @@
 import { Aptos, AptosConfig, isBcsAddress } from "@aptos-labs/ts-sdk";
+import { createSurfClient } from "@thalalabs/surf";
 import { HexString } from "aptos";
 import { raise } from "../ton";
-import { BridgeClient } from "./bridge-client";
+import { ABI } from "./abi";
 import { TAptosHandler, TAptosParams } from "./types";
 
 export function aptosHandler({
@@ -12,7 +13,7 @@ export function aptosHandler({
 }: TAptosParams): TAptosHandler {
   const config = new AptosConfig({ network });
   const aptos = new Aptos(config);
-  const bc = new BridgeClient(aptos, bridge);
+  const bc = createSurfClient(aptos).useABI(ABI(bridge));
 
   return {
     validateAddress(address) {
@@ -20,9 +21,12 @@ export function aptosHandler({
     },
     identifier,
     async getValidatorCount() {
-      const bd = await bc.getBridgeData();
+      const [bd] = await bc.view.validator_count({
+        functionArguments: [],
+        typeArguments: [],
+      });
       if (!bd) throw new Error("Failed to fetch bridge data");
-      return bd.validators.data.length;
+      return Number.parseInt(bd);
     },
     async deployNftCollection(signer, da) {
       const transaction = await aptos.createCollectionTransaction({
@@ -35,18 +39,13 @@ export function aptosHandler({
         signer,
         transaction,
       });
-      const tx = await aptos.waitForTransaction({
+      await aptos.waitForTransaction({
         transactionHash: response.hash,
         options: {
           checkSuccess: true,
         },
       });
-      const alicesCollection = await aptos.getCollectionData({
-        creatorAddress: signer.accountAddress,
-        collectionName: da.name,
-        minimumLedgerVersion: BigInt(tx.version),
-      });
-      return alicesCollection.collection_id;
+      return da.name;
     },
     async mintNft(signer, ma) {
       const transaction = await aptos.mintDigitalAssetTransaction({
@@ -73,18 +72,18 @@ export function aptosHandler({
       return (
         assets.find(
           (e) =>
-            e.current_token_data?.collection_id === ma.contract &&
-            e.current_token_data.token_name === ma.name,
+            e.current_token_data?.current_collection?.collection_name ===
+              ma.contract && e.current_token_data?.token_name === ma.name,
         )?.token_data_id ?? raise("Failed to send tx")
       );
     },
     transform(input) {
       return {
-        amount: Number(input.tokenAmount),
+        amount: BigInt(input.tokenAmount),
         collection: input.sourceNftContractAddress,
         description: input.sourceNftContractAddress,
         destinationChain: Buffer.from(input.destinationChain),
-        fee: Number(input.fee),
+        fee: BigInt(input.fee),
         metadata: input.metadata,
         uri: input.metadata,
         royaltyPayeeAddress: HexString.ensure(input.royaltyReceiver),
@@ -98,10 +97,20 @@ export function aptosHandler({
         tokenId: input.tokenId,
         transactionHash: Buffer.from(input.transactionHash),
         sourceNftContractAddress: Buffer.from(input.sourceNftContractAddress),
+        destination_chain: input.destinationChain,
+        destinationUserAddress: input.destinationUserAddress as `0x${string}`,
+        name: input.name,
+        nft_type: input.nftType,
+        royaltyPercentage: BigInt(input.royalty),
+        royaltyReceiver: input.royaltyReceiver as `0x${string}`,
+        source_chain: input.sourceChain,
+        source_nft_contract_address: input.sourceNftContractAddress,
+        token_id: BigInt(input.tokenId),
+        transaction_hash: input.transactionHash,
       };
     },
     approveNft() {
-      throw new Error("Approval not required in aptos ");
+      throw new Error("Approval not required in aptos");
     },
     async getBalance(signer) {
       const balance = await aptos.getAccountAPTAmount({
@@ -161,12 +170,29 @@ export function aptosHandler({
         Buffer.from(e.signature.replace("0x", ""), "hex"),
       );
       const signers = sigs.map((e) => Buffer.from(e.signerAddress));
-      const response = await bc.claim1155(
-        signer,
-        claimData,
-        signatures,
-        signers,
-      );
+      const response = await bc.entry.claim_1155({
+        account: signer,
+        functionArguments: [
+          claimData.destinationUserAddress,
+          claimData.name,
+          claimData.uri,
+          claimData.royaltyPercentage,
+          claimData.royaltyReceiver,
+          claimData.fee,
+          signatures,
+          signers,
+          claimData.destination_chain,
+          claimData.source_chain,
+          claimData.source_nft_contract_address,
+          claimData.token_id,
+          claimData.transaction_hash,
+          claimData.nft_type,
+          claimData.metadata,
+          claimData.symbol,
+          claimData.amount,
+        ],
+        typeArguments: [],
+      });
       return {
         hash() {
           return response.hash;
@@ -179,12 +205,28 @@ export function aptosHandler({
         Buffer.from(e.signature.replace("0x", ""), "hex"),
       );
       const signers = sigs.map((e) => Buffer.from(e.signerAddress));
-      const response = await bc.claim721(
-        signer,
-        claimData,
-        signatures,
-        signers,
-      );
+      const response = await bc.entry.claim_721({
+        account: signer,
+        functionArguments: [
+          claimData.destinationUserAddress,
+          claimData.name,
+          claimData.uri,
+          claimData.royaltyPercentage,
+          claimData.royaltyReceiver,
+          claimData.fee,
+          signatures,
+          signers,
+          claimData.destination_chain,
+          claimData.source_chain,
+          claimData.source_nft_contract_address,
+          claimData.token_id,
+          claimData.transaction_hash,
+          claimData.nft_type,
+          claimData.metadata,
+          claimData.symbol,
+        ],
+        typeArguments: [],
+      });
       return {
         hash() {
           return response.hash;
@@ -192,15 +234,25 @@ export function aptosHandler({
         ret: response,
       };
     },
-    async lockNft(signer, sourceNft, destinationChain, _, tokenId) {
-      const lock = await bc.lock721(
-        signer,
-        sourceNft,
-        tokenId.toString(),
-        Buffer.from(destinationChain),
-        0,
-        Buffer.from(sourceNft),
-      );
+    async lockNft(
+      signer,
+      sourceNft,
+      destinationChain,
+      destinationUserAddress,
+      tokenId,
+      metadataUri,
+    ) {
+      const lock = await bc.entry.lock_721({
+        account: signer,
+        functionArguments: [
+          tokenId as `0x${string}`,
+          destinationChain,
+          destinationUserAddress,
+          sourceNft as `0x${string}`,
+          metadataUri,
+        ],
+        typeArguments: [],
+      });
       return {
         hash() {
           return lock.hash;
@@ -208,16 +260,27 @@ export function aptosHandler({
         ret: lock,
       };
     },
-    async lockSft(signer, sourceNft, destinationChain, _, tokenId, amount) {
-      const lock = await bc.lock1155(
-        signer,
-        sourceNft,
-        tokenId.toString(),
-        Number(amount),
-        Buffer.from(destinationChain),
-        0,
-        Buffer.from(sourceNft),
-      );
+    async lockSft(
+      signer,
+      sourceNft,
+      destinationChain,
+      destinationUserAddress,
+      tokenId,
+      amount,
+      metadataUri,
+    ) {
+      const lock = await bc.entry.lock_1155({
+        account: signer,
+        functionArguments: [
+          tokenId as `0x${string}`,
+          destinationChain,
+          destinationUserAddress,
+          sourceNft as `0x${string}`,
+          amount,
+          metadataUri,
+        ],
+        typeArguments: [],
+      });
       return {
         hash() {
           return lock.hash;

@@ -1256,6 +1256,11 @@
     elliptic "^6.5.4"
     typedarray-to-buffer "^4.0.0"
 
+"@thalalabs/surf@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@thalalabs/surf/-/surf-1.7.3.tgz#461ad6b658bb8341c8570ac467108f3e5602d70c"
+  integrity sha512-bhZzQgVCVGiYaUwuIclseO0UXZJh6YkjfFi8iuKcpclbIfxELOJPPvDKCdsIKYN+BVTw8UeOXQvfuLJYwRszhA==
+
 "@ton/core@=0.56.3":
   version "0.56.3"
   resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.56.3.tgz#1162764573abb76032eba70f8497e5cb2ea532ee"

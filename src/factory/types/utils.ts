@@ -32,7 +32,7 @@ export type TChainFactory = {
     sourceNftContractAddress: string,
     destinationChain: TSupportedChain,
     to: string,
-    tokenId: bigint,
+    tokenId: string,
     metadataUri: string,
     extraArgs?: ExtraArgs,
   ) => Promise<{ ret: Ret; hash: () => string }>;
@@ -42,7 +42,7 @@ export type TChainFactory = {
     sourceNftContractAddress: string,
     destinationChain: TSupportedSftChain,
     to: string,
-    tokenId: bigint,
+    tokenId: string,
     amt: bigint,
     metadataUri: string,
     extraArgs?: ExtraArgs,

@@ -291,7 +291,7 @@ export async function icpHandler({
       });
       const hash = await bcWithSigner.lock_nft(
         Principal.fromText(sourceNft),
-        tokenId,
+        BigInt(tokenId),
         destinationChain,
         to,
         metaDataUri,

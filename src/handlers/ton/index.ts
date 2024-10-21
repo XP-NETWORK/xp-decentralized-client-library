@@ -317,7 +317,9 @@ export function tonHandler({
       const collection = client.open(
         NftCollection.fromAddress(Address.parse(sourceNft)),
       );
-      const nftItemAddress = await collection.getGetNftAddressByIndex(tokenId);
+      const nftItemAddress = await collection.getGetNftAddressByIndex(
+        BigInt(tokenId),
+      );
       if (!nftItemAddress) raise("NFT Does not exist.");
       const nftItem = client.open(NftItem.fromAddress(nftItemAddress));
       const nftItemData = await nftItem.getGetNftData();
@@ -333,7 +335,7 @@ export function tonHandler({
           .endCell(),
         destinationUserAddress: beginCell().storeStringRefTail(to).endCell(),
         sourceNftContractAddress: Address.parse(sourceNft),
-        tokenId: tokenId,
+        tokenId: BigInt(tokenId),
         metaDataUri: beginCell().storeStringRefTail(metaDataUri).endCell(),
       })(locked);
 
@@ -346,7 +348,7 @@ export function tonHandler({
         {
           $$type: "Transfer",
           forward_payload: beginCell()
-            .storeInt(tokenId, 256)
+            .storeInt(BigInt(tokenId), 256)
             .storeAddress(Address.parse(sourceNft))
             .storeRef(beginCell().storeStringRefTail(destinationChain))
             .storeRef(beginCell().storeStringRefTail(to))

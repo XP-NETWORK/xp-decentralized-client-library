@@ -68,7 +68,7 @@ export type TLockNFT<Signer, ExtraArgs, RetTx> = {
     sourceNft: string,
     destinationChain: TSupportedChain,
     to: string,
-    tokenId: bigint,
+    tokenId: string,
     metaDataUri: string,
     extraArgs?: ExtraArgs,
   ) => Promise<{ ret: RetTx; hash: () => string }>;
@@ -270,7 +270,7 @@ export type TLockSFT<Signer, ExtraArgs, RetTx> = {
     sourceNft: string,
     destinationChain: TSupportedSftChain,
     to: string,
-    tokenId: bigint,
+    tokenId: string,
     amt: bigint,
     metaDataUri: string,
     extraArgs?: ExtraArgs,

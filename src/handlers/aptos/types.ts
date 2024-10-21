@@ -1,12 +1,11 @@
 import {
   Account,
   Aptos,
+  CommittedTransactionResponse,
   Network,
-  PendingTransactionResponse,
 } from "@aptos-labs/ts-sdk";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { DeployNFTCollection, MintNft, TNftChain } from "../types";
-import { TClaimData } from "./bridge-client";
 
 export type TAptosMintArgs = {
   contract: string;
@@ -14,11 +13,29 @@ export type TAptosMintArgs = {
   uri: string;
 };
 
+export type TClaimData = {
+  destinationUserAddress: `0x${string}`;
+  name: string;
+  uri: string;
+  royaltyPercentage: bigint;
+  royaltyReceiver: `0x${string}`;
+  fee: bigint;
+  destination_chain: string;
+  source_chain: string;
+  source_nft_contract_address: string;
+  token_id: bigint;
+  transaction_hash: string;
+  nft_type: string;
+  metadata: string;
+  symbol: string;
+  amount: bigint;
+};
+
 export type TAptosHandler = TNftChain<
   Account,
   TClaimData,
   never,
-  PendingTransactionResponse,
+  CommittedTransactionResponse,
   Aptos
 > &
   MintNft<Account, TAptosMintArgs, never, string> &
