@@ -21,7 +21,7 @@ export type TNearClaimArgs = {
   royalty_receiver: string;
   metadata: string;
   transaction_hash: string;
-  token_amount: bigint;
+  token_amount: number;
   nft_type: string;
   fee: string;
   lock_tx_chain: string;
