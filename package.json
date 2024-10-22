@@ -32,6 +32,7 @@
     "@multiversx/sdk-core": "^13.2.1",
     "@multiversx/sdk-network-providers": "^2.2.1",
     "@multiversx/sdk-wallet": "^4.3.0",
+    "@near-wallet-selector/core": "^8.9.13",
     "@taquito/signer": "^20.0.1",
     "@taquito/taquito": "^19.0.0",
     "@taquito/tzip16": "^19.0.0",

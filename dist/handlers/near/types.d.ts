@@ -1,4 +1,5 @@
-import { Near, WalletConnection } from "near-api-js";
+import { Wallet } from "@near-wallet-selector/core";
+import { Near } from "near-api-js";
 import { FinalExecutionOutcome } from "near-api-js/lib/providers";
 import { BridgeStorage } from "../../contractsTypes/evm";
 import { DeployNFTCollection, MintNft, ReadClaimed721Event, TNFTList, TSingularNftChain } from "../types";
@@ -30,10 +31,10 @@ export type NftIssueArgs = {
     readonly description?: string;
     readonly uri: string;
 };
-export type TNearHandler = TSingularNftChain<WalletConnection, TNearClaimArgs, unknown, FinalExecutionOutcome, Near> & MintNft<WalletConnection, NftIssueArgs, {
+export type TNearHandler = TSingularNftChain<Wallet, TNearClaimArgs, unknown, void | FinalExecutionOutcome, Near> & MintNft<Wallet, NftIssueArgs, {
     gasLimit: number;
     value: number;
-}, string> & DeployNFTCollection<WalletConnection, {
+}, string> & DeployNFTCollection<Wallet, {
     name: string;
     ticker: string;
 }, {
