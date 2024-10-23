@@ -102,6 +102,9 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       if (!valid) {
         throw new Error("Invalid destination user address");
       }
+      if (!("claimSft" in destination)) {
+        throw new Error("Destination chain does not support SFTs .");
+      }
       const lock = await sourceChain.lockSft(
         signer,
         sourceNftContractAddress,
