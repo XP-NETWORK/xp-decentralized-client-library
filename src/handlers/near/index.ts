@@ -224,6 +224,7 @@ export async function nearHandler({
             };
           }),
         },
+        gas: 300000000000000n,
         attachedDeposit: BigInt(claimData.fee),
       });
       return { hash: () => claimed.transaction.hash, ret: claimed };
