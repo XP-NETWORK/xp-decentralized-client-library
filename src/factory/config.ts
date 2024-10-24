@@ -83,7 +83,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       secretParams: {
-        bridge: "secret1grl2nduhjkvags56ewgcn80ymmmke8tfrm9zg9",
+        bridge: "secret1lmh5n3gdzss9qlfyzn6k7vmja9nexesz5vlpj8",
         bridgeCodeHash: "",
         chainId: "pulsar-3",
         identifier: "SECRET",
