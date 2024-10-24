@@ -3,7 +3,13 @@ import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
 import { TokenInfo } from "../types";
-import { GetOwnedTokensResponse, TSecretHandler, TSecretParams } from "./types";
+import {
+  GetOwnedTokensResponse,
+  TNftInfo,
+  TSecretHandler,
+  TSecretParams,
+  TSftInfo,
+} from "./types";
 
 export function secretHandler({
   bridge,
@@ -18,6 +24,11 @@ export function secretHandler({
     owner: string,
     ea: { viewingKey: string; codeHash?: string },
   ) {
+    const contractInfo: TNftInfo = await provider.query.compute.queryContract({
+      contract_address: contract,
+      query: { contract_info: {} },
+    });
+
     const res = (await provider.query.snip721.GetOwnedTokens({
       auth: {
         viewer: {
@@ -63,6 +74,8 @@ export function secretHandler({
           native: {
             contract: contract,
             contractHash: ea.codeHash || "",
+            name: contractInfo.contract_info.name || "",
+            symbol: contractInfo.contract_info.symbol || "",
             tokenId: token,
             viewingKey: ea.viewingKey,
             metadata: tokenInfo.all_nft_info.info?.token_uri || "",
@@ -111,6 +124,12 @@ export function secretHandler({
           token_id: token.token_id,
         });
 
+        const contractInfo: TSftInfo =
+          await provider.query.compute.queryContract({
+            contract_address: contract,
+            query: { token_id_public_info: { token_id: token.token_id } },
+          });
+
         response.push({
           collectionIdent: contract,
           uri:
@@ -124,6 +143,8 @@ export function secretHandler({
             tokenId: token.token_id,
             amount: Number(token.amount),
             viewingKey: ea.viewingKey,
+            name: contractInfo.token_id_public_info.token_id_info.name,
+            symbol: contractInfo.token_id_public_info.token_id_info.symbol,
             metadata:
               tokenInfo.token_id_private_info.token_id_info.public_metadata
                 .token_uri || "",

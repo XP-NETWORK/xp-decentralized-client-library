@@ -69,3 +69,20 @@ export type TSecretParams = {
 };
 
 export type GetOwnedTokensResponse = Snip721GetTokensResponse | string;
+
+export type TNftInfo = {
+  contract_info: { name: string; symbol: string };
+};
+
+export type TSftInfo = {
+  token_id_public_info: {
+    token_id_info: {
+      token_id: string;
+      name: string;
+      symbol: string;
+      curator: string;
+    };
+    total_supply: string;
+    owner: string | undefined | null;
+  };
+};
