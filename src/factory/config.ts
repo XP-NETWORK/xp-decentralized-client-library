@@ -35,6 +35,7 @@ export interface TChainParams {
   icpParams: TICPParams;
   nearParams: TNearParams;
   blastParams: TEvmParams;
+  fantomParams: TEvmParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -222,6 +223,13 @@ export namespace ChainFactoryConfigs {
       blastParams: {
         identifier: Chain.BLAST,
         provider: new JsonRpcProvider("https://blast.gateway.tenderly.co"),
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      fantomParams: {
+        identifier: Chain.FANTOM,
+        provider: new JsonRpcProvider("https://rpc.fantom.network"),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
         royaltySalePrice: 10000,
         storage,
