@@ -34,5 +34,6 @@ export type MetaMap = {
     ICP: TICPMeta;
     NEAR: TNearMeta;
     BLAST: TEvmMeta;
+    FANTOM: TEvmMeta;
 };
 //# sourceMappingURL=index.d.ts.map

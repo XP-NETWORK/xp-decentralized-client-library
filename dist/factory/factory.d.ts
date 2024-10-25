@@ -16,6 +16,7 @@ export declare namespace Chain {
     const NEAR = "NEAR";
     const MOONBEAM = "MOONBEAM";
     const BLAST = "BLAST";
+    const FANTOM = "FANTOM";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
