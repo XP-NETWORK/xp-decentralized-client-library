@@ -202,9 +202,9 @@ export function aptosHandler({
     },
     async claimNft(signer, claimData, sigs) {
       const signatures = sigs.map((e) =>
-        Buffer.from(e.signature.replace("0x", ""), "hex"),
+        Buffer.from(e.signature.slice(2), "hex"),
       );
-      const signers = sigs.map((e) => Buffer.from(e.signerAddress));
+      const signers = sigs.map((e) => Buffer.from(e.signerAddress, "hex"));
       const response = await bc.entry.claim_721({
         account: signer,
         functionArguments: [

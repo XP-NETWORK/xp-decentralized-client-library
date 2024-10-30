@@ -139,7 +139,7 @@ export namespace ChainFactoryConfigs {
       },
       aptosParams: {
         bridge:
-          "13f8d626e383e8621a89caeb05c56a95fda38aa2dddfa8c2b1ed063f0edb23c9",
+          "68c508b1b20701c8ddecbbc8e603e788be96c1dcb6ccdcf43ac8594f6f49077a",
         identifier: "APTOS",
         network: Network.TESTNET,
         storage,
