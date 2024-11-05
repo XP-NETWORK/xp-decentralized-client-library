@@ -8,6 +8,7 @@ import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
 import { TAptosParams } from "../handlers/aptos/types";
+import { TCasperParams } from "../handlers/casper/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
@@ -37,6 +38,7 @@ export interface TChainParams {
   blastParams: TEvmParams;
   fantomParams: TEvmParams;
   avaxParams: TEvmParams;
+  casperParams: TCasperParams;
 }
 
 export namespace ChainFactoryConfigs {

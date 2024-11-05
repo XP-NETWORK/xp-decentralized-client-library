@@ -6,6 +6,7 @@ import {
   TSupportedChain,
 } from "../factory/types/utils";
 import { aptosHandler } from "../handlers/aptos";
+import { casperHandler } from "../handlers/casper";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
@@ -40,6 +41,7 @@ export namespace Chain {
   export const BLAST = "BLAST";
   export const FANTOM = "FANTOM";
   export const AVALANCHE = "AVALANCHE";
+  export const CASPER = "CASPER";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -61,6 +63,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.BLAST, chainParams.blastParams);
   cToP.set(Chain.FANTOM, chainParams.fantomParams);
   cToP.set(Chain.AVALANCHE, chainParams.avaxParams);
+  cToP.set(Chain.CASPER, chainParams.casperParams);
   return cToP;
 }
 
@@ -233,4 +236,7 @@ CHAIN_INFO.set(Chain.FANTOM, {
 });
 CHAIN_INFO.set(Chain.AVALANCHE, {
   constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.CASPER, {
+  constructor: casperHandler,
 });

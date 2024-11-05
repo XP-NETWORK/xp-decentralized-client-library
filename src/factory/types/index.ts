@@ -1,4 +1,5 @@
 import { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
+import { TCasperHandler, TCasperParams } from "../../handlers/casper/types";
 import {
   TCosmWasmHandler,
   TCosmWasmParams,
@@ -25,6 +26,7 @@ export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
 export type TAptosMeta = [TAptosHandler, TAptosParams];
 export type TICPMeta = [TICPHandler, TICPParams];
 export type TNearMeta = [TNearHandler, TNearParams];
+export type TCasperMeta = [TCasperHandler, TCasperParams];
 
 export type MetaMap = {
   BSC: TEvmMeta;
@@ -44,4 +46,5 @@ export type MetaMap = {
   BLAST: TEvmMeta;
   FANTOM: TEvmMeta;
   AVALANCHE: TEvmMeta;
+  CASPER: TCasperMeta;
 };
