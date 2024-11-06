@@ -554,7 +554,27 @@ export function secretHandler({
         lock_tx_chain,
       };
     },
-    async approveNft(signer, tokenId, contract, _nftType, extraArgs) {
+    async approveNft(signer, tokenId, contract, nftType, extraArgs) {
+      if (nftType === "sft") {
+        const res = await signer.tx.compute.executeContract(
+          {
+            sender: signer.address,
+            contract_address: contract,
+            msg: {
+              give_permission: {
+                allowed_address: bridge,
+                token_id: tokenId,
+                view_balance: true,
+              },
+            },
+          },
+          {
+            waitForCommit: true,
+            gasLimit: 50000,
+          },
+        );
+        return res;
+      }
       const res = await signer.tx.compute.executeContract(
         {
           sender: signer.address,
