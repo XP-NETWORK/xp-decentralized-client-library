@@ -78,7 +78,9 @@ export function secretHandler({
             symbol: contractInfo.contract_info.symbol || "",
             tokenId: token,
             viewingKey: ea.viewingKey,
-            metadata: tokenInfo.all_nft_info.info?.token_uri || "",
+            metadata:
+              tokenInfo.all_nft_info.info?.token_uri ||
+              tokenInfo?.all_nft_info?.info?.extension,
           },
         });
       }),
