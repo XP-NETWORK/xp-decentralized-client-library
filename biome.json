@@ -21,7 +21,8 @@
       "src/handlers/ton/nftc.ts",
       "src/handlers/ton/nfti.ts",
       "src/handlers/ton/tep64.ts",
-      "src/handlers/icp/nft.wasm.gz.hex.ts"
+      "src/handlers/icp/nft.wasm.gz.hex.ts",
+      "src/handlers/casper/get-deploy.ts"
     ]
   }
 }
