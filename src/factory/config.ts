@@ -237,9 +237,7 @@ export namespace ChainFactoryConfigs {
       },
       avaxParams: {
         identifier: Chain.AVALANCHE,
-        provider: new JsonRpcProvider(
-          "https://endpoints.omniatech.io/v1/avax/mainnet/public",
-        ),
+        provider: new JsonRpcProvider("https://avalanche.public-rpc.com"),
         bridge: ethers.getAddress("0x92764FF21a1a8cC4e8eEec43ED04Bea3B76D8fD3"),
         royaltySalePrice: 10000,
         storage,
