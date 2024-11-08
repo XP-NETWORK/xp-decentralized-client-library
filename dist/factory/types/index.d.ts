@@ -35,5 +35,6 @@ export type MetaMap = {
     NEAR: TNearMeta;
     BLAST: TEvmMeta;
     FANTOM: TEvmMeta;
+    AVALANCHE: TEvmMeta;
 };
 //# sourceMappingURL=index.d.ts.map

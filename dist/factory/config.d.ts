@@ -33,6 +33,7 @@ export interface TChainParams {
     nearParams: TNearParams;
     blastParams: TEvmParams;
     fantomParams: TEvmParams;
+    avaxParams: TEvmParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {
@@ -184,6 +185,13 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
         fantomParams: {
+            identifier: string;
+            provider: JsonRpcProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+        avaxParams: {
             identifier: string;
             provider: JsonRpcProvider;
             bridge: string;
