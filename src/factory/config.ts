@@ -36,6 +36,7 @@ export interface TChainParams {
   nearParams: TNearParams;
   blastParams: TEvmParams;
   fantomParams: TEvmParams;
+  avaxParams: TEvmParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -231,6 +232,15 @@ export namespace ChainFactoryConfigs {
         identifier: Chain.FANTOM,
         provider: new JsonRpcProvider("https://rpc.fantom.network"),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      avaxParams: {
+        identifier: Chain.AVALANCHE,
+        provider: new JsonRpcProvider(
+          "https://endpoints.omniatech.io/v1/avax/mainnet/public",
+        ),
+        bridge: ethers.getAddress("0x92764FF21a1a8cC4e8eEec43ED04Bea3B76D8fD3"),
         royaltySalePrice: 10000,
         storage,
       },

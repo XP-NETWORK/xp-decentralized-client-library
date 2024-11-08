@@ -43,4 +43,5 @@ export type MetaMap = {
   NEAR: TNearMeta;
   BLAST: TEvmMeta;
   FANTOM: TEvmMeta;
+  AVALANCHE: TEvmMeta;
 };
