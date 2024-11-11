@@ -1,8 +1,10 @@
 import { StdSignature, toBase64, validateAddress } from "secretjs";
+import { Metadata } from "secretjs/dist/extensions/snip1155/types";
 import { Pubkey } from "secretjs/dist/wallet_amino";
 import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
 import { TokenInfo } from "../types";
+import { pinata } from "../utils";
 import {
   GetOwnedTokensResponse,
   TNftInfo,
@@ -612,6 +614,26 @@ export function secretHandler({
       _,
     ) {
       console.log(metaDataUri);
+      let metadata = metaDataUri;
+      const nft_info = (
+        (await signer.query.compute.queryContract({
+          contract_address: sourceNft,
+          query: { nft_info: { token_id: tokenId.toString() } },
+        })) as {
+          nft_info: Metadata;
+        }
+      ).nft_info;
+      if (nft_info.token_uri) {
+        metadata = nft_info.token_uri;
+      } else {
+        const data = {
+          ...nft_info.extension,
+          image: nft_info.extension?.media?.[0]?.url || "",
+        };
+        const pinResponse = await pinata.upload.json(data);
+        metadata = `https://xpnetwork.infura-ipfs.io/ipfs/ ${pinResponse.IpfsHash}`;
+        console.log({ metadata });
+      }
 
       const codeHashResponse =
         await signer.query.compute.codeHashByContractAddress({
@@ -627,7 +649,7 @@ export function secretHandler({
             destination_user_address: to,
             source_nft_contract_address: sourceNft,
             token_id: tokenId.toString(),
-            metadata_uri: metaDataUri,
+            metadata_uri: metadata,
             collection_code_info: {
               code_id: Number.parseInt(
                 contract_info?.code_id ?? raise("Code id not found"),

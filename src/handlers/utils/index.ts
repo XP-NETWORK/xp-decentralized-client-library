@@ -1,4 +1,5 @@
 import { fetchHttpOrIpfs } from "./fetchHttpOrIpfs";
+import { pinata } from "./pinata";
 import retryFn from "./retryFn";
 import {
   convertNumbToHexToString,
@@ -10,4 +11,5 @@ export {
   fetchHttpOrIpfs,
   convertNumbToHexToString,
   convertStringToHexToNumb,
+  pinata,
 };
