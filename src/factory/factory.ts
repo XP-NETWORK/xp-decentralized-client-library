@@ -15,7 +15,11 @@ import { nearHandler } from "../handlers/near";
 import { secretHandler } from "../handlers/secret";
 import { tezosHandler } from "../handlers/tezos";
 import { raise, tonHandler } from "../handlers/ton";
-import { fetchHttpOrIpfs } from "../handlers/utils";
+import {
+  convertNumbToHexToString,
+  convertStringToHexToNumb,
+  fetchHttpOrIpfs,
+} from "../handlers/utils";
 import { TChainParams } from "./config";
 
 export namespace Chain {
@@ -152,12 +156,21 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
           .toUpperCase()
           .substring(0, 8);
       }
+      let convertedTokenId = data.tokenId;
+      if (data.sourceChain === "SECRET") {
+        if (chain.identifier === "SECRET") {
+          convertedTokenId = convertStringToHexToNumb(data.tokenId);
+        } else if (data.destinationChain === "SECRET") {
+          convertedTokenId = convertNumbToHexToString(data.tokenId);
+        }
+      }
       const metadata = ogNftData.metadata || data.metaDataUri;
       const imgUri = (await fetchHttpOrIpfs(metadata)).image;
       return {
         ...data,
         ...ogNftData,
         metadata,
+        tokenId: convertedTokenId,
         royalty: ogNftData.royalty.toString(),
         royaltyReceiver: royaltyReceiver,
         fee: fee.toString(),
