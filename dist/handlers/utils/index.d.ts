@@ -1,4 +1,5 @@
 import { fetchHttpOrIpfs } from "./fetchHttpOrIpfs";
 import retryFn from "./retryFn";
-export { retryFn, fetchHttpOrIpfs };
+import { convertNumbToHexToString, convertStringToHexToNumb } from "./tokenIdConversion";
+export { retryFn, fetchHttpOrIpfs, convertNumbToHexToString, convertStringToHexToNumb, };
 //# sourceMappingURL=index.d.ts.map
