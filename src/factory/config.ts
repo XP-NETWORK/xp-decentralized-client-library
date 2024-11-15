@@ -244,6 +244,13 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
       },
+      moonbeamParams: {
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        identifier: "MOONBEAM",
+        provider: new JsonRpcProvider("https://1rpc.io/glmr"),
+        royaltySalePrice: 10000,
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
