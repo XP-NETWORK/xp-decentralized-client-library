@@ -1,4 +1,5 @@
 import { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
+import { TCasperHandler, TCasperParams } from "../../handlers/casper/types";
 import { TCosmWasmHandler, TCosmWasmParams } from "../../handlers/cosmwasm/types";
 import { TEvmHandler, TEvmParams } from "../../handlers/evm/types";
 import { THederaHandler, THederaParams } from "../../handlers/hedera/types";
@@ -18,6 +19,7 @@ export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
 export type TAptosMeta = [TAptosHandler, TAptosParams];
 export type TICPMeta = [TICPHandler, TICPParams];
 export type TNearMeta = [TNearHandler, TNearParams];
+export type TCasperMeta = [TCasperHandler, TCasperParams];
 export type MetaMap = {
     BSC: TEvmMeta;
     ETH: TEvmMeta;
@@ -36,5 +38,6 @@ export type MetaMap = {
     BLAST: TEvmMeta;
     FANTOM: TEvmMeta;
     AVALANCHE: TEvmMeta;
+    CASPER: TCasperMeta;
 };
 //# sourceMappingURL=index.d.ts.map

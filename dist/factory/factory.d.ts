@@ -18,6 +18,7 @@ export declare namespace Chain {
     const BLAST = "BLAST";
     const FANTOM = "FANTOM";
     const AVALANCHE = "AVALANCHE";
+    const CASPER = "CASPER";
 }
 export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;

@@ -7,6 +7,7 @@ import { TonClient } from "@ton/ton";
 import { JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { TAptosParams } from "../handlers/aptos/types";
+import { TCasperParams } from "../handlers/casper/types";
 import { TCosmWasmParams } from "../handlers/cosmwasm/types";
 import { TEvmParams } from "../handlers/evm/types";
 import { THederaParams } from "../handlers/hedera/types";
@@ -34,6 +35,7 @@ export interface TChainParams {
     blastParams: TEvmParams;
     fantomParams: TEvmParams;
     avaxParams: TEvmParams;
+    casperParams: TCasperParams;
 }
 export declare namespace ChainFactoryConfigs {
     function TestNet(): {
