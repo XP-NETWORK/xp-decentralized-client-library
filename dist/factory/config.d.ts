@@ -200,6 +200,13 @@ export declare namespace ChainFactoryConfigs {
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        moonbeamParams: {
+            bridge: string;
+            identifier: string;
+            provider: JsonRpcProvider;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
