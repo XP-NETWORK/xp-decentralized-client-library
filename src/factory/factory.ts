@@ -27,7 +27,7 @@ export namespace Chain {
   export const MULTIVERSX = "MULTIVERSX";
   export const SECRET = "SECRET";
   export const TON = "TON";
-  export const ETH = "ETH";
+  export const ETHEREUM = "ETHEREUM";
   export const BSC = "BSC";
   export const TEZOS = "TEZOS";
   export const TERRA = "TERRA";
@@ -51,7 +51,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.MATIC, chainParams.maticParams);
   cToP.set(Chain.BASE, chainParams.baseParams);
   cToP.set(Chain.HEDERA, chainParams.hederaParams);
-  cToP.set(Chain.ETH, chainParams.ethParams);
+  cToP.set(Chain.ETHEREUM, chainParams.ethParams);
   cToP.set(Chain.TEZOS, chainParams.tezosParams);
   cToP.set(Chain.SECRET, chainParams.secretParams);
   cToP.set(Chain.TON, chainParams.tonParams);
@@ -189,7 +189,7 @@ export const CHAIN_INFO: TChainInfo = new Map();
 CHAIN_INFO.set(Chain.BSC, {
   constructor: evmHandler,
 });
-CHAIN_INFO.set(Chain.ETH, {
+CHAIN_INFO.set(Chain.ETHEREUM, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.MATIC, {

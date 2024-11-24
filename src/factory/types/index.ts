@@ -30,7 +30,7 @@ export type TCasperMeta = [TCasperHandler, TCasperParams];
 
 export type MetaMap = {
   BSC: TEvmMeta;
-  ETH: TEvmMeta;
+  ETHEREUM: TEvmMeta;
   MATIC: TEvmMeta;
   MOONBEAM: TEvmMeta;
   BASE: TEvmMeta;
