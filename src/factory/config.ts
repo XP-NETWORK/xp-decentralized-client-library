@@ -251,6 +251,13 @@ export namespace ChainFactoryConfigs {
         royaltySalePrice: 10000,
         storage,
       },
+      ethParams: {
+        bridge: ethers.getAddress("0x4B2A837613bA45C734439155CC7030c79095a2ed"),
+        identifier: "ETHEREUM",
+        provider: new JsonRpcProvider("https://eth.llamarpc.com"),
+        royaltySalePrice: 10000,
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
