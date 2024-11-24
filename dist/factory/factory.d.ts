@@ -4,7 +4,7 @@ export declare namespace Chain {
     const MULTIVERSX = "MULTIVERSX";
     const SECRET = "SECRET";
     const TON = "TON";
-    const ETH = "ETH";
+    const ETHEREUM = "ETHEREUM";
     const BSC = "BSC";
     const TEZOS = "TEZOS";
     const TERRA = "TERRA";
