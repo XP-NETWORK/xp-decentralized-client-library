@@ -4,7 +4,11 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 
 import { Bridge, CosmNft } from "@xp/cosmos-client";
-import { CosmWasmExtraArgs, TCosmWasmHandler, TCosmWasmParams } from "./types";
+import type {
+  CosmWasmExtraArgs,
+  TCosmWasmHandler,
+  TCosmWasmParams,
+} from "./types";
 
 export async function cosmWasmHandler({
   rpc,
@@ -192,7 +196,7 @@ export async function cosmWasmHandler({
         name: input.name,
         symbol: input.symbol,
         metadata: input.metadata,
-        royalty: parseInt(input.royalty),
+        royalty: Number.parseInt(input.royalty),
         nft_type: input.nftType,
         royalty_receiver: input.royaltyReceiver,
         source_chain: input.sourceChain,

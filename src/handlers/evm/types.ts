@@ -1,4 +1,4 @@
-import {
+import type {
   ContractTransactionResponse,
   JsonRpcProvider,
   Overrides,
@@ -6,10 +6,10 @@ import {
   Signer,
   Wallet,
 } from "ethers";
-import { Bridge, BridgeStorage } from "../../contractsTypes/evm";
+import type { Bridge, BridgeStorage } from "../../contractsTypes/evm";
 
-import { PayableOverrides } from "../../contractsTypes/evm/common";
-import {
+import type { PayableOverrides } from "../../contractsTypes/evm/common";
+import type {
   DeployCollection,
   Mint,
   ReadClaimed721Event,

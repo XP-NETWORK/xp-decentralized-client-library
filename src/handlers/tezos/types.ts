@@ -1,4 +1,4 @@
-import {
+import type {
   SendParams,
   Signer,
   TezosToolkit,
@@ -6,11 +6,15 @@ import {
   TransactionWalletOperation,
 } from "@taquito/taquito";
 
-import { WalletProvider } from "@taquito/taquito";
-import BigNumber from "bignumber.js";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
-import {
+import type { WalletProvider } from "@taquito/taquito";
+import type BigNumber from "bignumber.js";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type {
+  address,
+  mutez,
+  nat,
+} from "../../contractsTypes/tezos/type-aliases";
+import type {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,

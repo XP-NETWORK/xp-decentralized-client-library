@@ -3,7 +3,7 @@ import { createSurfClient } from "@thalalabs/surf";
 import { HexString } from "aptos";
 import { raise } from "../ton";
 import { ABI } from "./abi";
-import { TAptosHandler, TAptosParams } from "./types";
+import type { TAptosHandler, TAptosParams } from "./types";
 
 export function aptosHandler({
   bridge,

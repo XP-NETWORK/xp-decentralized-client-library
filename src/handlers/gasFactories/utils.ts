@@ -1,4 +1,4 @@
-import { BigNumberish as EthersBigNumber, ethers } from "ethers";
+import { type BigNumberish as EthersBigNumber, ethers } from "ethers";
 
 export type TGas = {
   maxPriorityFeePerGas: EthersBigNumber;

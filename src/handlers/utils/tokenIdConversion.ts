@@ -9,7 +9,7 @@ export function convertNumbToHexToString(num: string) {
   const numberToBigInt = BigInt(num);
   const hex = numberToBigInt.toString(16) as string;
   const string = (hex.match(/.{1,2}/g) || [])
-    .map((byte) => String.fromCharCode(parseInt(byte, 16)))
+    .map((byte) => String.fromCharCode(Number.parseInt(byte, 16)))
     .join("");
   return string;
 }

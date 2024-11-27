@@ -1,9 +1,12 @@
-import { StdSignature, toBase64, validateAddress } from "secretjs";
-import { Pubkey } from "secretjs/dist/wallet_amino";
-import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
+import { type StdSignature, toBase64, validateAddress } from "secretjs";
+import type { Pubkey } from "secretjs/dist/wallet_amino";
+import type {
+  Lock721,
+  Lock1155,
+} from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
-import { TokenInfo } from "../types";
-import {
+import type { TokenInfo } from "../types";
+import type {
   GetOwnedTokensResponse,
   TNftInfo,
   TSecretHandler,
@@ -345,7 +348,7 @@ export function secretHandler({
         name: input.name,
         symbol: input.symbol,
         metadata: input.metadata,
-        royalty: parseInt(input.royalty),
+        royalty: Number.parseInt(input.royalty),
         nft_type: input.nftType,
         royalty_receiver: input.royaltyReceiver,
         source_chain: input.sourceChain,

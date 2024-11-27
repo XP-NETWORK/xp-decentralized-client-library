@@ -1,16 +1,16 @@
 import { hash } from "@stablelib/blake2b";
 
 import {
-  ContractAbstraction,
-  ContractMethod,
-  ContractMethodObject,
-  ContractProvider,
+  type ContractAbstraction,
+  type ContractMethod,
+  type ContractMethodObject,
+  type ContractProvider,
   MichelsonMap,
-  OriginateParams,
-  SendParams,
-  TransactionOperation,
-  TransactionWalletOperation,
-  Wallet,
+  type OriginateParams,
+  type SendParams,
+  type TransactionOperation,
+  type TransactionWalletOperation,
+  type Wallet,
 } from "@taquito/taquito";
 import { Tzip16Module, bytes2Char, tzip16 } from "@taquito/tzip16";
 import {
@@ -22,13 +22,18 @@ import {
 } from "@taquito/utils";
 import * as api from "@tzkt/sdk-api";
 import { eventsGetContractEvents } from "@tzkt/sdk-api";
-import { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
+import type { BridgeContractType } from "../../contractsTypes/tezos/Bridge.types";
 import { NFTCode } from "../../contractsTypes/tezos/NFT.code";
-import { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
-import { MMap, bytes, nat, tas } from "../../contractsTypes/tezos/type-aliases";
+import type { NFTContractType } from "../../contractsTypes/tezos/NFT.types";
+import {
+  type MMap,
+  type bytes,
+  type nat,
+  tas,
+} from "../../contractsTypes/tezos/type-aliases";
 import { raise } from "../ton";
 import { fetchHttpOrIpfs } from "../utils/index";
-import { TTezosHandler, TTezosParams, TezosSigner } from "./types";
+import type { TTezosHandler, TTezosParams, TezosSigner } from "./types";
 
 export function tezosHandler({
   Tezos,

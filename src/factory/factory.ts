@@ -1,4 +1,4 @@
-import {
+import type {
   TChainFactory,
   TChainInfo,
   TInferChainH,
@@ -21,7 +21,7 @@ import {
   convertStringToHexToNumb,
   fetchHttpOrIpfs,
 } from "../handlers/utils";
-import { TChainParams } from "./config";
+import type { TChainParams } from "./config";
 
 export namespace Chain {
   export const MULTIVERSX = "MULTIVERSX";

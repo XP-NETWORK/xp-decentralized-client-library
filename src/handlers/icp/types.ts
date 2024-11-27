@@ -1,10 +1,10 @@
-import { ActorSubclass, HttpAgent } from "@dfinity/agent";
-import { IDL } from "@dfinity/candid";
-import { Principal } from "@dfinity/principal";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
-import { Value } from "../../contractsTypes/icp/nft/nft.types";
-import {
+import type { ActorSubclass, HttpAgent } from "@dfinity/agent";
+import type { IDL } from "@dfinity/candid";
+import type { Principal } from "@dfinity/principal";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { ClaimData } from "../../contractsTypes/icp/bridge/bridge.types";
+import type { Value } from "../../contractsTypes/icp/nft/nft.types";
+import type {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,

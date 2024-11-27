@@ -1,4 +1,4 @@
-import { MetaMap } from ".";
+import type { MetaMap } from ".";
 import type {
   TClaimSFT,
   TGetChainIdentifier,

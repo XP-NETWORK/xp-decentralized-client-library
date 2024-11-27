@@ -4,11 +4,11 @@ import {
   BytesType,
   FieldDefinition,
   StructType,
-  Transaction,
+  type Transaction,
 } from "@multiversx/sdk-core/out";
-import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import {
+import type { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,

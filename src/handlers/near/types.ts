@@ -1,7 +1,7 @@
-import { Account, Near } from "near-api-js";
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import {
+import type { Account, Near } from "near-api-js";
+import type { FinalExecutionOutcome } from "near-api-js/lib/providers";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,

@@ -7,17 +7,17 @@ import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
-import { TAptosParams } from "../handlers/aptos/types";
-import { TCasperParams } from "../handlers/casper/types";
-import { TCosmWasmParams } from "../handlers/cosmwasm/types";
-import { TEvmParams } from "../handlers/evm/types";
-import { THederaParams } from "../handlers/hedera/types";
-import { TICPParams } from "../handlers/icp/types";
-import { TMultiversXParams } from "../handlers/multiversx/types";
-import { TNearParams } from "../handlers/near/types";
-import { TSecretParams } from "../handlers/secret/types";
-import { TTezosParams } from "../handlers/tezos/types";
-import { TTonParams } from "../handlers/ton/types";
+import type { TAptosParams } from "../handlers/aptos/types";
+import type { TCasperParams } from "../handlers/casper/types";
+import type { TCosmWasmParams } from "../handlers/cosmwasm/types";
+import type { TEvmParams } from "../handlers/evm/types";
+import type { THederaParams } from "../handlers/hedera/types";
+import type { TICPParams } from "../handlers/icp/types";
+import type { TMultiversXParams } from "../handlers/multiversx/types";
+import type { TNearParams } from "../handlers/near/types";
+import type { TSecretParams } from "../handlers/secret/types";
+import type { TTezosParams } from "../handlers/tezos/types";
+import type { TTonParams } from "../handlers/ton/types";
 import { Chain } from "./factory";
 
 export interface TChainParams {
