@@ -1,7 +1,12 @@
 import type { CasperClient } from "casper-js-sdk";
 import type { CasperLabsHelper } from "casper-js-sdk/dist/@types/casperlabsSigner";
 import type { BridgeStorage } from "../../contractsTypes/evm";
-import type { DeployNFTCollection, MintNft, TSingularNftChain } from "../types";
+import type {
+  DeployNFTCollection,
+  MintNft,
+  TSignerAndSignature,
+  TSingularNftChain,
+} from "../types";
 
 export type TCasperMintArgs = {
   contract: `hash-${string}`;
@@ -45,7 +50,13 @@ export type TCasperHandler = TSingularNftChain<
     { name: string; symbol: string },
     { amount: string },
     string
-  >;
+  > & {
+    submitSignature(
+      signer: CasperSigner,
+      hash: string,
+      sigs: TSignerAndSignature[],
+    ): Promise<string>;
+  };
 
 export type TCasperParams = {
   bridge: string;

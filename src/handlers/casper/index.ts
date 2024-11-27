@@ -14,6 +14,7 @@ import {
   CLAccountHash,
   CLByteArray,
   CLPublicKey,
+  CLPublicKeyTag,
   type CLString,
   type CLU256,
   CLValueBuilder,
@@ -70,6 +71,45 @@ export function casperHandler({
         pubk,
       );
       return balance.toBigInt();
+    },
+    async submitSignature(signer, hash, sigs) {
+      const clSignerAndSignature = sigs.map(({ signature, signerAddress }) => {
+        const signerClValue = CLValueBuilder.publicKey(
+          Buffer.from(signerAddress, "hex"),
+          CLPublicKeyTag.ED25519,
+        );
+        const signatureClValue = CLValueBuilder.byteArray(
+          Buffer.from(signature.replace("0x", ""), "hex"),
+        );
+        return CLValueBuilder.tuple2([signerClValue, signatureClValue]);
+      });
+
+      const clSignerAndSignatureList =
+        CLValueBuilder.list(clSignerAndSignature);
+
+      const rt_args = RuntimeArgs.fromMap({
+        data_hash_arg: CLValueBuilder.byteArray(Buffer.from(hash, "hex")),
+        data_type_arg: CLValueBuilder.u8(0),
+        signatures_arg: clSignerAndSignatureList,
+      });
+      const extraCost = 10000000000 * clSignerAndSignatureList.data.length;
+      const deploy = bc.callEntrypoint(
+        "submit_signatures",
+        rt_args,
+        CLPublicKey.fromHex(await signer.getActivePublicKey()),
+        network,
+        (15000000000 + extraCost).toString(),
+        [],
+      );
+      if (isBrowser()) {
+        return await signWithCasperWallet(signer, deploy);
+      }
+      const signed = await signer.sign(
+        DeployUtil.deployToJson(deploy),
+        await signer.getActivePublicKey(),
+      );
+      const txHash = await DeployUtil.deployFromJson(signed).unwrap().send(rpc);
+      return txHash;
     },
     async deployNftCollection(signer, da, ga) {
       const cc = new CEP78Client(rpc, network);
