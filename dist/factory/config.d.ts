@@ -119,6 +119,13 @@ export declare namespace ChainFactoryConfigs {
             network: Network.TESTNET;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        casperParams: {
+            bridge: string;
+            identifier: string;
+            network: string;
+            rpc: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
     function MainNet(): {
         bscParams: {
