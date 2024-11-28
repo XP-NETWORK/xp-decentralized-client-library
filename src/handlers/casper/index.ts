@@ -230,7 +230,7 @@ export function casperHandler({
         Buffer.from(CLAIM_WASM, "hex"),
         rt_args,
         extraArgs?.amount || "250000000000",
-        CLPublicKey.fromFormattedString(await signer.getActivePublicKey()),
+        CLPublicKey.fromHex(await signer.getActivePublicKey()),
         network,
         [],
       );
@@ -287,7 +287,7 @@ export function casperHandler({
         Buffer.from(LOCK_WASM, "hex"),
         rt_args,
         extraArgs?.amount || "250000000000",
-        CLPublicKey.fromFormattedString(await signer.getActivePublicKey()),
+        CLPublicKey.fromHex(await signer.getActivePublicKey()),
         network,
         [],
       );
@@ -320,14 +320,16 @@ export function casperHandler({
           meta: {
             uri: ma.uri,
           },
-          owner: ma.owner,
+          owner: new CLAccountHash(
+            Buffer.from(ma.owner.replace("account-hash-", ""), "hex"),
+          ),
           collectionName: ma.collectionName,
         },
         {
           useSessionCode: false,
         },
         "1000000000",
-        CLPublicKey.fromFormattedString(await signer.getActivePublicKey()),
+        CLPublicKey.fromHex(await signer.getActivePublicKey()),
       );
       if (isBrowser()) {
         return signWithCasperWallet(signer, deploy);
@@ -344,7 +346,7 @@ export function casperHandler({
     },
     validateAddress(hex) {
       try {
-        CLAccountHash.fromFormattedString(hex);
+        new CLAccountHash(convertHashStrToHashBuff(hex));
         return Promise.resolve(true);
       } catch (e) {
         return Promise.resolve(false);

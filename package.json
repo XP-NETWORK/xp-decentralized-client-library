@@ -46,7 +46,7 @@
     "aptos": "^1.21.0",
     "axios": "^1.6.7",
     "casper-cep78-js-client": "^1.5.1",
-    "casper-js-sdk": "^3.0.0-rc05",
+    "casper-js-sdk": "=2.15.1",
     "ethers": "^6.10.0",
     "hashconnect": "^0.2.9",
     "near-api-js": "^5.0.0",
