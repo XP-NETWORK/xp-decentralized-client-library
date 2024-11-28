@@ -56,6 +56,7 @@ export type TCasperHandler = TSingularNftChain<
       hash: string,
       sigs: TSignerAndSignature[],
     ): Promise<string>;
+    hashClaimData: (data: TClaimData) => string;
   };
 
 export type TCasperParams = {
