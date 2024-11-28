@@ -147,6 +147,14 @@ export namespace ChainFactoryConfigs {
         network: Network.TESTNET,
         storage,
       },
+      casperParams: {
+        bridge:
+          "ba85d5e2abb8d4d349ed7ff97c5b0847673a939301b85f906901014d5d5a8047",
+        identifier: Chain.CASPER,
+        network: "casper-test",
+        rpc: "https://rpc.testnet.casperlabs.io/",
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 
