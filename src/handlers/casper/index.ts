@@ -1,3 +1,5 @@
+// biome-ignore lint/style/useNodejsImportProtocol: <explanation>
+import crypto from "crypto";
 import { Parser } from "@make-software/ces-js-parser";
 import {
   BurnMode,
@@ -27,6 +29,7 @@ import {
 import { CLAIM_WASM } from "./claim.wasm";
 import { getDeploy } from "./get-deploy";
 import { LOCK_WASM } from "./lock.wasm";
+import { Serializer } from "./serializer";
 import type { TCasperHandler, TCasperParams } from "./types";
 
 export function casperHandler({
@@ -195,6 +198,28 @@ export function casperHandler({
         .at(0);
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       return event as any;
+    },
+    hashClaimData(data) {
+      const serializer = Serializer();
+      const bytes = serializer.claimNft({
+        amount: data.amount.toString(),
+        destination_chain_arg: data.destination_chain,
+        destination_user_address_arg: data.destinationUserAddress,
+        fee_arg: data.fee,
+        lock_tx_chain_arg: data.lockTxChain,
+        metadata_arg: data.metadata,
+        name_arg: data.name,
+        nft_type_arg: data.nft_type,
+        royalty_arg: data.royaltyPercentage,
+        royalty_receiver_arg: data.royaltyReceiver,
+        source_chain_arg: data.source_chain,
+        source_nft_contract_address_arg: data.source_nft_contract_address,
+        symbol_arg: data.symbol,
+        token_amount_arg: data.amount,
+        token_id_arg: data.token_id.toString(),
+        transaction_hash_arg: data.transaction_hash,
+      });
+      return crypto.createHash("sha256").update(bytes).digest("hex");
     },
     async claimNft(signer, claimData, _, extraArgs) {
       const rt_args = RuntimeArgs.fromMap({
