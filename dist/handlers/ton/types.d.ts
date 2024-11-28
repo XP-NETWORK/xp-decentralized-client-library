@@ -1,9 +1,9 @@
-import { Address, Sender } from "@ton/core";
-import { TonClient } from "@ton/ton";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { ClaimData } from "../../contractsTypes/ton/tonBridge";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
-import { RoyaltyParams } from "./nftc";
+import type { Address, Sender } from "@ton/core";
+import type { TonClient } from "@ton/ton";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { ClaimData } from "../../contractsTypes/ton/tonBridge";
+import type { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
+import type { RoyaltyParams } from "./nftc";
 export type TonDeployArgs = {
     owner_address: Address;
     collection_meta: {

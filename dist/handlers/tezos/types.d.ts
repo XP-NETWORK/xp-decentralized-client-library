@@ -1,9 +1,9 @@
-import { SendParams, Signer, TezosToolkit, TransactionOperation, TransactionWalletOperation } from "@taquito/taquito";
-import { WalletProvider } from "@taquito/taquito";
-import BigNumber from "bignumber.js";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
+import type { SendParams, Signer, TezosToolkit, TransactionOperation, TransactionWalletOperation } from "@taquito/taquito";
+import type { WalletProvider } from "@taquito/taquito";
+import type BigNumber from "bignumber.js";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { address, mutez, nat } from "../../contractsTypes/tezos/type-aliases";
+import type { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
 export type TezosSigner = Signer | WalletProvider;
 export declare function isTezosSigner(ts: TezosSigner): ts is Signer;
 export type Operation = TransactionOperation | TransactionWalletOperation;

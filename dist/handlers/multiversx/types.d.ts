@@ -1,7 +1,7 @@
-import { StructType, Transaction } from "@multiversx/sdk-core/out";
-import { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNftChain, ValidateNftData } from "../types";
+import { StructType, type Transaction } from "@multiversx/sdk-core/out";
+import type { INetworkProvider } from "@multiversx/sdk-network-providers/out/interface";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { DeployNFTCollection, MintNft, ReadClaimed721Event, ReadClaimed1155Event, TNftChain, ValidateNftData } from "../types";
 export type TMultiversXSigner = {
     signTransaction(transaction: Transaction): Promise<Transaction>;
     getAddress: () => Promise<string>;

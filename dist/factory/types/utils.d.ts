@@ -1,4 +1,4 @@
-import { MetaMap } from ".";
+import type { MetaMap } from ".";
 import type { TClaimSFT, TGetChainIdentifier, TGetClaimData, TGetStorage, TLockNFT, TLockSFT, TNftTransferDetailsObject } from "../../handlers/index";
 export type TSupportedChain = keyof MetaMap;
 export type TSupportedSftChain = keyof {

@@ -1,5 +1,5 @@
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { TSupportedChain, TSupportedSftChain } from "../../factory/types/utils";
 export type MintNft<Signer, MintArgs, GasArgs, RetTx> = {
     mintNft: (signer: Signer, ma: MintArgs, gasArgs?: GasArgs) => Promise<RetTx>;
 };

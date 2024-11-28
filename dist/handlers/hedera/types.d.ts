@@ -1,9 +1,9 @@
 import type { Signer as HederaSigner, TransactionReceipt, TransactionResponseJSON } from "@hashgraph/sdk";
-import { ContractTransactionResponse, Overrides, Provider, Signer } from "ethers";
-import { Bridge } from "../../contractsTypes/evm";
-import { PayableOverrides } from "../../contractsTypes/evm/common";
-import { TEvmParams } from "../evm/types";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, TApproveNFT, TSingularNftChain } from "../types";
+import type { ContractTransactionResponse, Overrides, Provider, Signer } from "ethers";
+import type { Bridge } from "../../contractsTypes/evm";
+import type { PayableOverrides } from "../../contractsTypes/evm/common";
+import type { TEvmParams } from "../evm/types";
+import type { DeployNFTCollection, MintNft, ReadClaimed721Event, TApproveNFT, TSingularNftChain } from "../types";
 export type HederaMintArgs = {
     contract: string;
     uri: string;

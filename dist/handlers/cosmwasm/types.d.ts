@@ -1,9 +1,9 @@
-import { Coin, StdFee } from "@cosmjs/amino";
-import { CosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
+import type { Coin, StdFee } from "@cosmjs/amino";
+import type { CosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import type { OfflineDirectSigner } from "@cosmjs/proto-signing";
+import type { ClaimData } from "@xp/cosmos-client/dist/bridge/Bridge.types";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { DeployNFTCollection, MintNft, ReadClaimed721Event, TSingularNftChain } from "../types";
 export type TCosmWasmParams = {
     bridge: string;
     chainId: string;

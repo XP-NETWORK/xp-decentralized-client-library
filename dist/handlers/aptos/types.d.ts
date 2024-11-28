@@ -1,6 +1,6 @@
-import { Account, Aptos, CommittedTransactionResponse, Network } from "@aptos-labs/ts-sdk";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import { DeployNFTCollection, MintNft, TNftChain } from "../types";
+import type { Account, Aptos, CommittedTransactionResponse, Network } from "@aptos-labs/ts-sdk";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type { DeployNFTCollection, MintNft, TNftChain } from "../types";
 export type TAptosMintArgs = {
     contract: string;
     name: string;

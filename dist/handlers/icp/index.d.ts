@@ -1,9 +1,9 @@
-import { HttpAgent } from "@dfinity/agent";
+import { type HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridge.types";
-import { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
-import { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
-import { BrowserSigners, TICPHandler, TICPParams } from "./types";
+import type { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridge.types";
+import type { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
+import type { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
+import type { BrowserSigners, TICPHandler, TICPParams } from "./types";
 export declare function createNftActor(contract: string | Principal, { agent }: {
     agent: HttpAgent | BrowserSigners;
 }): Promise<import("@dfinity/agent").ActorSubclass<_SERVICE>>;
