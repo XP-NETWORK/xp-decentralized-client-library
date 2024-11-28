@@ -16,7 +16,7 @@ import {
   CLPublicKey,
   CLPublicKeyTag,
   type CLString,
-  type CLU256,
+  type CLU64,
   CLValueBuilder,
   CasperClient,
   Contracts,
@@ -257,9 +257,9 @@ export function casperHandler({
     },
     async getValidatorCount() {
       const bc = new Contracts.Contract(cc);
-      bc.setContractHash(bridge);
-      const bn: CLU256 = await bc.queryContractData(["validator_count"]);
-      return bn.value().toNumber();
+      bc.setContractHash(`hash-${bridge}`);
+      const bn: CLU64 = await bc.queryContractData(["validators_count"]);
+      return Number(bn);
     },
     async lockNft(
       signer,
@@ -314,7 +314,7 @@ export function casperHandler({
     },
     async mintNft(signer, ma) {
       const nft = new CEP78Client(rpc, network);
-      nft.setContractHash(ma.contract);
+      nft.setContractHash(`hash-${ma.contract}`);
       const deploy = nft.mint(
         {
           meta: {
@@ -357,7 +357,7 @@ export function casperHandler({
     },
     async approveNft(signer, tokenId, contract, _) {
       const cep78Client = new CEP78Client(rpc, network);
-      cep78Client.setContractHash(contract);
+      cep78Client.setContractHash(`hash-${contract}`);
       const deploy = cep78Client.approve(
         {
           operator: new CLByteArray(Buffer.from(bridge.split("-")[1], "hex")),
