@@ -38,7 +38,11 @@ export function casperHandler({
   network,
   bridge,
   storage,
+  proxy_url,
 }: TCasperParams): TCasperHandler {
+  if (proxy_url) {
+    rpc = proxy_url + rpc;
+  }
   const cc = new CasperClient(rpc);
   const bc = new Contracts.Contract(cc);
   bc.setContractHash(`hash-${bridge}`);
@@ -237,17 +241,19 @@ export function casperHandler({
         ),
         name_arg: CLValueBuilder.string(claimData.name),
         symbol_arg: CLValueBuilder.string(claimData.symbol),
-        royalty_arg: CLValueBuilder.u512(claimData.royaltyPercentage),
+        royalty_arg: CLValueBuilder.u512(
+          claimData.royaltyPercentage.toString(),
+        ),
         royalty_receiver_arg: CLValueBuilder.byteArray(
           convertHashStrToHashBuff(claimData.royaltyReceiver),
         ),
         metadata_arg: CLValueBuilder.string(claimData.metadata),
         transaction_hash_arg: CLValueBuilder.string(claimData.transaction_hash),
-        token_amount_arg: CLValueBuilder.u512(claimData.amount),
+        token_amount_arg: CLValueBuilder.u512(claimData.amount.toString()),
         nft_type_arg: CLValueBuilder.string(claimData.nft_type),
-        fee_arg: CLValueBuilder.u512(claimData.fee),
+        fee_arg: CLValueBuilder.u512(claimData.fee.toString()),
         lock_tx_chain_arg: CLValueBuilder.string(claimData.lockTxChain),
-        amount: CLValueBuilder.u512(claimData.amount),
+        amount: CLValueBuilder.u512(claimData.amount.toString()),
       });
       const n = new Contracts.Contract(cc);
 
@@ -281,9 +287,11 @@ export function casperHandler({
       };
     },
     async getValidatorCount() {
-      const bc = new Contracts.Contract(cc);
-      bc.setContractHash(`hash-${bridge}`);
-      const bn: CLU64 = await bc.queryContractData(["validators_count"]);
+      const cep78Client = new CEP78Client(proxy_url + rpc, network);
+      cep78Client.setContractHash(`hash-${bridge}`);
+      const bn: CLU64 = await cep78Client.contractClient.queryContractData([
+        "validators_count",
+      ]);
       return Number(bn);
     },
     async lockNft(
@@ -378,14 +386,40 @@ export function casperHandler({
       }
     },
     transform(input) {
-      unimplemented("Transform", input);
+      return {
+        destination_chain: input.destinationChain,
+        amount: BigInt(1),
+        nft_type: input.nftType,
+        royaltyPercentage: BigInt(input.royalty),
+        source_chain: input.sourceChain,
+        source_nft_contract_address: input.sourceNftContractAddress,
+        token_id: BigInt(input.tokenId),
+        transaction_hash: input.transactionHash,
+        uri: input.metadata,
+        tokenId: input.tokenId,
+        sourceChain: input.sourceChain,
+        destinationChain: input.destinationChain,
+        destinationUserAddress: input.destinationUserAddress,
+        sourceNftContractAddress: input.sourceNftContractAddress,
+        name: input.name,
+        symbol: input.symbol,
+        royalty: input.royalty,
+        royaltyReceiver: input.royaltyReceiver,
+        metadata: input.metadata,
+        transactionHash: input.transactionHash,
+        tokenAmount: input.tokenAmount,
+        nftType: input.nftType,
+        fee: BigInt(input.fee),
+        lockTxChain: input.lockTxChain,
+        imgUri: input.imgUri,
+      };
     },
     async approveNft(signer, tokenId, contract, _) {
       const cep78Client = new CEP78Client(rpc, network);
       cep78Client.setContractHash(`hash-${contract}`);
       const deploy = cep78Client.approve(
         {
-          operator: new CLByteArray(Buffer.from(bridge.split("-")[1], "hex")),
+          operator: new CLByteArray(Buffer.from(bridge, "hex")),
           // tokenHash: tokenHash,
           tokenId: tokenId,
         },
@@ -405,10 +439,6 @@ export function casperHandler({
       return await cc.putDeploy(dep);
     },
   };
-}
-
-function unimplemented(msg?: string, ...args: unknown[]): never {
-  throw new Error(`Unimplemented: ${msg}. ${JSON.stringify(args)}`);
 }
 
 function isBrowser() {
