@@ -305,6 +305,13 @@ export function casperHandler({
       metaDataUri,
       extraArgs,
     ) {
+      const nft_storage_exists = await checkStorage(
+        proxy_url + rpc,
+        network,
+        bridge,
+        sourceNft,
+      );
+
       const rt_args = RuntimeArgs.fromMap({
         bridge_contract: CLValueBuilder.byteArray(
           convertHashStrToHashBuff(bridge),
@@ -330,6 +337,25 @@ export function casperHandler({
       );
       if (isBrowser()) {
         const hash = await signWithCasperWallet(signer, deploy);
+        if (!nft_storage_exists) {
+          while (true) {
+            await new Promise((r) => setTimeout(r, 1000));
+            if (
+              await checkStorage(proxy_url + rpc, network, bridge, sourceNft)
+            ) {
+              break;
+            }
+          }
+          return this.lockNft(
+            signer,
+            sourceNft,
+            destinationChain,
+            to,
+            tokenId,
+            metaDataUri,
+            extraArgs,
+          );
+        }
         return {
           hash() {
             return hash;
@@ -456,4 +482,32 @@ function convertHashStrToHashBuff(sourceNft: string): Uint8Array {
     src = sourceNft.slice(5);
   }
   return Uint8Array.from(Buffer.from(src, "hex"));
+}
+
+async function checkStorage(
+  nodeAddress: string,
+  network: string,
+  bridge: string,
+  sourceNft: string,
+) {
+  const cep78Client = new CEP78Client(nodeAddress, network);
+  cep78Client.setContractHash(`hash-${bridge}`);
+
+  const serializer = Serializer();
+  const bytes = serializer.storageKey({
+    source_nft_contract_address: sourceNft,
+  });
+  const dic_key = crypto.createHash("sha256").update(bytes).digest("hex");
+
+  const duplicate_storage_dict = await cep78Client.contractClient
+    .queryContractDictionary("duplicate_storage_dict", dic_key)
+    .catch(() => false)
+    .then(() => true);
+  if (duplicate_storage_dict) return true;
+
+  const original_storage_dict = await cep78Client.contractClient
+    .queryContractDictionary("original_storage_dict", dic_key)
+    .catch(() => false)
+    .then(() => true);
+  return original_storage_dict;
 }

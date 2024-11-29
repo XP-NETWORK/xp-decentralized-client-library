@@ -124,6 +124,21 @@ export function Serializer() {
         lock_tx_chain,
       ]);
     },
+    storageKey(args: TStorageKeyArgs) {
+      const source_nft_contract_address = stringSerializer
+        .toBytes(new CLString(args.source_nft_contract_address))
+        .expect(
+          "Serialize(StorageKeyArgs): Failed to serialize source_nft_contract_address to bytes.",
+        );
+
+      const self_chain = stringSerializer
+        .toBytes(new CLString("CASPER"))
+        .expect(
+          "Serialize(StorageKeyArgs): Failed to serialize self_chain to bytes.",
+        );
+
+      return Buffer.concat([source_nft_contract_address, self_chain]);
+    },
   };
 }
 
@@ -144,4 +159,8 @@ export interface TCasperClaimArgs {
   readonly fee_arg: bigint;
   readonly lock_tx_chain_arg: string;
   readonly amount: string;
+}
+
+export interface TStorageKeyArgs {
+  readonly source_nft_contract_address: string;
 }
