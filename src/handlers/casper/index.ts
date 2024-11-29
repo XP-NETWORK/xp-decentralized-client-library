@@ -289,11 +289,7 @@ export function casperHandler({
       };
     },
     async getValidatorCount() {
-      const cep78Client = new CEP78Client(proxy_url + rpc, network);
-      cep78Client.setContractHash(bridge);
-      const bn: CLU64 = await cep78Client.contractClient.queryContractData([
-        "validators_count",
-      ]);
+      const bn: CLU64 = await bc.queryContractData(["validators_count"]);
       return Number(bn);
     },
     async lockNft(
@@ -306,10 +302,8 @@ export function casperHandler({
       extraArgs,
     ) {
       const nft_storage_exists = await checkStorage(
-        proxy_url + rpc,
-        network,
-        bridge,
-        sourceNft,
+        bc,
+        sourceNft.replace("hash-", ""),
       );
 
       const rt_args = RuntimeArgs.fromMap({
@@ -340,9 +334,7 @@ export function casperHandler({
         if (!nft_storage_exists) {
           while (true) {
             await new Promise((r) => setTimeout(r, 1000));
-            if (
-              await checkStorage(proxy_url + rpc, network, bridge, sourceNft)
-            ) {
+            if (await checkStorage(bc, sourceNft)) {
               break;
             }
           }
@@ -484,28 +476,20 @@ function convertHashStrToHashBuff(sourceNft: string): Uint8Array {
   return Uint8Array.from(Buffer.from(src, "hex"));
 }
 
-async function checkStorage(
-  nodeAddress: string,
-  network: string,
-  bridge: string,
-  sourceNft: string,
-) {
-  const cep78Client = new CEP78Client(nodeAddress, network);
-  cep78Client.setContractHash(`hash-${bridge}`);
-
+async function checkStorage(bc: Contracts.Contract, sourceNft: string) {
   const serializer = Serializer();
   const bytes = serializer.storageKey({
     source_nft_contract_address: sourceNft,
   });
   const dic_key = crypto.createHash("sha256").update(bytes).digest("hex");
 
-  const duplicate_storage_dict = await cep78Client.contractClient
+  const duplicate_storage_dict = await bc
     .queryContractDictionary("duplicate_storage_dict", dic_key)
     .catch(() => false)
     .then(() => true);
   if (duplicate_storage_dict) return true;
 
-  const original_storage_dict = await cep78Client.contractClient
+  const original_storage_dict = await bc
     .queryContractDictionary("original_storage_dict", dic_key)
     .catch(() => false)
     .then(() => true);

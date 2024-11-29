@@ -125,11 +125,9 @@ export function Serializer() {
       ]);
     },
     storageKey(args: TStorageKeyArgs) {
-      const source_nft_contract_address = stringSerializer
-        .toBytes(new CLString(args.source_nft_contract_address))
-        .expect(
-          "Serialize(StorageKeyArgs): Failed to serialize source_nft_contract_address to bytes.",
-        );
+      const source_nft_contract_address = new Uint8Array(
+        Buffer.from(args.source_nft_contract_address, "hex"),
+      );
 
       const self_chain = stringSerializer
         .toBytes(new CLString("CASPER"))
