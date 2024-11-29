@@ -125,6 +125,7 @@ export declare namespace ChainFactoryConfigs {
             network: string;
             rpc: string;
             storage: import("../contractsTypes/evm").BridgeStorage;
+            proxy_url: string;
         };
     };
     function MainNet(): {

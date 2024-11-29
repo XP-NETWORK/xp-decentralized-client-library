@@ -47,5 +47,6 @@ export type TCasperParams = {
     storage: BridgeStorage;
     identifier: string;
     network: string;
+    proxy_url: string;
 };
 //# sourceMappingURL=types.d.ts.map
