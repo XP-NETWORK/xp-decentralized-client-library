@@ -198,7 +198,7 @@ export function casperHandler({
       );
       const event = events
         .filter((ev) => ev.error === null)
-        .filter((e) => e.event.name === "LockedEvent")
+        .filter((e) => e.event.name === "Locked")
         .at(0);
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       return event as any;
@@ -334,7 +334,7 @@ export function casperHandler({
         if (!nft_storage_exists) {
           while (true) {
             await new Promise((r) => setTimeout(r, 1000));
-            if (await checkStorage(bc, sourceNft)) {
+            if (await checkStorage(bc, sourceNft.replace("hash-", ""))) {
               break;
             }
           }
@@ -483,15 +483,30 @@ async function checkStorage(bc: Contracts.Contract, sourceNft: string) {
   });
   const dic_key = crypto.createHash("sha256").update(bytes).digest("hex");
 
-  const duplicate_storage_dict = await bc
-    .queryContractDictionary("duplicate_storage_dict", dic_key)
-    .catch(() => false)
-    .then(() => true);
-  if (duplicate_storage_dict) return true;
+  let ret = false;
+  try {
+    const duplicate_storage_dict = await bc.queryContractDictionary(
+      "duplicate_storage_dict",
+      dic_key,
+    );
+    console.log("duplicate_storage_dict", duplicate_storage_dict);
 
-  const original_storage_dict = await bc
-    .queryContractDictionary("original_storage_dict", dic_key)
-    .catch(() => false)
-    .then(() => true);
-  return original_storage_dict;
+    ret = true;
+  } catch (ex) {
+    console.log("duplicate_storage_dict", ex);
+  }
+
+  try {
+    const original_storage_dict = await bc.queryContractDictionary(
+      "original_storage_dict",
+      dic_key,
+    );
+    console.log("original_storage_dict", original_storage_dict);
+
+    ret = true;
+  } catch (ex) {
+    console.log("original_storage_dict", ex);
+  }
+
+  return ret;
 }
