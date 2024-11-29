@@ -45,7 +45,7 @@ export function casperHandler({
   }
   const cc = new CasperClient(rpc);
   const bc = new Contracts.Contract(cc);
-  bc.setContractHash(`hash-${bridge}`);
+  bc.setContractHash(bridge);
 
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   async function signWithCasperWallet(sender: any, deploy: DeployUtil.Deploy) {
@@ -150,7 +150,7 @@ export function casperHandler({
     },
     async nftData(tokenId, contract) {
       const ctr = new Contracts.Contract(cc);
-      ctr.setContractHash(`hash-${contract}`);
+      ctr.setContractHash(contract);
 
       const cn = await ctr.queryContractData(["collection_name"]);
       const cs = await ctr.queryContractData(["collection_symbol"]);
@@ -227,7 +227,9 @@ export function casperHandler({
     },
     async claimNft(signer, claimData, _, extraArgs) {
       const rt_args = RuntimeArgs.fromMap({
-        bridge_contract: CLValueBuilder.byteArray(Buffer.from(bridge, "hex")),
+        bridge_contract: CLValueBuilder.byteArray(
+          convertHashStrToHashBuff(bridge),
+        ),
         token_id_arg: CLValueBuilder.string(claimData.token_id.toString()),
         source_chain_arg: CLValueBuilder.string(claimData.source_chain),
         destination_chain_arg: CLValueBuilder.string(
@@ -260,7 +262,7 @@ export function casperHandler({
       const deploy = n.install(
         Buffer.from(CLAIM_WASM, "hex"),
         rt_args,
-        extraArgs?.amount || "250000000000",
+        extraArgs?.amount || "50000000000",
         CLPublicKey.fromHex(await signer.getActivePublicKey()),
         network,
         [],
@@ -288,7 +290,7 @@ export function casperHandler({
     },
     async getValidatorCount() {
       const cep78Client = new CEP78Client(proxy_url + rpc, network);
-      cep78Client.setContractHash(`hash-${bridge}`);
+      cep78Client.setContractHash(bridge);
       const bn: CLU64 = await cep78Client.contractClient.queryContractData([
         "validators_count",
       ]);
@@ -304,7 +306,9 @@ export function casperHandler({
       extraArgs,
     ) {
       const rt_args = RuntimeArgs.fromMap({
-        bridge_contract: CLValueBuilder.byteArray(Buffer.from(bridge, "hex")),
+        bridge_contract: CLValueBuilder.byteArray(
+          convertHashStrToHashBuff(bridge),
+        ),
         token_id_arg: CLValueBuilder.string(tokenId),
         destination_chain_arg: CLValueBuilder.string(destinationChain),
         destination_user_address_arg: CLValueBuilder.string(to),
@@ -312,14 +316,14 @@ export function casperHandler({
           convertHashStrToHashBuff(sourceNft),
         ),
         metadata_arg: CLValueBuilder.string(metaDataUri),
-        amount: CLValueBuilder.u512(extraArgs?.amount || 250000000000n),
+        amount: CLValueBuilder.u512(extraArgs?.amount || "110000000000"),
       });
       const n = new Contracts.Contract(cc);
 
       const deploy = n.install(
         Buffer.from(LOCK_WASM, "hex"),
         rt_args,
-        extraArgs?.amount || "250000000000",
+        extraArgs?.amount || "30000000000",
         CLPublicKey.fromHex(await signer.getActivePublicKey()),
         network,
         [],
@@ -347,7 +351,7 @@ export function casperHandler({
     },
     async mintNft(signer, ma) {
       const nft = new CEP78Client(rpc, network);
-      nft.setContractHash(`hash-${ma.contract}`);
+      nft.setContractHash(ma.contract);
       const deploy = nft.mint(
         {
           meta: {
@@ -416,10 +420,10 @@ export function casperHandler({
     },
     async approveNft(signer, tokenId, contract, _) {
       const cep78Client = new CEP78Client(rpc, network);
-      cep78Client.setContractHash(`hash-${contract}`);
+      cep78Client.setContractHash(contract);
       const deploy = cep78Client.approve(
         {
-          operator: new CLByteArray(Buffer.from(bridge, "hex")),
+          operator: new CLByteArray(convertHashStrToHashBuff(bridge)),
           // tokenHash: tokenHash,
           tokenId: tokenId,
         },
