@@ -1,6 +1,7 @@
 /// <reference types="node" />
 export declare function Serializer(): {
     claimNft(args: TCasperClaimArgs): Buffer;
+    storageKey(args: TStorageKeyArgs): Buffer;
 };
 export interface TCasperClaimArgs {
     readonly token_id_arg: string;
@@ -19,5 +20,8 @@ export interface TCasperClaimArgs {
     readonly fee_arg: bigint;
     readonly lock_tx_chain_arg: string;
     readonly amount: string;
+}
+export interface TStorageKeyArgs {
+    readonly source_nft_contract_address: string;
 }
 //# sourceMappingURL=serializer.d.ts.map
