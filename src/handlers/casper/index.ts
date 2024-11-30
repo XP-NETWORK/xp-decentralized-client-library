@@ -26,6 +26,8 @@ import {
   PurseIdentifier,
   RuntimeArgs,
 } from "casper-js-sdk";
+import type { Any } from "../utils/any";
+import { pinata } from "../utils/pinata";
 import { CLAIM_WASM } from "./claim.wasm";
 import { getDeploy } from "./get-deploy";
 import { LOCK_WASM } from "./lock.wasm";
@@ -298,9 +300,13 @@ export function casperHandler({
       destinationChain,
       to,
       tokenId,
-      metaDataUri,
+      _metaDataUri,
       extraArgs,
     ) {
+      const cc = new CasperClient(rpc);
+      const nftContract = new Contracts.Contract(cc);
+      nftContract.setContractHash(sourceNft);
+      const metadata = await getMetaData(nftContract, tokenId);
       const nft_storage_exists = await checkStorage(
         bc,
         sourceNft.replace("hash-", ""),
@@ -316,7 +322,7 @@ export function casperHandler({
         source_nft_contract_address_arg: CLValueBuilder.byteArray(
           convertHashStrToHashBuff(sourceNft),
         ),
-        metadata_arg: CLValueBuilder.string(metaDataUri),
+        metadata_arg: CLValueBuilder.string(metadata),
         amount: CLValueBuilder.u512(extraArgs?.amount || "110000000000"),
       });
       const n = new Contracts.Contract(cc);
@@ -344,7 +350,7 @@ export function casperHandler({
             destinationChain,
             to,
             tokenId,
-            metaDataUri,
+            metadata,
             extraArgs,
           );
         }
@@ -509,4 +515,65 @@ async function checkStorage(bc: Contracts.Contract, sourceNft: string) {
   }
 
   return ret;
+}
+
+async function getMetaData(nftContract: Contracts.Contract, tokenId: string) {
+  // CEP78 = 0, --> metadata_cep78
+  // NFT721 = 1, --> metadata_nft721
+  // Raw = 2, --> metadata_raw
+  // CustomValidated = 3 --> metadata_custom_validated
+
+  let data: Any | undefined;
+
+  try {
+    data = (
+      await nftContract.queryContractDictionary("metadata_cep78", tokenId)
+    ).toJSON();
+    if (data?.token_uri) {
+      data = data?.token_uri;
+    }
+    console.log("metadata_cep78", data);
+  } catch (ex) {
+    try {
+      data = (
+        await nftContract.queryContractDictionary("metadata_nft721", tokenId)
+      ).toJSON();
+      if (data?.token_uri) {
+        data = data?.token_uri;
+      }
+      console.log("metadata_nft721", data.toJSON());
+    } catch (ex) {
+      try {
+        data = (
+          await nftContract.queryContractDictionary("metadata_raw", tokenId)
+        ).toJSON();
+        if (data?.token_uri) {
+          data = data?.token_uri;
+        }
+        console.log("metadata_raw", data.toJSON());
+      } catch (ex) {
+        try {
+          data = (
+            await nftContract.queryContractDictionary(
+              "metadata_custom_validated",
+              tokenId,
+            )
+          ).toJSON();
+          if (data?.token_uri) {
+            data = data?.token_uri;
+          }
+          console.log("metadata_custom_validated", data.toJSON());
+        } catch (ex) {}
+      }
+    }
+  }
+  if (data) {
+    if (typeof data === "object") {
+      const pinResponse = await pinata.upload.json(data.toJSON());
+      const metadata = `https://xpnetwork.infura-ipfs.io/ipfs/ ${pinResponse.IpfsHash}`;
+      console.log({ metadata });
+      return metadata;
+    }
+    return data;
+  }
 }

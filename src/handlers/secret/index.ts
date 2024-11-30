@@ -1,11 +1,14 @@
-import { StdSignature, toBase64, validateAddress } from "secretjs";
-import { Metadata } from "secretjs/dist/extensions/snip1155/types";
-import { Pubkey } from "secretjs/dist/wallet_amino";
-import { Lock721, Lock1155 } from "../../contractsTypes/secret/secretBridge";
+import { type StdSignature, toBase64, validateAddress } from "secretjs";
+import type { Metadata } from "secretjs/dist/extensions/snip1155/types";
+import type { Pubkey } from "secretjs/dist/wallet_amino";
+import type {
+  Lock721,
+  Lock1155,
+} from "../../contractsTypes/secret/secretBridge";
 import { raise } from "../ton";
-import { TokenInfo } from "../types";
+import type { TokenInfo } from "../types";
 import { pinata } from "../utils";
-import {
+import type {
   GetOwnedTokensResponse,
   TNftInfo,
   TSecretHandler,
