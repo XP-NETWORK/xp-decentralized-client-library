@@ -282,6 +282,27 @@ export function casperHandler({
       );
       if (isBrowser()) {
         const hash = await signWithCasperWallet(signer, deploy);
+        const is_waiting = await checkWaiting(
+          bc,
+          claimData.source_nft_contract_address.replace("hash-", ""),
+          claimData.source_chain,
+        );
+
+        if (is_waiting) {
+          while (true) {
+            await new Promise((r) => setTimeout(r, 5 * 1000));
+            if (
+              await checkCollection(
+                bc,
+                claimData.source_nft_contract_address.replace("hash-", ""),
+                claimData.source_chain,
+              )
+            ) {
+              break;
+            }
+          }
+          return this.claimNft(signer, claimData, _, extraArgs);
+        }
         return {
           hash() {
             return hash;
@@ -350,7 +371,7 @@ export function casperHandler({
         const hash = await signWithCasperWallet(signer, deploy);
         if (!nft_storage_exists) {
           while (true) {
-            await new Promise((r) => setTimeout(r, 1000));
+            await new Promise((r) => setTimeout(r, 5 * 1000));
             if (await checkStorage(bc, sourceNft.replace("hash-", ""))) {
               break;
             }
@@ -523,6 +544,63 @@ async function checkStorage(bc: Contracts.Contract, sourceNft: string) {
     ret = true;
   } catch (ex) {
     console.log("original_storage_dict", ex);
+  }
+
+  return ret;
+}
+
+async function checkCollection(
+  bc: Contracts.Contract,
+  sourceNft: string,
+  sourceChain: string,
+) {
+  const serializer = Serializer();
+  const bytes = serializer.collectionKey({
+    source_nft_contract_address: sourceNft,
+    source_chain: sourceChain,
+  });
+  const dic_key = crypto.createHash("sha256").update(bytes).digest("hex");
+
+  let ret = false;
+
+  try {
+    const original_to_duplicate_dict = await bc.queryContractDictionary(
+      "original_to_duplicate_dict",
+      dic_key,
+    );
+    console.log("original_to_duplicate_dict", original_to_duplicate_dict);
+
+    ret = true;
+  } catch (ex) {
+    console.log("original_to_duplicate_dict", ex);
+  }
+
+  return ret;
+}
+
+async function checkWaiting(
+  bc: Contracts.Contract,
+  sourceNft: string,
+  sourceChain: string,
+) {
+  const serializer = Serializer();
+  const bytes = serializer.collectionKey({
+    source_nft_contract_address: sourceNft,
+    source_chain: sourceChain,
+  });
+  const dic_key = crypto.createHash("sha256").update(bytes).digest("hex");
+
+  let ret = false;
+  try {
+    const waiting_dict = await bc.queryContractDictionary(
+      "waiting_dict",
+      dic_key,
+    );
+    console.log("waiting_dict", waiting_dict);
+
+    ret = true;
+  } catch (ex) {
+    console.log("waiting_dict", ex);
   }
 
   return ret;
