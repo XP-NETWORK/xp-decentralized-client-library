@@ -105,7 +105,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             casperParams: {
-                bridge: "hash-b10b6755154a26a5ec7c8584301f20fec19f4ff426c6de253eebfd7b8d3a4af8",
+                bridge: "hash-d3d84ea827f58f06d8cecbe052255dd702dede9b73970e1362c9347911ff2b96",
                 identifier: factory_1.Chain.CASPER,
                 network: "casper-test",
                 rpc: "https://rpc.testnet.casperlabs.io/rpc",
