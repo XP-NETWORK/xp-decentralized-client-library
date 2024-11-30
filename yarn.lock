@@ -600,12 +600,49 @@
   dependencies:
     long "^4.0.0"
 
+"@leichtgewicht/ip-codec@^2.0.1":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.5.tgz#4fc56c15c580b9adb7dc3c333a134e540b44bfb1"
+  integrity sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==
+
 "@make-software/ces-js-parser@^1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@make-software/ces-js-parser/-/ces-js-parser-1.3.3.tgz#7e50b2824f6189f365662fa81e1a2eb22dfcb214"
   integrity sha512-uJ7BgnaVbb1pkGfDCgBqES+f5+RVlVPkAYxOC6Qz9kxzIcu9HYH1eA+8EkjRO2T36uBemTjBRO6R0TdH61PIAA==
   dependencies:
     ts-results "^3.3.0"
+
+"@multiformats/dns@^1.0.3":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@multiformats/dns/-/dns-1.0.6.tgz#b8c7de11459a02a5f4e609d35d3cdb95cb6ad152"
+  integrity sha512-nt/5UqjMPtyvkG9BQYdJ4GfLK3nMqGpFZOzf4hAmIa0sJh2LlS9YKXZ4FgwBDsaHvzZqR/rUFIywIc7pkHNNuw==
+  dependencies:
+    "@types/dns-packet" "^5.6.5"
+    buffer "^6.0.3"
+    dns-packet "^5.6.1"
+    hashlru "^2.3.0"
+    p-queue "^8.0.1"
+    progress-events "^1.0.0"
+    uint8arrays "^5.0.2"
+
+"@multiformats/mafmt@^12.1.6":
+  version "12.1.6"
+  resolved "https://registry.yarnpkg.com/@multiformats/mafmt/-/mafmt-12.1.6.tgz#e7c1831c1e94c94932621826049afc89f3ad43b7"
+  integrity sha512-tlJRfL21X+AKn9b5i5VnaTD6bNttpSpcqwKVmDmSHLwxoz97fAHaepqFOk/l1fIu94nImIXneNbhsJx/RQNIww==
+  dependencies:
+    "@multiformats/multiaddr" "^12.0.0"
+
+"@multiformats/multiaddr@^12.0.0", "@multiformats/multiaddr@^12.1.14":
+  version "12.3.3"
+  resolved "https://registry.yarnpkg.com/@multiformats/multiaddr/-/multiaddr-12.3.3.tgz#eddd0a61a542fc0120da7b5f6fc250177762e6d4"
+  integrity sha512-3POIUN7myk8JbO8oi/FEyZoLQW2XMhwM/uB7hG5Zl1PgdXJR8UTH9QdQEp1jM358kd3yn+vtS4fFJdqdRk+O7A==
+  dependencies:
+    "@chainsafe/is-ip" "^2.0.1"
+    "@chainsafe/netmask" "^2.0.0"
+    "@multiformats/dns" "^1.0.3"
+    multiformats "^13.0.0"
+    uint8-varint "^2.0.1"
+    uint8arrays "^5.0.0"
 
 "@multiversx/sdk-bls-wasm@0.3.5":
   version "0.3.5"
@@ -2117,11 +2154,6 @@ dns-packet@^5.6.1:
   integrity sha512-l4gcSouhcgIKRvyy99RNVOgxXiicE+2jZoNmaNmZ6JXiGajBOJAesk1OBlJuM5k2c+eudGdLxDqXuPCKIj6kpw==
   dependencies:
     "@leichtgewicht/ip-codec" "^2.0.1"
-
-dotenv@^16.4.5:
-  version "16.4.5"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
-  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
 ed25519-hd-key@1.1.2:
   version "1.1.2"
