@@ -152,7 +152,7 @@ export function casperHandler({
     },
     async nftData(tokenId, contract) {
       const ctr = new Contracts.Contract(cc);
-      ctr.setContractHash(contract);
+      ctr.setContractHash(`hash-${contract}`);
 
       const cn = await ctr.queryContractData(["collection_name"]);
       const cs = await ctr.queryContractData(["collection_symbol"]);
@@ -203,7 +203,19 @@ export function casperHandler({
         .filter((e) => e.event.name === "Locked")
         .at(0);
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      return event as any;
+      const data = event?.event?.data;
+      return {
+        tokenAmount: data?.token_amount?.data?.toString(),
+        sourceChain: data?.source_chain?.data,
+        sourceNftContractAddress: data?.source_nft_contract_address?.data,
+        tokenId: data?.token_id?.data,
+        destinationChain: data?.destination_chain?.data,
+        destinationUserAddress: data?.destination_user_address?.data,
+        nftType: data?.nft_type?.data,
+        transactionHash: txHash,
+        lockTxChain: identifier,
+        metaDataUri: data?.metadata_uri?.data,
+      };
     },
     hashClaimData(data) {
       const serializer = Serializer();
