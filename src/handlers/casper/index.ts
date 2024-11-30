@@ -202,7 +202,6 @@ export function casperHandler({
         .filter((ev) => ev.error === null)
         .filter((e) => e.event.name === "Locked")
         .at(0);
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       const data = event?.event?.data;
       return {
         tokenAmount: data?.token_amount?.data?.toString(),
