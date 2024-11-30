@@ -526,51 +526,59 @@ async function getMetaData(nftContract: Contracts.Contract, tokenId: string) {
   let data: Any | undefined;
 
   try {
-    data = (
-      await nftContract.queryContractDictionary("metadata_cep78", tokenId)
-    ).toJSON();
+    data = JSON.parse(
+      (
+        await nftContract.queryContractDictionary("metadata_cep78", tokenId)
+      ).toJSON(),
+    );
     if (data?.token_uri) {
       data = data?.token_uri;
     }
     console.log("metadata_cep78", data);
   } catch (ex) {
     try {
-      data = (
-        await nftContract.queryContractDictionary("metadata_nft721", tokenId)
-      ).toJSON();
+      data = JSON.parse(
+        (
+          await nftContract.queryContractDictionary("metadata_nft721", tokenId)
+        ).toJSON(),
+      );
       if (data?.token_uri) {
         data = data?.token_uri;
       }
-      console.log("metadata_nft721", data.toJSON());
+      console.log("metadata_nft721", data);
     } catch (ex) {
       try {
-        data = (
-          await nftContract.queryContractDictionary("metadata_raw", tokenId)
-        ).toJSON();
+        data = JSON.parse(
+          (
+            await nftContract.queryContractDictionary("metadata_raw", tokenId)
+          ).toJSON(),
+        );
         if (data?.token_uri) {
           data = data?.token_uri;
         }
-        console.log("metadata_raw", data.toJSON());
+        console.log("metadata_raw", data);
       } catch (ex) {
         try {
-          data = (
-            await nftContract.queryContractDictionary(
-              "metadata_custom_validated",
-              tokenId,
-            )
-          ).toJSON();
+          data = JSON.parse(
+            (
+              await nftContract.queryContractDictionary(
+                "metadata_custom_validated",
+                tokenId,
+              )
+            ).toJSON(),
+          );
           if (data?.token_uri) {
             data = data?.token_uri;
           }
-          console.log("metadata_custom_validated", data.toJSON());
+          console.log("metadata_custom_validated", data);
         } catch (ex) {}
       }
     }
   }
   if (data) {
     if (typeof data === "object") {
-      const pinResponse = await pinata.upload.json(data.toJSON());
-      const metadata = `https://xpnetwork.infura-ipfs.io/ipfs/ ${pinResponse.IpfsHash}`;
+      const pinResponse = await pinata.upload.json(data);
+      const metadata = `https://xpnetwork.infura-ipfs.io/ipfs/${pinResponse.IpfsHash}`;
       console.log({ metadata });
       return metadata;
     }

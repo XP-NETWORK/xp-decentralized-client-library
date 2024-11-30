@@ -149,7 +149,7 @@ export namespace ChainFactoryConfigs {
       },
       casperParams: {
         bridge:
-          "hash-b10b6755154a26a5ec7c8584301f20fec19f4ff426c6de253eebfd7b8d3a4af8",
+          "hash-74dc2586ad8d2a35ecafd6bf6eceefe3e30c6a3c39d30475c0a12c97b408fe4d",
         identifier: Chain.CASPER,
         network: "casper-test",
         rpc: "https://rpc.testnet.casperlabs.io/rpc",
