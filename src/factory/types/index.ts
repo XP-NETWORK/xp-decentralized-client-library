@@ -1,19 +1,29 @@
-import { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
-import {
+import type { TAptosHandler, TAptosParams } from "../../handlers/aptos/types";
+import type {
+  TCasperHandler,
+  TCasperParams,
+} from "../../handlers/casper/types";
+import type {
   TCosmWasmHandler,
   TCosmWasmParams,
 } from "../../handlers/cosmwasm/types";
-import { TEvmHandler, TEvmParams } from "../../handlers/evm/types";
-import { THederaHandler, THederaParams } from "../../handlers/hedera/types";
-import { TICPHandler, TICPParams } from "../../handlers/icp/types";
-import {
+import type { TEvmHandler, TEvmParams } from "../../handlers/evm/types";
+import type {
+  THederaHandler,
+  THederaParams,
+} from "../../handlers/hedera/types";
+import type { TICPHandler, TICPParams } from "../../handlers/icp/types";
+import type {
   TMultiversXHandler,
   TMultiversXParams,
 } from "../../handlers/multiversx/types";
-import { TNearHandler, TNearParams } from "../../handlers/near/types";
-import { TSecretHandler, TSecretParams } from "../../handlers/secret/types";
-import { TTezosHandler, TTezosParams } from "../../handlers/tezos/types";
-import { TTonHandler, TTonParams } from "../../handlers/ton/types";
+import type { TNearHandler, TNearParams } from "../../handlers/near/types";
+import type {
+  TSecretHandler,
+  TSecretParams,
+} from "../../handlers/secret/types";
+import type { TTezosHandler, TTezosParams } from "../../handlers/tezos/types";
+import type { TTonHandler, TTonParams } from "../../handlers/ton/types";
 
 export type TEvmMeta = [TEvmHandler, TEvmParams];
 export type THederaMeta = [THederaHandler, THederaParams];
@@ -25,10 +35,11 @@ export type TCosmWasmMeta = [TCosmWasmHandler, TCosmWasmParams];
 export type TAptosMeta = [TAptosHandler, TAptosParams];
 export type TICPMeta = [TICPHandler, TICPParams];
 export type TNearMeta = [TNearHandler, TNearParams];
+export type TCasperMeta = [TCasperHandler, TCasperParams];
 
 export type MetaMap = {
   BSC: TEvmMeta;
-  ETH: TEvmMeta;
+  ETHEREUM: TEvmMeta;
   MATIC: TEvmMeta;
   MOONBEAM: TEvmMeta;
   BASE: TEvmMeta;
@@ -43,4 +54,6 @@ export type MetaMap = {
   NEAR: TNearMeta;
   BLAST: TEvmMeta;
   FANTOM: TEvmMeta;
+  AVALANCHE: TEvmMeta;
+  CASPER: TCasperMeta;
 };

@@ -15,23 +15,23 @@ import {
   TokenTransfer,
   Transaction,
   TransactionPayload,
-  TypedValue,
+  type TypedValue,
 } from "@multiversx/sdk-core/out";
 import {
   ApiNetworkProvider,
-  TransactionEvent,
+  type TransactionEvent,
 } from "@multiversx/sdk-network-providers/out";
 import { Nonce } from "@multiversx/sdk-network-providers/out/primitives";
-import { UserSigner } from "@multiversx/sdk-wallet/out";
+import type { UserSigner } from "@multiversx/sdk-wallet/out";
 import axios from "axios";
 import { multiversXBridgeABI } from "../../contractsTypes/multiversx";
 import { raise } from "../ton";
 import { fetchHttpOrIpfs } from "../utils";
 import {
   StructClaimDataType,
-  TMultiversXHandler,
-  TMultiversXParams,
-  TMultiversXSigner,
+  type TMultiversXHandler,
+  type TMultiversXParams,
+  type TMultiversXSigner,
 } from "./types";
 
 export function multiversxHandler({
@@ -103,7 +103,7 @@ export function multiversxHandler({
         await provider.getDefinitionOfTokenCollection(collection);
       const { royalties, metaData } = await getNonFungibleToken(
         collection,
-        parseInt(nonce),
+        Number.parseInt(nonce),
       );
       return {
         name: nftDetails.name,

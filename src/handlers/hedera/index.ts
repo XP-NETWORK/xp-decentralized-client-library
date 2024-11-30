@@ -1,17 +1,17 @@
 import { Interface } from "@ethersproject/abi";
 import axios from "axios";
-import { EventLog, Signer, ethers, isAddress } from "ethers";
+import { EventLog, type Signer, ethers, isAddress } from "ethers";
 import { ContractProxy__factory } from "../../contractsTypes/Hedera/ContractProxy__factory";
 import { HederaBridge__factory } from "../../contractsTypes/Hedera/HederaBridge__factory";
 import { IHRC__factory } from "../../contractsTypes/Hedera/IHRC__factory";
 import {
-  Bridge,
+  type Bridge,
   Bridge__factory,
   ERC721Royalty__factory,
 } from "../../contractsTypes/evm";
 import { evmHandler } from "../evm";
 import { raise } from "../ton";
-import { THederaHandler, THederaParams } from "./types";
+import type { THederaHandler, THederaParams } from "./types";
 
 const abiInterface = new Interface(HederaBridge__factory.abi);
 

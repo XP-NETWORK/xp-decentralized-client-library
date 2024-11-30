@@ -1,7 +1,7 @@
 import axios from "axios";
 import {
   GAS_LIMIT,
-  TGas,
+  type TGas,
   convertToGwei,
   getConstantGas,
   getGas,

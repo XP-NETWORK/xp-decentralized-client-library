@@ -7,7 +7,7 @@ import {
 import { getPolygonGas } from "../gasFactories/polygon";
 import { retryFn } from "../utils";
 
-import { TEvmHandler, TEvmParams } from "./types";
+import type { TEvmHandler, TEvmParams } from "./types";
 
 export function evmHandler({
   provider,

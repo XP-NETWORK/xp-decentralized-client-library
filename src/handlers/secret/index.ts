@@ -347,7 +347,7 @@ export function secretHandler({
         name: input.name,
         symbol: input.symbol,
         metadata: input.metadata,
-        royalty: parseInt(input.royalty),
+        royalty: Number.parseInt(input.royalty),
         nft_type: input.nftType,
         royalty_receiver: input.royaltyReceiver,
         source_chain: input.sourceChain,

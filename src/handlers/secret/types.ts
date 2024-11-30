@@ -1,7 +1,7 @@
-import { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
-import { Snip721GetTokensResponse } from "secretjs/dist/extensions/snip721/msg/GetTokens";
-import { BridgeStorage } from "../../contractsTypes/evm";
-import {
+import type { SecretNetworkClient, TxOptions, TxResponse } from "secretjs";
+import type { Snip721GetTokensResponse } from "secretjs/dist/extensions/snip721/msg/GetTokens";
+import type { BridgeStorage } from "../../contractsTypes/evm";
+import type {
   DeployNFTCollection,
   MintNft,
   ReadClaimed721Event,

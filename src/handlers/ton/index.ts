@@ -2,7 +2,7 @@ import { Address, Dictionary, beginCell, toNano } from "@ton/core";
 
 import {
   Bridge,
-  SignerAndSignature,
+  type SignerAndSignature,
   loadClaimedEvent,
   loadLockedEvent,
   storeLock721,
@@ -13,7 +13,7 @@ import { NftItem } from "../../contractsTypes/ton/tonNftContract";
 import { fetchHttpOrIpfs } from "../utils";
 import { TestnetNftCollection } from "./nftc";
 import { buildJettonContent } from "./tep64";
-import { TTonHandler, TTonParams } from "./types";
+import type { TTonHandler, TTonParams } from "./types";
 
 export function raise(message: string): never {
   throw new Error(message);

@@ -1,4 +1,4 @@
-import {
+import type {
   TChainFactory,
   TChainInfo,
   TInferChainH,
@@ -6,6 +6,7 @@ import {
   TSupportedChain,
 } from "../factory/types/utils";
 import { aptosHandler } from "../handlers/aptos";
+import { casperHandler } from "../handlers/casper";
 import { cosmWasmHandler } from "../handlers/cosmwasm";
 import { evmHandler } from "../handlers/evm";
 import { hederaHandler } from "../handlers/hedera";
@@ -20,13 +21,13 @@ import {
   convertStringToHexToNumb,
   fetchHttpOrIpfs,
 } from "../handlers/utils";
-import { TChainParams } from "./config";
+import type { TChainParams } from "./config";
 
 export namespace Chain {
   export const MULTIVERSX = "MULTIVERSX";
   export const SECRET = "SECRET";
   export const TON = "TON";
-  export const ETH = "ETH";
+  export const ETHEREUM = "ETHEREUM";
   export const BSC = "BSC";
   export const TEZOS = "TEZOS";
   export const TERRA = "TERRA";
@@ -39,6 +40,8 @@ export namespace Chain {
   export const MOONBEAM = "MOONBEAM";
   export const BLAST = "BLAST";
   export const FANTOM = "FANTOM";
+  export const AVALANCHE = "AVALANCHE";
+  export const CASPER = "CASPER";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -48,7 +51,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.MATIC, chainParams.maticParams);
   cToP.set(Chain.BASE, chainParams.baseParams);
   cToP.set(Chain.HEDERA, chainParams.hederaParams);
-  cToP.set(Chain.ETH, chainParams.ethParams);
+  cToP.set(Chain.ETHEREUM, chainParams.ethParams);
   cToP.set(Chain.TEZOS, chainParams.tezosParams);
   cToP.set(Chain.SECRET, chainParams.secretParams);
   cToP.set(Chain.TON, chainParams.tonParams);
@@ -59,6 +62,8 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.MOONBEAM, chainParams.moonbeamParams);
   cToP.set(Chain.BLAST, chainParams.blastParams);
   cToP.set(Chain.FANTOM, chainParams.fantomParams);
+  cToP.set(Chain.AVALANCHE, chainParams.avaxParams);
+  cToP.set(Chain.CASPER, chainParams.casperParams);
   return cToP;
 }
 
@@ -184,7 +189,7 @@ export const CHAIN_INFO: TChainInfo = new Map();
 CHAIN_INFO.set(Chain.BSC, {
   constructor: evmHandler,
 });
-CHAIN_INFO.set(Chain.ETH, {
+CHAIN_INFO.set(Chain.ETHEREUM, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.MATIC, {
@@ -228,4 +233,10 @@ CHAIN_INFO.set(Chain.BLAST, {
 });
 CHAIN_INFO.set(Chain.FANTOM, {
   constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.AVALANCHE, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.CASPER, {
+  constructor: casperHandler,
 });

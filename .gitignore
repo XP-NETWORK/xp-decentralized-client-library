@@ -3,3 +3,4 @@ node_modules/
 .yarn
 test/
 test.*
+yarn-error.log

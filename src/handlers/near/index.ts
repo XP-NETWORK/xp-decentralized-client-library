@@ -1,7 +1,7 @@
 import { Contract, connect } from "near-api-js";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
 import { unimplemented } from "../../utils";
-import { TNearHandler, TNearParams } from "./types";
+import type { TNearHandler, TNearParams } from "./types";
 
 export async function nearHandler({
   networkId,
@@ -82,8 +82,7 @@ export async function nearHandler({
         "FINAL",
       );
       const log = receipts.receipts_outcome
-        .map((e) => e.outcome.logs)
-        .flatMap((e) => e)
+        .flatMap((e) => e.outcome.logs)
         .filter((e) => e.includes("claimed"))[0];
       if (!log) throw new Error("No Claimed Event Found");
       const parsed = JSON.parse(log);
@@ -159,8 +158,7 @@ export async function nearHandler({
         "FINAL",
       );
       const log = receipts.receipts_outcome
-        .map((e) => e.outcome.logs)
-        .flatMap((e) => e)
+        .flatMap((e) => e.outcome.logs)
         .filter((e) => e.includes("locked"))[0];
       if (!log) throw new Error("No Locked Event Found");
       const parsed = JSON.parse(log).data;

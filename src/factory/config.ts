@@ -7,16 +7,17 @@ import { TonClient } from "@ton/ton";
 import { JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
-import { TAptosParams } from "../handlers/aptos/types";
-import { TCosmWasmParams } from "../handlers/cosmwasm/types";
-import { TEvmParams } from "../handlers/evm/types";
-import { THederaParams } from "../handlers/hedera/types";
-import { TICPParams } from "../handlers/icp/types";
-import { TMultiversXParams } from "../handlers/multiversx/types";
-import { TNearParams } from "../handlers/near/types";
-import { TSecretParams } from "../handlers/secret/types";
-import { TTezosParams } from "../handlers/tezos/types";
-import { TTonParams } from "../handlers/ton/types";
+import type { TAptosParams } from "../handlers/aptos/types";
+import type { TCasperParams } from "../handlers/casper/types";
+import type { TCosmWasmParams } from "../handlers/cosmwasm/types";
+import type { TEvmParams } from "../handlers/evm/types";
+import type { THederaParams } from "../handlers/hedera/types";
+import type { TICPParams } from "../handlers/icp/types";
+import type { TMultiversXParams } from "../handlers/multiversx/types";
+import type { TNearParams } from "../handlers/near/types";
+import type { TSecretParams } from "../handlers/secret/types";
+import type { TTezosParams } from "../handlers/tezos/types";
+import type { TTonParams } from "../handlers/ton/types";
 import { Chain } from "./factory";
 
 export interface TChainParams {
@@ -36,6 +37,8 @@ export interface TChainParams {
   nearParams: TNearParams;
   blastParams: TEvmParams;
   fantomParams: TEvmParams;
+  avaxParams: TEvmParams;
+  casperParams: TCasperParams;
 }
 
 export namespace ChainFactoryConfigs {
@@ -144,6 +147,15 @@ export namespace ChainFactoryConfigs {
         network: Network.TESTNET,
         storage,
       },
+      casperParams: {
+        bridge:
+          "hash-b10b6755154a26a5ec7c8584301f20fec19f4ff426c6de253eebfd7b8d3a4af8",
+        identifier: Chain.CASPER,
+        network: "casper-test",
+        rpc: "https://rpc.testnet.casperlabs.io/rpc",
+        storage,
+        proxy_url: "https://sheltered-crag-76748.herokuapp.com/",
+      },
     } satisfies Partial<TChainParams>;
   }
 
@@ -231,6 +243,27 @@ export namespace ChainFactoryConfigs {
         identifier: Chain.FANTOM,
         provider: new JsonRpcProvider("https://rpc.fantom.network"),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      avaxParams: {
+        identifier: Chain.AVALANCHE,
+        provider: new JsonRpcProvider("https://avalanche.public-rpc.com"),
+        bridge: ethers.getAddress("0x92764FF21a1a8cC4e8eEec43ED04Bea3B76D8fD3"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      moonbeamParams: {
+        bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
+        identifier: "MOONBEAM",
+        provider: new JsonRpcProvider("https://1rpc.io/glmr"),
+        royaltySalePrice: 10000,
+        storage,
+      },
+      ethParams: {
+        bridge: ethers.getAddress("0x4B2A837613bA45C734439155CC7030c79095a2ed"),
+        identifier: "ETHEREUM",
+        provider: new JsonRpcProvider("https://eth.llamarpc.com"),
         royaltySalePrice: 10000,
         storage,
       },

@@ -1,4 +1,4 @@
-import { Actor, HttpAgent } from "@dfinity/agent";
+import { Actor, type HttpAgent } from "@dfinity/agent";
 import { IDL } from "@dfinity/candid";
 import {
   LedgerCanister,
@@ -6,13 +6,13 @@ import {
 } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { idlFactory as BridgeIdl } from "../../contractsTypes/icp/bridge/bridge";
-import { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridge.types";
+import type { _SERVICE as BridgeService } from "../../contractsTypes/icp/bridge/bridge.types";
 import { idlFactory as LedgerIDL } from "../../contractsTypes/icp/ledger/ledger";
-import { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
+import type { _SERVICE as LedgerService } from "../../contractsTypes/icp/ledger/ledger.types";
 import { idlFactory as NftIdl } from "../../contractsTypes/icp/nft/nft";
-import { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
+import type { _SERVICE } from "../../contractsTypes/icp/nft/nft.types";
 import { NftByteCode } from "./nft.wasm.gz.hex";
-import { BrowserSigners, TICPHandler, TICPParams } from "./types";
+import type { BrowserSigners, TICPHandler, TICPParams } from "./types";
 
 export async function createNftActor(
   contract: string | Principal,
