@@ -50,6 +50,7 @@
     "ethers": "^6.10.0",
     "hashconnect": "^0.2.9",
     "near-api-js": "^5.0.0",
+    "pinata-web3": "^0.5.2",
     "secretjs": "^1.12.4-beta.0"
   }
 }
