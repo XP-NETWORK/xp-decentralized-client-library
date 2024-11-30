@@ -34,6 +34,8 @@ import { LOCK_WASM } from "./lock.wasm";
 import { Serializer } from "./serializer";
 import type { TCasperHandler, TCasperParams } from "./types";
 
+const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "550000000000";
+
 export function casperHandler({
   rpc,
   identifier,
@@ -219,90 +221,115 @@ export function casperHandler({
     hashClaimData(data) {
       const serializer = Serializer();
       const bytes = serializer.claimNft({
-        amount: data.amount.toString(),
+        amount: COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT,
         destination_chain_arg: data.destination_chain,
         destination_user_address_arg: data.destinationUserAddress,
-        fee_arg: data.fee,
+        fee_arg: data.fee.toString(),
         lock_tx_chain_arg: data.lockTxChain,
         metadata_arg: data.metadata,
         name_arg: data.name,
         nft_type_arg: data.nft_type,
-        royalty_arg: data.royaltyPercentage,
+        royalty_arg: data.royaltyPercentage.toString(),
         royalty_receiver_arg: data.royaltyReceiver,
         source_chain_arg: data.source_chain,
-        source_nft_contract_address_arg: data.source_nft_contract_address,
+        source_nft_contract_address_arg:
+          data.source_chain === "CASPER"
+            ? `contract-${data.source_nft_contract_address}`
+            : data.source_nft_contract_address,
         symbol_arg: data.symbol,
-        token_amount_arg: data.amount,
+        token_amount_arg: data.amount.toString(),
         token_id_arg: data.token_id.toString(),
         transaction_hash_arg: data.transaction_hash,
       });
       return crypto.createHash("sha256").update(bytes).digest("hex");
     },
-    async claimNft(signer, claimData, _, extraArgs) {
-      const rt_args = RuntimeArgs.fromMap({
-        bridge_contract: CLValueBuilder.byteArray(
-          convertHashStrToHashBuff(bridge),
-        ),
-        token_id_arg: CLValueBuilder.string(claimData.token_id.toString()),
-        source_chain_arg: CLValueBuilder.string(claimData.source_chain),
-        destination_chain_arg: CLValueBuilder.string(
-          claimData.destination_chain,
-        ),
-        destination_user_address_arg: CLValueBuilder.byteArray(
-          convertHashStrToHashBuff(claimData.destinationUserAddress),
-        ),
-        source_nft_contract_address_arg: CLValueBuilder.string(
-          claimData.source_chain,
-        ),
-        name_arg: CLValueBuilder.string(claimData.name),
-        symbol_arg: CLValueBuilder.string(claimData.symbol),
-        royalty_arg: CLValueBuilder.u512(
-          claimData.royaltyPercentage.toString(),
-        ),
-        royalty_receiver_arg: CLValueBuilder.byteArray(
-          convertHashStrToHashBuff(claimData.royaltyReceiver),
-        ),
-        metadata_arg: CLValueBuilder.string(claimData.metadata),
-        transaction_hash_arg: CLValueBuilder.string(claimData.transaction_hash),
-        token_amount_arg: CLValueBuilder.u512(claimData.amount.toString()),
-        nft_type_arg: CLValueBuilder.string(claimData.nft_type),
-        fee_arg: CLValueBuilder.u512(claimData.fee.toString()),
-        lock_tx_chain_arg: CLValueBuilder.string(claimData.lockTxChain),
-        amount: CLValueBuilder.u512(claimData.amount.toString()),
-      });
-      const n = new Contracts.Contract(cc);
+    async claimNft(signer, claimData, sigs, extraArgs) {
+      const dataHash = this.hashClaimData(claimData);
 
-      const deploy = n.install(
-        Buffer.from(CLAIM_WASM, "hex"),
-        rt_args,
-        extraArgs?.amount || "50000000000",
-        CLPublicKey.fromHex(await signer.getActivePublicKey()),
-        network,
-        [],
-      );
-      if (isBrowser()) {
-        const hash = await signWithCasperWallet(signer, deploy);
-        const is_waiting = await checkWaiting(
-          bc,
-          claimData.source_nft_contract_address.replace("hash-", ""),
-          claimData.source_chain,
+      if (!(await checkSignatureStatus(bc, dataHash))) {
+        await this.submitSignature(signer, dataHash, sigs);
+      }
+      if (await checkSignatureStatus(bc, dataHash)) {
+        const rt_args = RuntimeArgs.fromMap({
+          bridge_contract: CLValueBuilder.byteArray(
+            convertHashStrToHashBuff(bridge),
+          ),
+          token_id_arg: CLValueBuilder.string(claimData.token_id.toString()),
+          source_chain_arg: CLValueBuilder.string(claimData.source_chain),
+          destination_chain_arg: CLValueBuilder.string(
+            claimData.destination_chain,
+          ),
+          destination_user_address_arg: CLValueBuilder.byteArray(
+            convertHashStrToHashBuff(claimData.destinationUserAddress),
+          ),
+          source_nft_contract_address_arg: CLValueBuilder.string(
+            claimData.source_chain === "CASPER"
+              ? `contract-${claimData.source_nft_contract_address}`
+              : claimData.source_nft_contract_address,
+          ),
+          name_arg: CLValueBuilder.string(claimData.name),
+          symbol_arg: CLValueBuilder.string(claimData.symbol),
+          royalty_arg: CLValueBuilder.u512(
+            claimData.royaltyPercentage.toString(),
+          ),
+          royalty_receiver_arg: CLValueBuilder.byteArray(
+            convertHashStrToHashBuff(claimData.royaltyReceiver),
+          ),
+          metadata_arg: CLValueBuilder.string(claimData.metadata),
+          transaction_hash_arg: CLValueBuilder.string(
+            claimData.transaction_hash,
+          ),
+          token_amount_arg: CLValueBuilder.u512(claimData.amount.toString()),
+          nft_type_arg: CLValueBuilder.string(claimData.nft_type),
+          fee_arg: CLValueBuilder.u512(claimData.fee.toString()),
+          lock_tx_chain_arg: CLValueBuilder.string(claimData.lockTxChain),
+          amount: CLValueBuilder.u512(COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT),
+        });
+        const n = new Contracts.Contract(cc);
+
+        const deploy = n.install(
+          Buffer.from(CLAIM_WASM, "hex"),
+          rt_args,
+          extraArgs?.amount || COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT,
+          CLPublicKey.fromHex(await signer.getActivePublicKey()),
+          network,
+          [],
         );
+        if (isBrowser()) {
+          const hash = await signWithCasperWallet(signer, deploy);
+          const is_waiting = await checkWaiting(
+            bc,
+            claimData.source_nft_contract_address.replace("hash-", ""),
+            claimData.source_chain,
+          );
 
-        if (is_waiting) {
-          while (true) {
-            await new Promise((r) => setTimeout(r, 5 * 1000));
-            if (
-              await checkCollection(
-                bc,
-                claimData.source_nft_contract_address.replace("hash-", ""),
-                claimData.source_chain,
-              )
-            ) {
-              break;
+          if (is_waiting) {
+            while (true) {
+              await new Promise((r) => setTimeout(r, 5 * 1000));
+              if (
+                await checkCollection(
+                  bc,
+                  claimData.source_nft_contract_address.replace("hash-", ""),
+                  claimData.source_chain,
+                )
+              ) {
+                break;
+              }
             }
+            return this.claimNft(signer, claimData, sigs, extraArgs);
           }
-          return this.claimNft(signer, claimData, _, extraArgs);
+          return {
+            hash() {
+              return hash;
+            },
+            ret: hash,
+          };
         }
+        const signed = await signer.sign(
+          DeployUtil.deployToJson(deploy),
+          await signer.getActivePublicKey(),
+        );
+        const hash = await DeployUtil.deployFromJson(signed).unwrap().send(rpc);
         return {
           hash() {
             return hash;
@@ -310,17 +337,7 @@ export function casperHandler({
           ret: hash,
         };
       }
-      const signed = await signer.sign(
-        DeployUtil.deployToJson(deploy),
-        await signer.getActivePublicKey(),
-      );
-      const hash = await DeployUtil.deployFromJson(signed).unwrap().send(rpc);
-      return {
-        hash() {
-          return hash;
-        },
-        ret: hash,
-      };
+      throw new Error("Failed");
     },
     async getValidatorCount() {
       const bn: CLU64 = await bc.queryContractData(["validators_count"]);
@@ -596,11 +613,32 @@ async function checkWaiting(
       "waiting_dict",
       dic_key,
     );
-    console.log("waiting_dict", waiting_dict);
+    console.log("waiting_dict", waiting_dict.data[0].data);
 
-    ret = true;
+    ret = waiting_dict.data[0].data;
   } catch (ex) {
     console.log("waiting_dict", ex);
+  }
+  return ret;
+}
+
+async function checkSignatureStatus(bc: Contracts.Contract, dataHash: string) {
+  let ret = false;
+  try {
+    const ss = await bc.queryContractDictionary(
+      "submitted_signatures_dict",
+      dataHash,
+    );
+    const done = ss.data[1].data[0].data[0].data;
+
+    console.log("DONE", done); // DONE
+
+    const canDo = ss.data[1].data[0].data[1].data;
+
+    console.log("CAN DO", canDo); // CAN DO
+    ret = canDo;
+  } catch (ex) {
+    console.log("submitted_signatures_dict", ex);
   }
 
   return ret;

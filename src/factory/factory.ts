@@ -167,8 +167,21 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
           convertedTokenId = convertNumbToHexToString(data.tokenId);
         }
       }
-      const metadata = ogNftData.metadata || data.metaDataUri;
+      let metadata = "";
+      if (data.sourceChain === "CASPER") {
+        metadata = data.metaDataUri;
+      } else {
+        metadata = ogNftData.metadata || data.metaDataUri;
+      }
+
+      if (data.destinationChain === "CASPER") {
+        metadata = JSON.stringify({
+          token_uri: metadata,
+        });
+      }
+
       const imgUri = (await fetchHttpOrIpfs(metadata)).image;
+
       return {
         ...data,
         ...ogNftData,

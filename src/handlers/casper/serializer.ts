@@ -6,6 +6,7 @@ import {
   CLU512,
   CLU512BytesParser,
 } from "casper-js-sdk";
+import type { BigNumberish } from "ethers";
 
 export function Serializer() {
   const u512Serializer = new CLU512BytesParser();
@@ -163,13 +164,13 @@ export interface TCasperClaimArgs {
   readonly source_nft_contract_address_arg: string;
   readonly name_arg: string;
   readonly symbol_arg: string;
-  readonly royalty_arg: bigint;
+  readonly royalty_arg: BigNumberish;
   readonly royalty_receiver_arg: string;
   readonly metadata_arg: string;
   readonly transaction_hash_arg: string;
-  readonly token_amount_arg: bigint;
+  readonly token_amount_arg: BigNumberish;
   readonly nft_type_arg: string;
-  readonly fee_arg: bigint;
+  readonly fee_arg: BigNumberish;
   readonly lock_tx_chain_arg: string;
   readonly amount: string;
 }
