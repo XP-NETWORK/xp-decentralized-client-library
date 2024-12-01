@@ -34,7 +34,7 @@ import { LOCK_WASM } from "./lock.wasm";
 import { Serializer } from "./serializer";
 import type { TCasperHandler, TCasperParams } from "./types";
 
-const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "550000000000";
+const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "600000000000";
 
 export function casperHandler({
   rpc,
@@ -372,7 +372,7 @@ export function casperHandler({
           convertHashStrToHashBuff(sourceNft),
         ),
         metadata_arg: CLValueBuilder.string(metadata),
-        amount: CLValueBuilder.u512(extraArgs?.amount || "110000000000"),
+        amount: CLValueBuilder.u512(extraArgs?.amount || "150000000000"),
       });
       const n = new Contracts.Contract(cc);
 
