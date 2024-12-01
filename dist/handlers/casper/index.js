@@ -14,7 +14,7 @@ const claim_wasm_1 = require("./claim.wasm");
 const get_deploy_1 = require("./get-deploy");
 const lock_wasm_1 = require("./lock.wasm");
 const serializer_1 = require("./serializer");
-const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "750000000000";
+const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "600000000000";
 function casperHandler({ rpc, identifier, network, bridge, storage, proxy_url, }) {
     if (proxy_url) {
         rpc = proxy_url + rpc;
