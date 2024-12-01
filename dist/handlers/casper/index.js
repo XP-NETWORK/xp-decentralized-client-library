@@ -14,7 +14,7 @@ const claim_wasm_1 = require("./claim.wasm");
 const get_deploy_1 = require("./get-deploy");
 const lock_wasm_1 = require("./lock.wasm");
 const serializer_1 = require("./serializer");
-const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "550000000000";
+const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "600000000000";
 function casperHandler({ rpc, identifier, network, bridge, storage, proxy_url, }) {
     if (proxy_url) {
         rpc = proxy_url + rpc;
@@ -240,7 +240,7 @@ function casperHandler({ rpc, identifier, network, bridge, storage, proxy_url, }
                 destination_user_address_arg: casper_js_sdk_1.CLValueBuilder.string(to),
                 source_nft_contract_address_arg: casper_js_sdk_1.CLValueBuilder.byteArray(convertHashStrToHashBuff(sourceNft)),
                 metadata_arg: casper_js_sdk_1.CLValueBuilder.string(metadata),
-                amount: casper_js_sdk_1.CLValueBuilder.u512(extraArgs?.amount || "110000000000"),
+                amount: casper_js_sdk_1.CLValueBuilder.u512(extraArgs?.amount || "150000000000"),
             });
             const n = new casper_js_sdk_1.Contracts.Contract(cc);
             const deploy = n.install(Buffer.from(lock_wasm_1.LOCK_WASM, "hex"), rt_args, extraArgs?.amount || "30000000000", casper_js_sdk_1.CLPublicKey.fromHex(await signer.getActivePublicKey()), network, []);
