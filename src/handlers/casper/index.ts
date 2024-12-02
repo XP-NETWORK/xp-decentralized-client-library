@@ -290,7 +290,7 @@ export function casperHandler({
         const deploy = n.install(
           Buffer.from(CLAIM_WASM, "hex"),
           rt_args,
-          extraArgs?.amount || COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT,
+          extraArgs?.amount || "30000000000",
           CLPublicKey.fromHex(await signer.getActivePublicKey()),
           network,
           [],
