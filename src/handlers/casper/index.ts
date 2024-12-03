@@ -34,7 +34,7 @@ import { LOCK_WASM } from "./lock.wasm";
 import { Serializer } from "./serializer";
 import type { TCasperHandler, TCasperParams } from "./types";
 
-const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "600000000000";
+const COLLECTION_DEPLOY_PLUS_CLAIM_AMOUNT = "580000000000";
 
 export function casperHandler({
   rpc,
