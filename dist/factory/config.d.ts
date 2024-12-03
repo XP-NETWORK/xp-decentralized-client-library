@@ -222,6 +222,14 @@ export declare namespace ChainFactoryConfigs {
             royaltySalePrice: number;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        casperParams: {
+            bridge: string;
+            identifier: string;
+            network: string;
+            rpc: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+            proxy_url: string;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
