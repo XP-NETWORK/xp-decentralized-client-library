@@ -176,7 +176,7 @@ async function nearHandler({ networkId, nodeUrl, bridge, storage, identifier, })
                     metadata_uri,
                 },
                 gas: 100000000000000n,
-                attachedDeposit: BigInt((0, format_1.parseNearAmount)("2") ?? 0),
+                attachedDeposit: BigInt((0, format_1.parseNearAmount)("1") ?? 0),
             });
             return {
                 ret: locked,
