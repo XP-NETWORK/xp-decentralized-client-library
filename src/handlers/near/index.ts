@@ -200,7 +200,7 @@ export async function nearHandler({
           metadata_uri,
         },
         gas: 100000000000000n,
-        attachedDeposit: BigInt(parseNearAmount("2") ?? 0),
+        attachedDeposit: BigInt(parseNearAmount("1") ?? 0),
       });
       return {
         ret: locked,
