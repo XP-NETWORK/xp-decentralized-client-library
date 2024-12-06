@@ -276,6 +276,13 @@ export namespace ChainFactoryConfigs {
         storage,
         proxy_url: "https://sheltered-crag-76748.herokuapp.com/",
       },
+      nearParams: {
+        bridge: "xp-bridge-main.near",
+        networkId: "mainnet",
+        nodeUrl: "https://rpc.mainnet.near.org",
+        identifier: "NEAR",
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
