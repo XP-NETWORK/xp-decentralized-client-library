@@ -230,6 +230,13 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
             proxy_url: string;
         };
+        nearParams: {
+            bridge: string;
+            networkId: string;
+            nodeUrl: string;
+            identifier: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
