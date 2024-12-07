@@ -280,7 +280,7 @@ export namespace ChainFactoryConfigs {
         bridge: "xp-bridge-main.near",
         networkId: "mainnet",
         nodeUrl: "https://rpc.mainnet.near.org",
-        identifier: "NEAR",
+        identifier: Chain.NEAR,
         storage,
       },
     } satisfies Partial<TChainParams>;
