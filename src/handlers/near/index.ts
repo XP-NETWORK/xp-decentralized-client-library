@@ -200,7 +200,9 @@ export async function nearHandler({
           metadata_uri,
         },
         gas: 100000000000000n,
-        attachedDeposit: BigInt(parseNearAmount("1") ?? 0),
+        attachedDeposit:
+          BigInt(parseNearAmount("1") ?? 0) +
+          BigInt(parseNearAmount("0.5") ?? 0),
       });
       return {
         ret: locked,
@@ -224,7 +226,9 @@ export async function nearHandler({
         },
         gas: 300000000000000n,
         attachedDeposit:
-          BigInt(claimData.fee) + BigInt(parseNearAmount("3") ?? 0),
+          BigInt(claimData.fee) +
+          BigInt(parseNearAmount("3") ?? 0) +
+          BigInt(parseNearAmount("0.5") ?? 0),
       });
       return { hash: () => claimed.transaction.hash, ret: claimed };
     },
