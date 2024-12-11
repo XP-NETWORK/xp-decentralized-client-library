@@ -168,7 +168,7 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         }
       }
       let metadata = "";
-      if (data.sourceChain === "CASPER") {
+      if (data.sourceChain === "CASPER" || data.sourceChain === "SECRET") {
         metadata = data.metaDataUri;
       } else {
         metadata = ogNftData.metadata || data.metaDataUri;

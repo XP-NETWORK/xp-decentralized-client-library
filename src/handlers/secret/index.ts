@@ -395,6 +395,7 @@ export function secretHandler({
         token_amount: tokenAmount, // amount of nfts to be transfered ( 1 in 721 case )
         nft_type: nftType, // Sigular or multiple ( 721 / 1155)
         source_chain: sourceChain, // Source chain of NFT
+        metadata_uri: metaDataUri, // metadata uri of NFT
       } = JSON.parse(log.value);
       return {
         destinationChain,
@@ -406,7 +407,7 @@ export function secretHandler({
         sourceChain,
         transactionHash: txHash,
         lockTxChain: identifier,
-        metaDataUri: "",
+        metaDataUri,
       };
     },
     async claimSft(signer, claimData, sigs, extraArgs) {
@@ -634,7 +635,7 @@ export function secretHandler({
           image: nft_info.extension?.media?.[0]?.url || "",
         };
         const pinResponse = await pinata.upload.json(data);
-        metadata = `https://xpnetwork.infura-ipfs.io/ipfs/ ${pinResponse.IpfsHash}`;
+        metadata = `https://xpnetwork.infura-ipfs.io/ipfs/${pinResponse.IpfsHash}`;
         console.log({ metadata });
       }
 
