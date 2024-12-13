@@ -147,8 +147,16 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
       const sc = await this.inner(
         data.sourceChain as unknown as TSupportedChain,
       );
+      let convertedTokenId = data.tokenId;
+      if (data.sourceChain === "SECRET") {
+        if (chain.identifier === "SECRET") {
+          convertedTokenId = convertStringToHexToNumb(data.tokenId);
+        } else if (data.destinationChain === "SECRET") {
+          convertedTokenId = convertNumbToHexToString(data.tokenId);
+        }
+      }
       const ogNftData = await sc.nftData(
-        data.tokenId,
+        data.sourceChain === "SECRET" ? convertedTokenId : data.tokenId,
         data.sourceNftContractAddress,
         undefined,
       );
@@ -158,14 +166,6 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
           .replace(/[^a-zA-Z0-9]/g, "")
           .toUpperCase()
           .substring(0, 8);
-      }
-      let convertedTokenId = data.tokenId;
-      if (data.sourceChain === "SECRET") {
-        if (chain.identifier === "SECRET") {
-          convertedTokenId = convertStringToHexToNumb(data.tokenId);
-        } else if (data.destinationChain === "SECRET") {
-          convertedTokenId = convertNumbToHexToString(data.tokenId);
-        }
       }
       let metadata = "";
       if (data.sourceChain === "CASPER" || data.sourceChain === "SECRET") {
