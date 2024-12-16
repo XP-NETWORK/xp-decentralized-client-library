@@ -292,7 +292,7 @@ export namespace ChainFactoryConfigs {
           "hash-284d7eeee5d0ece8b0d56cc7162a3cf72e6fabc62946e3a9abae219c646d56c3",
         identifier: Chain.CASPER,
         network: "casper",
-        rpc: "https://rpc.mainnet.casperlabs.io/rpc",
+        rpc: "http://37.27.69.30:7777/rpc",
         storage,
         proxy_url: "https://sheltered-crag-76748.herokuapp.com/",
       },
