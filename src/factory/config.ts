@@ -95,7 +95,7 @@ export namespace ChainFactoryConfigs {
         storage,
       },
       secretParams: {
-        bridge: "secret1zyd2j3wqkeagcuzhklewfa6u26epn672cuktnm",
+        bridge: "secret1g2hwd0ah57a5elkkne544495qnfldvz02ckyg5",
         bridgeCodeHash: "",
         chainId: "secret-4",
         identifier: "SECRET",
