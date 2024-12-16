@@ -243,6 +243,16 @@ export namespace ChainFactoryConfigs {
         identifier: "ICP",
         storage,
       },
+      terraParams: {
+        bridge:
+          "terra1sryye399v0wrq5aap0s9jlqn9s6wm34gmd27pnlmceghd9qsgyqsugalra",
+        chainId: "pisco-1",
+        denom: "uluna",
+        identifier: "TERRA",
+        nftCodeId: 14213,
+        rpc: "https://rpc.testcosmos.directory/terra2testnet",
+        storage,
+      },
       multiversxParams: {
         bridge:
           "erd1qqqqqqqqqqqqqpgqmads3ruz3ywdq47a2whdgwsxdvtgut84txsqnuwr6c",
