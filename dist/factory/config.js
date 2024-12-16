@@ -181,8 +181,8 @@ var ChainFactoryConfigs;
             },
             hederaParams: {
                 identifier: factory_1.Chain.HEDERA,
-                bridge: ethers_1.ethers.getAddress("0x00000000000000000000000000000000006bc585"),
-                bridgeContractId: "0.0.7062917",
+                bridge: ethers_1.ethers.getAddress("0x0000000000000000000000000000000000786484"),
+                bridgeContractId: "0.0.7890052",
                 provider: new ethers_1.JsonRpcProvider("https://mainnet.hashio.io/api"),
                 royaltySalePrice: 10000,
                 storage,
