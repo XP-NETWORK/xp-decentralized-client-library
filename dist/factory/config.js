@@ -79,7 +79,7 @@ var ChainFactoryConfigs;
                 storage,
             },
             secretParams: {
-                bridge: "secret1g2hwd0ah57a5elkkne544495qnfldvz02ckyg5",
+                bridge: "secret1ym9jslryg6r8nlch2036py92gd50vejznwhuvx",
                 bridgeCodeHash: "",
                 chainId: "secret-4",
                 identifier: "SECRET",
