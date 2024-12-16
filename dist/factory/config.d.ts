@@ -187,6 +187,15 @@ export declare namespace ChainFactoryConfigs {
             identifier: string;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        terraParams: {
+            bridge: string;
+            chainId: string;
+            denom: string;
+            identifier: string;
+            nftCodeId: number;
+            rpc: string;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
         multiversxParams: {
             bridge: string;
             chainId: string;
