@@ -56,4 +56,5 @@ export type MetaMap = {
   FANTOM: TEvmMeta;
   AVALANCHE: TEvmMeta;
   CASPER: TCasperMeta;
+  VECHAIN: TEvmMeta;
 };
