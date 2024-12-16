@@ -156,7 +156,9 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         }
       }
       const ogNftData = await sc.nftData(
-        data.sourceChain === "SECRET" ? convertedTokenId : data.tokenId,
+        data.sourceChain === "SECRET" && data.destinationChain === "SECRET"
+          ? convertedTokenId
+          : data.tokenId,
         data.sourceNftContractAddress,
         undefined,
       );
