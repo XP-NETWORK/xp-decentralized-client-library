@@ -4,7 +4,10 @@ import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
-import { JsonRpcProvider, ethers } from "ethers";
+import { Driver, SimpleNet } from "@vechain/connex-driver";
+import { Framework } from "@vechain/connex-framework";
+import * as thor from "@vechain/web3-providers-connex";
+import { BrowserProvider, JsonRpcProvider, ethers } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import { BridgeStorage__factory } from "../contractsTypes/evm";
 import type { TAptosParams } from "../handlers/aptos/types";
@@ -39,10 +42,11 @@ export interface TChainParams {
   fantomParams: TEvmParams;
   avaxParams: TEvmParams;
   casperParams: TCasperParams;
+  vechainParams: TEvmParams;
 }
 
 export namespace ChainFactoryConfigs {
-  export function TestNet() {
+  export async function TestNet() {
     const skale = new JsonRpcProvider(
       "https://testnet.skalenodes.com/v1/juicy-low-small-testnet",
     );
@@ -50,6 +54,10 @@ export namespace ChainFactoryConfigs {
       "0x8184bCDC0a4C24D1cB8e054E389660B5b7160186",
       skale,
     );
+    const net = new SimpleNet("https://sync-testnet.veblocks.net");
+    const driver = await Driver.connect(net);
+    const connexObj = new Framework(driver);
+
     return {
       bscParams: {
         identifier: Chain.BSC,
@@ -155,6 +163,18 @@ export namespace ChainFactoryConfigs {
         rpc: "https://rpc.testnet.casperlabs.io/rpc",
         storage,
         proxy_url: "https://sheltered-crag-76748.herokuapp.com/",
+      },
+      vechainParams: {
+        identifier: Chain.VECHAIN,
+        provider: new BrowserProvider(
+          new thor.Provider({
+            connex: connexObj,
+            net,
+          }),
+        ),
+        bridge: ethers.getAddress("0x7111eb5f8d9dA472e9608f2ab3De275C040D60B2"),
+        royaltySalePrice: 10000,
+        storage,
       },
     } satisfies Partial<TChainParams>;
   }
@@ -272,7 +292,7 @@ export namespace ChainFactoryConfigs {
           "hash-284d7eeee5d0ece8b0d56cc7162a3cf72e6fabc62946e3a9abae219c646d56c3",
         identifier: Chain.CASPER,
         network: "casper",
-        rpc: "https://rpc.mainnet.casperlabs.io/rpc",
+        rpc: "http://37.27.69.30:7777/rpc",
         storage,
         proxy_url: "https://sheltered-crag-76748.herokuapp.com/",
       },

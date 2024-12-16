@@ -1,4 +1,5 @@
 import type {
+  BrowserProvider,
   ContractTransactionResponse,
   JsonRpcProvider,
   Overrides,
@@ -53,7 +54,7 @@ export type TEvmHandler = TNftChain<
 
 export type TEvmParams = {
   identifier: string;
-  provider: JsonRpcProvider;
+  provider: JsonRpcProvider | BrowserProvider;
   bridge: string;
   royaltySalePrice: number;
   storage: BridgeStorage;
