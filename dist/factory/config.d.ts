@@ -4,7 +4,7 @@ import { Principal } from "@dfinity/principal";
 import { ProxyNetworkProvider } from "@multiversx/sdk-network-providers/out";
 import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
-import { JsonRpcProvider } from "ethers";
+import { BrowserProvider, JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
 import type { TAptosParams } from "../handlers/aptos/types";
 import type { TCasperParams } from "../handlers/casper/types";
@@ -36,9 +36,10 @@ export interface TChainParams {
     fantomParams: TEvmParams;
     avaxParams: TEvmParams;
     casperParams: TCasperParams;
+    vechainParams: TEvmParams;
 }
 export declare namespace ChainFactoryConfigs {
-    function TestNet(): {
+    function TestNet(): Promise<{
         bscParams: {
             identifier: string;
             provider: JsonRpcProvider;
@@ -127,7 +128,14 @@ export declare namespace ChainFactoryConfigs {
             storage: import("../contractsTypes/evm").BridgeStorage;
             proxy_url: string;
         };
-    };
+        vechainParams: {
+            identifier: string;
+            provider: BrowserProvider;
+            bridge: string;
+            royaltySalePrice: number;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
+    }>;
     function MainNet(): {
         bscParams: {
             identifier: string;

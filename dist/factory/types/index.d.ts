@@ -39,5 +39,6 @@ export type MetaMap = {
     FANTOM: TEvmMeta;
     AVALANCHE: TEvmMeta;
     CASPER: TCasperMeta;
+    VECHAIN: TEvmMeta;
 };
 //# sourceMappingURL=index.d.ts.map
