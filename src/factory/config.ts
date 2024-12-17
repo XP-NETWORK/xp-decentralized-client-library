@@ -99,7 +99,7 @@ export namespace ChainFactoryConfigs {
         bridgeCodeHash: "",
         chainId: "secret-4",
         identifier: "SECRET",
-        nftCodeId: 1983,
+        nftCodeId: 2075,
         provider: new SecretNetworkClient({
           chainId: "secret-4",
           url: "https://rpc.ankr.com/http/scrt_cosmos",
@@ -318,7 +318,7 @@ export namespace ChainFactoryConfigs {
         bridgeCodeHash: "",
         chainId: "secret-4",
         identifier: "SECRET",
-        nftCodeId: 1983,
+        nftCodeId: 2075,
         provider: new SecretNetworkClient({
           chainId: "secret-4",
           url: "https://rpc.ankr.com/http/scrt_cosmos",
