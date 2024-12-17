@@ -254,6 +254,15 @@ export declare namespace ChainFactoryConfigs {
             identifier: string;
             storage: import("../contractsTypes/evm").BridgeStorage;
         };
+        secretParams: {
+            bridge: string;
+            bridgeCodeHash: string;
+            chainId: string;
+            identifier: string;
+            nftCodeId: number;
+            provider: SecretNetworkClient;
+            storage: import("../contractsTypes/evm").BridgeStorage;
+        };
     };
 }
 //# sourceMappingURL=config.d.ts.map
