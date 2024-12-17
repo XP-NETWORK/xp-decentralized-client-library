@@ -313,6 +313,18 @@ export namespace ChainFactoryConfigs {
         identifier: Chain.NEAR,
         storage,
       },
+      secretParams: {
+        bridge: "secret160da5pcn05xz2nhwudjvcg7rjzs9sc50pdlp0d",
+        bridgeCodeHash: "",
+        chainId: "secret-4",
+        identifier: "SECRET",
+        nftCodeId: 1983,
+        provider: new SecretNetworkClient({
+          chainId: "secret-4",
+          url: "https://rpc.ankr.com/http/scrt_cosmos",
+        }),
+        storage,
+      },
     } satisfies Partial<TChainParams>;
   }
 }
