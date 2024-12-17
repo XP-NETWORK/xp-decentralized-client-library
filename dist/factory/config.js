@@ -83,7 +83,7 @@ var ChainFactoryConfigs;
                 bridgeCodeHash: "",
                 chainId: "secret-4",
                 identifier: "SECRET",
-                nftCodeId: 1983,
+                nftCodeId: 2075,
                 provider: new secretjs_1.SecretNetworkClient({
                     chainId: "secret-4",
                     url: "https://rpc.ankr.com/http/scrt_cosmos",
@@ -284,7 +284,7 @@ var ChainFactoryConfigs;
                 bridgeCodeHash: "",
                 chainId: "secret-4",
                 identifier: "SECRET",
-                nftCodeId: 1983,
+                nftCodeId: 2075,
                 provider: new secretjs_1.SecretNetworkClient({
                     chainId: "secret-4",
                     url: "https://rpc.ankr.com/http/scrt_cosmos",
