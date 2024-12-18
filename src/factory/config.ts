@@ -190,7 +190,7 @@ export namespace ChainFactoryConfigs {
     return {
       bscParams: {
         identifier: Chain.BSC,
-        provider: new JsonRpcProvider("https://binance.llamarpc.com"),
+        provider: new JsonRpcProvider("https://rpc.ankr.com/bsc"),
         bridge: ethers.getAddress("0x289FDdDce5119C41B82C969135212061D5E7Dce5"),
         royaltySalePrice: 10000,
         storage,
@@ -204,7 +204,7 @@ export namespace ChainFactoryConfigs {
       },
       baseParams: {
         identifier: Chain.BASE,
-        provider: new JsonRpcProvider("https://base.llamarpc.com"),
+        provider: new JsonRpcProvider("https://base.meowrpc.com/"),
         bridge: ethers.getAddress("0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83"),
         royaltySalePrice: 10000,
         storage,
@@ -293,7 +293,9 @@ export namespace ChainFactoryConfigs {
       ethParams: {
         bridge: ethers.getAddress("0x4B2A837613bA45C734439155CC7030c79095a2ed"),
         identifier: "ETHEREUM",
-        provider: new JsonRpcProvider("https://eth.llamarpc.com"),
+        provider: new JsonRpcProvider(
+          "https://gateway.tenderly.co/public/mainnet",
+        ),
         royaltySalePrice: 10000,
         storage,
       },
