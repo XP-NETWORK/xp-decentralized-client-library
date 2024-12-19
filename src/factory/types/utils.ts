@@ -7,6 +7,7 @@ import type {
   TLockNFT,
   TLockSFT,
   TNftTransferDetailsObject,
+  TSignerAndSignature,
 } from "../../handlers/index";
 
 export type TSupportedChain = keyof MetaMap;
@@ -47,6 +48,11 @@ export type TChainFactory = {
     metadataUri: string,
     extraArgs?: ExtraArgs,
   ) => Promise<{ ret: Ret; hash: () => string }>;
+  getLockNftSignatures: (
+    chain: TGetStorage,
+    txHash: string,
+    from: string,
+  ) => Promise<TSignerAndSignature[]>;
 };
 
 export type TParamMap = {
