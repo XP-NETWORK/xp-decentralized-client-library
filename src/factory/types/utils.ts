@@ -1,5 +1,4 @@
 import type { MetaMap } from ".";
-import type { SignerAndSignatureStruct } from "../../contractsTypes/evm/contracts/BridgeStorage";
 import type {
   TClaimSFT,
   TGetChainIdentifier,
@@ -8,6 +7,7 @@ import type {
   TLockNFT,
   TLockSFT,
   TNftTransferDetailsObject,
+  TSignerAndSignature,
 } from "../../handlers/index";
 
 export type TSupportedChain = keyof MetaMap;
@@ -52,7 +52,7 @@ export type TChainFactory = {
     chain: TGetStorage,
     txHash: string,
     from: string,
-  ) => Promise<SignerAndSignatureStruct[]>;
+  ) => Promise<TSignerAndSignature[]>;
 };
 
 export type TParamMap = {
