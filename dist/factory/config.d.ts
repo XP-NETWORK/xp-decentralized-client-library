@@ -6,6 +6,7 @@ import { TezosToolkit } from "@taquito/taquito";
 import { TonClient } from "@ton/ton";
 import { BrowserProvider, JsonRpcProvider } from "ethers";
 import { SecretNetworkClient } from "secretjs";
+import { type BridgeStorage } from "../contractsTypes/evm";
 import type { TAptosParams } from "../handlers/aptos/types";
 import type { TCasperParams } from "../handlers/casper/types";
 import type { TCosmWasmParams } from "../handlers/cosmwasm/types";
@@ -38,231 +39,241 @@ export interface TChainParams {
     casperParams: TCasperParams;
     vechainParams: TEvmParams;
 }
+export interface IBridgeConfig {
+    bridgeChains: Partial<TChainParams>;
+    oldStorage: BridgeStorage;
+}
 export declare namespace ChainFactoryConfigs {
     function TestNet(): Promise<{
-        bscParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
+        bridgeChains: {
+            bscParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            hederaParams: {
+                identifier: string;
+                bridge: string;
+                bridgeContractId: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+                royaltyProxy: string;
+                mirrorNodeApi: string;
+            };
+            tonParams: {
+                identifier: string;
+                bridgeAddress: string;
+                client: TonClient;
+                storage: BridgeStorage;
+            };
+            moonbeamParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            secretParams: {
+                bridge: string;
+                bridgeCodeHash: string;
+                chainId: string;
+                identifier: string;
+                nftCodeId: number;
+                provider: SecretNetworkClient;
+                storage: BridgeStorage;
+            };
+            tezosParams: {
+                bridge: string;
+                identifier: string;
+                storage: BridgeStorage;
+                Tezos: TezosToolkit;
+                tzktApi: string;
+            };
+            multiversxParams: {
+                bridge: string;
+                chainId: string;
+                identifier: string;
+                gatewayURL: string;
+                provider: ProxyNetworkProvider;
+                storage: BridgeStorage;
+            };
+            icpParams: {
+                agent: HttpAgent;
+                bridge: Principal;
+                identifier: string;
+                storage: BridgeStorage;
+            };
+            nearParams: {
+                bridge: string;
+                networkId: string;
+                nodeUrl: string;
+                identifier: string;
+                storage: BridgeStorage;
+            };
+            blastParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            aptosParams: {
+                bridge: string;
+                identifier: string;
+                network: Network.TESTNET;
+                storage: BridgeStorage;
+            };
+            casperParams: {
+                bridge: string;
+                identifier: string;
+                network: string;
+                rpc: string;
+                storage: BridgeStorage;
+                proxy_url: string;
+            };
+            vechainParams: {
+                identifier: string;
+                provider: BrowserProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
         };
-        hederaParams: {
-            identifier: string;
-            bridge: string;
-            bridgeContractId: string;
-            provider: JsonRpcProvider;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            royaltyProxy: string;
-            mirrorNodeApi: string;
-        };
-        tonParams: {
-            identifier: string;
-            bridgeAddress: string;
-            client: TonClient;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        moonbeamParams: {
-            bridge: string;
-            identifier: string;
-            provider: JsonRpcProvider;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        secretParams: {
-            bridge: string;
-            bridgeCodeHash: string;
-            chainId: string;
-            identifier: string;
-            nftCodeId: number;
-            provider: SecretNetworkClient;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        tezosParams: {
-            bridge: string;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            Tezos: TezosToolkit;
-            tzktApi: string;
-        };
-        multiversxParams: {
-            bridge: string;
-            chainId: string;
-            identifier: string;
-            gatewayURL: string;
-            provider: ProxyNetworkProvider;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        icpParams: {
-            agent: HttpAgent;
-            bridge: Principal;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        nearParams: {
-            bridge: string;
-            networkId: string;
-            nodeUrl: string;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        blastParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        aptosParams: {
-            bridge: string;
-            identifier: string;
-            network: Network.TESTNET;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        casperParams: {
-            bridge: string;
-            identifier: string;
-            network: string;
-            rpc: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            proxy_url: string;
-        };
-        vechainParams: {
-            identifier: string;
-            provider: BrowserProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
+        oldStorage: BridgeStorage;
     }>;
     function MainNet(): {
-        bscParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
+        bridgeChains: {
+            bscParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            maticParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            baseParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            hederaParams: {
+                identifier: string;
+                bridge: string;
+                bridgeContractId: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+                royaltyProxy: string;
+                mirrorNodeApi: string;
+            };
+            tonParams: {
+                identifier: string;
+                bridgeAddress: string;
+                client: TonClient;
+                storage: BridgeStorage;
+            };
+            tezosParams: {
+                bridge: string;
+                identifier: string;
+                storage: BridgeStorage;
+                Tezos: TezosToolkit;
+                tzktApi: string;
+            };
+            icpParams: {
+                agent: HttpAgent;
+                bridge: Principal;
+                identifier: string;
+                storage: BridgeStorage;
+            };
+            terraParams: {
+                bridge: string;
+                chainId: string;
+                denom: string;
+                identifier: string;
+                nftCodeId: number;
+                rpc: string;
+                storage: BridgeStorage;
+            };
+            multiversxParams: {
+                bridge: string;
+                chainId: string;
+                identifier: string;
+                gatewayURL: string;
+                provider: ProxyNetworkProvider;
+                storage: BridgeStorage;
+            };
+            blastParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            fantomParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            avaxParams: {
+                identifier: string;
+                provider: JsonRpcProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            moonbeamParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            ethParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            casperParams: {
+                bridge: string;
+                identifier: string;
+                network: string;
+                rpc: string;
+                storage: BridgeStorage;
+                proxy_url: string;
+            };
+            nearParams: {
+                bridge: string;
+                networkId: string;
+                nodeUrl: string;
+                identifier: string;
+                storage: BridgeStorage;
+            };
+            secretParams: {
+                bridge: string;
+                bridgeCodeHash: string;
+                chainId: string;
+                identifier: string;
+                nftCodeId: number;
+                provider: SecretNetworkClient;
+                storage: BridgeStorage;
+            };
         };
-        maticParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        baseParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        hederaParams: {
-            identifier: string;
-            bridge: string;
-            bridgeContractId: string;
-            provider: JsonRpcProvider;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            royaltyProxy: string;
-            mirrorNodeApi: string;
-        };
-        tonParams: {
-            identifier: string;
-            bridgeAddress: string;
-            client: TonClient;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        tezosParams: {
-            bridge: string;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            Tezos: TezosToolkit;
-            tzktApi: string;
-        };
-        icpParams: {
-            agent: HttpAgent;
-            bridge: Principal;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        terraParams: {
-            bridge: string;
-            chainId: string;
-            denom: string;
-            identifier: string;
-            nftCodeId: number;
-            rpc: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        multiversxParams: {
-            bridge: string;
-            chainId: string;
-            identifier: string;
-            gatewayURL: string;
-            provider: ProxyNetworkProvider;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        blastParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        fantomParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        avaxParams: {
-            identifier: string;
-            provider: JsonRpcProvider;
-            bridge: string;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        moonbeamParams: {
-            bridge: string;
-            identifier: string;
-            provider: JsonRpcProvider;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        ethParams: {
-            bridge: string;
-            identifier: string;
-            provider: JsonRpcProvider;
-            royaltySalePrice: number;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        casperParams: {
-            bridge: string;
-            identifier: string;
-            network: string;
-            rpc: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-            proxy_url: string;
-        };
-        nearParams: {
-            bridge: string;
-            networkId: string;
-            nodeUrl: string;
-            identifier: string;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
-        secretParams: {
-            bridge: string;
-            bridgeCodeHash: string;
-            chainId: string;
-            identifier: string;
-            nftCodeId: number;
-            provider: SecretNetworkClient;
-            storage: import("../contractsTypes/evm").BridgeStorage;
-        };
+        oldStorage: BridgeStorage;
     };
 }
 //# sourceMappingURL=config.d.ts.map

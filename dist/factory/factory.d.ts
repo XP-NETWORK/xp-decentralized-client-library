@@ -1,5 +1,5 @@
 import type { TChainFactory, TChainInfo } from "../factory/types/utils";
-import type { TChainParams } from "./config";
+import type { IBridgeConfig } from "./config";
 export declare namespace Chain {
     const MULTIVERSX = "MULTIVERSX";
     const SECRET = "SECRET";
@@ -21,6 +21,6 @@ export declare namespace Chain {
     const CASPER = "CASPER";
     const VECHAIN = "VECHAIN";
 }
-export declare function ChainFactory(cp: Partial<TChainParams>): TChainFactory;
+export declare function ChainFactory(bc: IBridgeConfig): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;
 //# sourceMappingURL=factory.d.ts.map
