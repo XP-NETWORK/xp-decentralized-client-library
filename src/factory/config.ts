@@ -179,7 +179,7 @@ export namespace ChainFactoryConfigs {
     } satisfies Partial<TChainParams>;
   }
 
-  export function MainNet() {
+  export async function MainNet() {
     const optimism = new JsonRpcProvider(
       "https://optimism-mainnet.public.blastapi.io",
     );
@@ -187,6 +187,11 @@ export namespace ChainFactoryConfigs {
       "0xc6e84955ba7C354fb7ca60011883e5673Be3F629",
       optimism,
     );
+
+    const net = new SimpleNet("https://mainnet.veblocks.net");
+    const driver = await Driver.connect(net);
+    const connexObj = new Framework(driver);
+
     return {
       bscParams: {
         identifier: Chain.BSC,
@@ -323,6 +328,18 @@ export namespace ChainFactoryConfigs {
           chainId: "secret-4",
           url: "https://rpc.ankr.com/http/scrt_cosmos",
         }),
+        storage,
+      },
+      vechainParams: {
+        identifier: Chain.VECHAIN,
+        provider: new BrowserProvider(
+          new thor.Provider({
+            connex: connexObj,
+            net,
+          }),
+        ),
+        bridge: ethers.getAddress("0x4c14CF6Eb11978F0A90B369107Aa7F5A08994428"),
+        royaltySalePrice: 10000,
         storage,
       },
     } satisfies Partial<TChainParams>;
