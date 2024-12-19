@@ -1,6 +1,5 @@
 import type { MetaMap } from ".";
-import type { SignerAndSignatureStruct } from "../../contractsTypes/evm/contracts/BridgeStorage";
-import type { TClaimSFT, TGetChainIdentifier, TGetClaimData, TGetStorage, TLockNFT, TLockSFT, TNftTransferDetailsObject } from "../../handlers/index";
+import type { TClaimSFT, TGetChainIdentifier, TGetClaimData, TGetStorage, TLockNFT, TLockSFT, TNftTransferDetailsObject, TSignerAndSignature } from "../../handlers/index";
 export type TSupportedChain = keyof MetaMap;
 export type TSupportedSftChain = keyof {
     [k in TSupportedChain as MetaMap[k][0] extends TClaimSFT<any, any, any, any> ? k : never]: k;
@@ -18,7 +17,7 @@ export type TChainFactory = {
         ret: Ret;
         hash: () => string;
     }>;
-    getLockNftSignatures: (chain: TGetStorage, txHash: string, from: string) => Promise<SignerAndSignatureStruct[]>;
+    getLockNftSignatures: (chain: TGetStorage, txHash: string, from: string) => Promise<TSignerAndSignature[]>;
 };
 export type TParamMap = {
     set<T extends TSupportedChain>(k: T, v: TInferChainParam<T> | undefined): void;
