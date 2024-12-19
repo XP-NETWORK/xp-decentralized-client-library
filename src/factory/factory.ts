@@ -21,7 +21,7 @@ import {
   convertStringToHexToNumb,
   fetchHttpOrIpfs,
 } from "../handlers/utils";
-import type { TChainParams } from "./config";
+import type { IBridgeConfig, TChainParams } from "./config";
 
 export namespace Chain {
   export const MULTIVERSX = "MULTIVERSX";
@@ -69,8 +69,8 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   return cToP;
 }
 
-export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
-  const map = mapNonceToParams(cp);
+export function ChainFactory(bc: IBridgeConfig): TChainFactory {
+  const map = mapNonceToParams(bc.bridgeChains);
   const helpers = new Map<TSupportedChain, TInferChainH<TSupportedChain>>();
   return {
     async lockNft(
@@ -197,6 +197,14 @@ export function ChainFactory(cp: Partial<TChainParams>): TChainFactory {
         imgUri,
         lockTxChain: chain.identifier,
       };
+    },
+    async getLockNftSignatures(chain, txHash, from) {
+      const storageContract = chain.getStorageContract();
+      let signatures = await storageContract.getLockNftSignatures(txHash, from);
+      if (signatures.length === 0) {
+        signatures = await bc.oldStorage.getLockNftSignatures(txHash, from);
+      }
+      return signatures;
     },
   };
 }
