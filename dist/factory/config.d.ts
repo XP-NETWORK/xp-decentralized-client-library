@@ -144,7 +144,7 @@ export declare namespace ChainFactoryConfigs {
         };
         oldStorage: BridgeStorage;
     }>;
-    function MainNet(): {
+    function MainNet(): Promise<{
         bridgeChains: {
             bscParams: {
                 identifier: string;
@@ -272,8 +272,15 @@ export declare namespace ChainFactoryConfigs {
                 provider: SecretNetworkClient;
                 storage: BridgeStorage;
             };
+            vechainParams: {
+                identifier: string;
+                provider: BrowserProvider;
+                bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
         };
         oldStorage: BridgeStorage;
-    };
+    }>;
 }
 //# sourceMappingURL=config.d.ts.map
