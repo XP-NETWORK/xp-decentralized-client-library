@@ -1,4 +1,9 @@
-import { type StdSignature, toBase64, validateAddress } from "secretjs";
+import {
+  type SecretNetworkClient,
+  type StdSignature,
+  toBase64,
+  validateAddress,
+} from "secretjs";
 import type { Metadata } from "secretjs/dist/extensions/snip1155/types";
 import type { Pubkey } from "secretjs/dist/wallet_amino";
 import type {
@@ -8,6 +13,7 @@ import type {
 import { raise } from "../ton";
 import type { TokenInfo } from "../types";
 import { pinata } from "../utils";
+import type { Any } from "../utils/any";
 import type {
   GetOwnedTokensResponse,
   TNftInfo,
@@ -261,23 +267,27 @@ export function secretHandler({
         },
       };
 
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: claim721,
-          code_hash: bridgeCodeHash,
-          sender: signer.address,
-          sent_funds: [{ amount: claimData.fee.toString(), denom: "uscrt" }],
-        },
-        {
-          gasLimit: 300_000,
-          ...extraArgs,
-        },
-      );
-      return {
-        hash: () => tx.transactionHash,
-        ret: tx,
-      };
+      try {
+        const tx = await signer.tx.compute.executeContract(
+          {
+            contract_address: bridge,
+            msg: claim721,
+            code_hash: bridgeCodeHash,
+            sender: signer.address,
+            sent_funds: [{ amount: claimData.fee.toString(), denom: "uscrt" }],
+          },
+          {
+            gasLimit: 300_000,
+            ...extraArgs,
+          },
+        );
+        return {
+          hash: () => tx.transactionHash,
+          ret: tx,
+        };
+      } catch (error) {
+        return handleTransactionError(signer, error);
+      }
     },
     async deployNftCollection(signer, da, ga) {
       const code = da.codeId ?? nftCodeId;
@@ -430,24 +440,27 @@ export function secretHandler({
         },
       };
 
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: claim1155,
-          code_hash: bridgeCodeHash,
-          sender: signer.address,
-          sent_funds: [{ amount: claimData.fee.toString(), denom: "uscrt" }],
-        },
-        {
-          gasLimit: 300_000,
-          ...extraArgs,
-        },
-      );
-
-      return {
-        ret: tx,
-        hash: () => tx.transactionHash,
-      };
+      try {
+        const tx = await signer.tx.compute.executeContract(
+          {
+            contract_address: bridge,
+            msg: claim1155,
+            code_hash: bridgeCodeHash,
+            sender: signer.address,
+            sent_funds: [{ amount: claimData.fee.toString(), denom: "uscrt" }],
+          },
+          {
+            gasLimit: 300_000,
+            ...extraArgs,
+          },
+        );
+        return {
+          ret: tx,
+          hash: () => tx.transactionHash,
+        };
+      } catch (error) {
+        return handleTransactionError(signer, error);
+      }
     },
     async nftData(tokenId, contract) {
       const data = (
@@ -665,19 +678,23 @@ export function secretHandler({
         },
       };
       console.log(JSON.stringify(lock, null, 4));
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: lock,
-          // code_hash: bridgeCodeHash,
-          sender: signer.address,
-        },
-        {
-          gasLimit: 250_000,
-          ..._,
-        },
-      );
-      return { ret: tx, hash: () => tx.transactionHash };
+      try {
+        const tx = await signer.tx.compute.executeContract(
+          {
+            contract_address: bridge,
+            msg: lock,
+            // code_hash: bridgeCodeHash,
+            sender: signer.address,
+          },
+          {
+            gasLimit: 250_000,
+            ..._,
+          },
+        );
+        return { ret: tx, hash: () => tx.transactionHash };
+      } catch (error) {
+        return handleTransactionError(signer, error);
+      }
     },
     async lockSft(
       signer,
@@ -716,24 +733,28 @@ export function secretHandler({
           },
         },
       };
-      const tx = await signer.tx.compute.executeContract(
-        {
-          contract_address: bridge,
-          msg: lock,
-          code_hash: bridgeCodeHash,
-          sender: signer.address,
-        },
-        {
-          gasLimit: 200_000,
-          ...extraArgs,
-        },
-      );
-      return {
-        ret: tx,
-        hash() {
-          return tx.transactionHash;
-        },
-      };
+      try {
+        const tx = await signer.tx.compute.executeContract(
+          {
+            contract_address: bridge,
+            msg: lock,
+            code_hash: bridgeCodeHash,
+            sender: signer.address,
+          },
+          {
+            gasLimit: 200_000,
+            ...extraArgs,
+          },
+        );
+        return {
+          ret: tx,
+          hash() {
+            return tx.transactionHash;
+          },
+        };
+      } catch (error) {
+        return handleTransactionError(signer, error);
+      }
     },
   };
 }
@@ -764,4 +785,19 @@ export function encodeSecp256k1Pubkey(pubkey: Uint8Array): Pubkey {
     type: "tendermint/PubKeySecp256k1",
     value: toBase64(pubkey),
   };
+}
+
+async function handleTransactionError(signer: SecretNetworkClient, error: Any) {
+  console.log(error);
+  if (error?.message?.includes("Failed to broadcast transaction ID")) {
+    const hash =
+      error?.message?.split(":")?.[0]?.split("ID")?.[1]?.trim() || "";
+    const tx = await signer.query.getTx(hash);
+    if (!tx) throw new Error(error);
+    return {
+      ret: tx,
+      hash: () => tx?.transactionHash,
+    };
+  }
+  throw new Error(error);
 }
