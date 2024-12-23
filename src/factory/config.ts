@@ -234,7 +234,7 @@ export namespace ChainFactoryConfigs {
         },
         maticParams: {
           identifier: Chain.MATIC,
-          provider: new JsonRpcProvider("https://polygon-pokt.nodies.app"),
+          provider: new JsonRpcProvider("https://api.zan.top/polygon-mainnet"),
           bridge: ethers.getAddress(
             "0x2011DAD5caE280243d075D12a38CcCc0Fb4412dE",
           ),
