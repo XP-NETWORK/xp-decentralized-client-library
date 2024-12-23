@@ -19,6 +19,26 @@ export function aptosHandler({
     validateAddress(address) {
       return Promise.resolve(isBcsAddress(address));
     },
+    async nftList(owner, _) {
+      const ledgerVersion = (await aptos.getLedgerInfo()).ledger_version;
+      const tokens = await aptos.getAccountOwnedTokens({
+        accountAddress: owner,
+        minimumLedgerVersion: BigInt(ledgerVersion),
+      });
+      return tokens.map((e) => {
+        return {
+          collectionIdent:
+            e.current_token_data?.current_collection?.collection_id ?? "",
+          native: {
+            tokenId: e.current_token_data?.token_data_id ?? "",
+            amount: e.amount,
+          },
+          tokenId: e.current_token_data?.token_data_id ?? "",
+          type: "NFT",
+          uri: e.current_token_data?.token_uri ?? "",
+        };
+      });
+    },
     identifier,
     async getValidatorCount() {
       const [bd] = await bc.view.validator_count({
