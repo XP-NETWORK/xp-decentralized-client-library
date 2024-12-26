@@ -306,7 +306,7 @@ export async function icpHandler({
       const lc = await createLedgerActor("ryjl3-tyaaa-aaaaa-aaaba-cai", {
         agent: signer,
       });
-      await lc.icrc2_approve({
+      const approveRes = await lc.icrc2_approve({
         amount: BigInt(claimData.fee + 10_000n + 15000000n),
         spender: {
           owner: bridge,
@@ -319,6 +319,7 @@ export async function icpHandler({
         from_subaccount: [],
         memo: [],
       });
+      console.log("icrc2_approve", approveRes);
       const bcWithSigner = await createBridgeActor(bridge, { agent: signer });
       const claim = await bcWithSigner.claim_nft(
         claimData,
