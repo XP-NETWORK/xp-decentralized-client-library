@@ -1,6 +1,6 @@
 import type { Account, Aptos, CommittedTransactionResponse, Network } from "@aptos-labs/ts-sdk";
 import type { BridgeStorage } from "../../contractsTypes/evm";
-import type { DeployNFTCollection, MintNft, TNftChain } from "../types";
+import type { DeployNFTCollection, MintNft, TNFTList, TNftChain } from "../types";
 export type TAptosMintArgs = {
     contract: string;
     name: string;
@@ -26,7 +26,9 @@ export type TClaimData = {
 export type TAptosHandler = TNftChain<Account, TClaimData, never, CommittedTransactionResponse, Aptos> & MintNft<Account, TAptosMintArgs, never, string> & DeployNFTCollection<Account, {
     name: string;
     symbol: string;
-}, never, string>;
+}, never, string> & TNFTList<{
+    tokenId: string;
+}, never>;
 export type TAptosParams = {
     bridge: string;
     network: Network;
