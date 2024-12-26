@@ -109,8 +109,9 @@ export function aptosHandler({
         transaction_hash: input.transactionHash,
       };
     },
-    approveNft() {
-      throw new Error("Approval not required in aptos");
+    // @ts-ignore
+    async approveNft() {
+      return Promise.resolve("Approval not required in aptos");
     },
     async getBalance(signer) {
       const balance = await aptos.getAccountAPTAmount({
