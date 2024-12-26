@@ -1,4 +1,5 @@
 import type { Account, Aptos, CommittedTransactionResponse, Network } from "@aptos-labs/ts-sdk";
+import type { EntryPayload } from "@thalalabs/surf";
 import type { BridgeStorage } from "../../contractsTypes/evm";
 import type { DeployNFTCollection, MintNft, TNFTList, TNftChain } from "../types";
 export type TAptosMintArgs = {
@@ -23,7 +24,17 @@ export type TClaimData = {
     symbol: string;
     amount: bigint;
 };
-export type TAptosHandler = TNftChain<Account, TClaimData, never, CommittedTransactionResponse, Aptos> & MintNft<Account, TAptosMintArgs, never, string> & DeployNFTCollection<Account, {
+export type ExtensionSigner = {
+    isConnected: () => Promise<boolean>;
+    account: () => Promise<{
+        address: string;
+        publicKey: string;
+    }>;
+    signAndSubmitTransaction: (arg: {
+        payload: EntryPayload;
+    }) => Promise<CommittedTransactionResponse>;
+};
+export type TAptosHandler = TNftChain<Account | ExtensionSigner, TClaimData, never, CommittedTransactionResponse, Aptos> & MintNft<Account | ExtensionSigner, TAptosMintArgs, never, string> & DeployNFTCollection<Account | ExtensionSigner, {
     name: string;
     symbol: string;
 }, never, string> & TNFTList<{
@@ -35,4 +46,6 @@ export type TAptosParams = {
     storage: BridgeStorage;
     identifier: string;
 };
+export declare function isWindowSigner(signer: Account | ExtensionSigner): signer is ExtensionSigner;
+export declare function isAccount(signer: Account | ExtensionSigner): signer is Account;
 //# sourceMappingURL=types.d.ts.map
