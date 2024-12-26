@@ -4,8 +4,14 @@ import type {
   CommittedTransactionResponse,
   Network,
 } from "@aptos-labs/ts-sdk";
+import type { EntryPayload } from "@thalalabs/surf";
 import type { BridgeStorage } from "../../contractsTypes/evm";
-import type { DeployNFTCollection, MintNft, TNftChain } from "../types";
+import type {
+  DeployNFTCollection,
+  MintNft,
+  TNFTList,
+  TNftChain,
+} from "../types";
 
 export type TAptosMintArgs = {
   contract: string;
@@ -31,15 +37,29 @@ export type TClaimData = {
   amount: bigint;
 };
 
+export type ExtensionSigner = {
+  isConnected: () => Promise<boolean>;
+  account: () => Promise<{ address: string; publicKey: string }>;
+  signAndSubmitTransaction: (arg: {
+    payload: EntryPayload;
+  }) => Promise<CommittedTransactionResponse>;
+};
+
 export type TAptosHandler = TNftChain<
-  Account,
+  Account | ExtensionSigner,
   TClaimData,
   never,
   CommittedTransactionResponse,
   Aptos
 > &
-  MintNft<Account, TAptosMintArgs, never, string> &
-  DeployNFTCollection<Account, { name: string; symbol: string }, never, string>;
+  MintNft<Account | ExtensionSigner, TAptosMintArgs, never, string> &
+  DeployNFTCollection<
+    Account | ExtensionSigner,
+    { name: string; symbol: string },
+    never,
+    string
+  > &
+  TNFTList<{ tokenId: string }, never>;
 
 export type TAptosParams = {
   bridge: string;
@@ -47,3 +67,14 @@ export type TAptosParams = {
   storage: BridgeStorage;
   identifier: string;
 };
+
+export function isWindowSigner(
+  signer: Account | ExtensionSigner,
+): signer is ExtensionSigner {
+  return "isConnected" in signer;
+}
+export function isAccount(
+  signer: Account | ExtensionSigner,
+): signer is Account {
+  return "publicKey" in signer;
+}
