@@ -1,9 +1,14 @@
 import { Aptos, AptosConfig, isBcsAddress } from "@aptos-labs/ts-sdk";
-import { createSurfClient } from "@thalalabs/surf";
+import { createEntryPayload, createSurfClient } from "@thalalabs/surf";
 import { HexString } from "aptos";
 import { raise } from "../ton";
 import { ABI } from "./abi";
-import type { TAptosHandler, TAptosParams } from "./types";
+import {
+  type TAptosHandler,
+  type TAptosParams,
+  isAccount,
+  isWindowSigner,
+} from "./types";
 
 export function aptosHandler({
   bridge,
@@ -41,6 +46,7 @@ export function aptosHandler({
     },
     identifier,
     async getValidatorCount() {
+      const bc = createSurfClient(aptos).useABI(ABI(bridge));
       const [bd] = await bc.view.validator_count({
         functionArguments: [],
         typeArguments: [],
@@ -49,6 +55,9 @@ export function aptosHandler({
       return Number.parseInt(bd);
     },
     async deployNftCollection(signer, da) {
+      if (isWindowSigner(signer)) {
+        throw new Error("Unsupported signer");
+      }
       const transaction = await aptos.createCollectionTransaction({
         creator: signer,
         description: `Testnet Collection: ${da.name}(${da.symbol}) by XP Network.`,
@@ -68,6 +77,9 @@ export function aptosHandler({
       return da.name;
     },
     async mintNft(signer, ma) {
+      if (isWindowSigner(signer)) {
+        throw new Error("Unsupported signer");
+      }
       const transaction = await aptos.mintDigitalAssetTransaction({
         collection: ma.contract,
         creator: signer,
@@ -134,8 +146,15 @@ export function aptosHandler({
       return Promise.resolve("Approval not required in aptos");
     },
     async getBalance(signer) {
+      if (isAccount(signer)) {
+        const balance = await aptos.getAccountAPTAmount({
+          accountAddress: signer.accountAddress,
+        });
+        return BigInt(balance);
+      }
+      const acc = await signer.account();
       const balance = await aptos.getAccountAPTAmount({
-        accountAddress: signer.accountAddress,
+        accountAddress: acc.address,
       });
       return BigInt(balance);
     },
@@ -191,8 +210,39 @@ export function aptosHandler({
         Buffer.from(e.signature.replace("0x", ""), "hex"),
       );
       const signers = sigs.map((e) => Buffer.from(e.signerAddress));
-      const response = await bc.entry.claim_1155({
-        account: signer,
+      if (isAccount(signer)) {
+        const response = await bc.entry.claim_1155({
+          functionArguments: [
+            claimData.destinationUserAddress,
+            claimData.name,
+            claimData.uri,
+            claimData.royaltyPercentage,
+            claimData.royaltyReceiver,
+            claimData.fee,
+            signatures,
+            signers,
+            claimData.destination_chain,
+            claimData.source_chain,
+            claimData.source_nft_contract_address,
+            claimData.token_id,
+            claimData.transaction_hash,
+            claimData.nft_type,
+            claimData.metadata,
+            claimData.symbol,
+            claimData.amount,
+          ],
+          typeArguments: [],
+          account: signer,
+        });
+        return {
+          hash() {
+            return response.hash;
+          },
+          ret: response,
+        };
+      }
+      const payload = createEntryPayload(ABI(bridge), {
+        function: "claim_1155",
         functionArguments: [
           claimData.destinationUserAddress,
           claimData.name,
@@ -214,6 +264,7 @@ export function aptosHandler({
         ],
         typeArguments: [],
       });
+      const response = await signer.signAndSubmitTransaction({ payload });
       return {
         hash() {
           return response.hash;
@@ -226,8 +277,38 @@ export function aptosHandler({
         Buffer.from(e.signature.slice(2), "hex"),
       );
       const signers = sigs.map((e) => Buffer.from(e.signerAddress, "hex"));
-      const response = await bc.entry.claim_721({
-        account: signer,
+      if (isAccount(signer)) {
+        const response = await bc.entry.claim_721({
+          functionArguments: [
+            claimData.destinationUserAddress,
+            claimData.name,
+            claimData.uri,
+            claimData.royaltyPercentage,
+            claimData.royaltyReceiver,
+            claimData.fee,
+            signatures,
+            signers,
+            claimData.destination_chain,
+            claimData.source_chain,
+            claimData.source_nft_contract_address,
+            claimData.token_id,
+            claimData.transaction_hash,
+            claimData.nft_type,
+            claimData.metadata,
+            claimData.symbol,
+          ],
+          typeArguments: [],
+          account: signer,
+        });
+        return {
+          hash() {
+            return response.hash;
+          },
+          ret: response,
+        };
+      }
+      const payload = createEntryPayload(ABI(bridge), {
+        function: "claim_721",
         functionArguments: [
           claimData.destinationUserAddress,
           claimData.name,
@@ -248,6 +329,7 @@ export function aptosHandler({
         ],
         typeArguments: [],
       });
+      const response = await signer.signAndSubmitTransaction({ payload });
       return {
         hash() {
           return response.hash;
@@ -263,8 +345,27 @@ export function aptosHandler({
       tokenId,
       metadataUri,
     ) {
-      const lock = await bc.entry.lock_721({
-        account: signer,
+      if (isAccount(signer)) {
+        const response = await bc.entry.lock_721({
+          account: signer,
+          functionArguments: [
+            tokenId as `0x${string}`,
+            destinationChain,
+            destinationUserAddress,
+            sourceNft as `0x${string}`,
+            metadataUri,
+          ],
+          typeArguments: [],
+        });
+        return {
+          hash() {
+            return response.hash;
+          },
+          ret: response,
+        };
+      }
+      const lp = createEntryPayload(ABI(bridge), {
+        function: "lock_721",
         functionArguments: [
           tokenId as `0x${string}`,
           destinationChain,
@@ -274,6 +375,7 @@ export function aptosHandler({
         ],
         typeArguments: [],
       });
+      const lock = await signer.signAndSubmitTransaction({ payload: lp });
       return {
         hash() {
           return lock.hash;
@@ -290,8 +392,28 @@ export function aptosHandler({
       amount,
       metadataUri,
     ) {
-      const lock = await bc.entry.lock_1155({
-        account: signer,
+      if (isAccount(signer)) {
+        const response = await bc.entry.lock_1155({
+          account: signer,
+          functionArguments: [
+            tokenId as `0x${string}`,
+            destinationChain,
+            destinationUserAddress,
+            sourceNft as `0x${string}`,
+            amount,
+            metadataUri,
+          ],
+          typeArguments: [],
+        });
+        return {
+          hash() {
+            return response.hash;
+          },
+          ret: response,
+        };
+      }
+      const payload = createEntryPayload(ABI(bridge), {
+        function: "lock_1155",
         functionArguments: [
           tokenId as `0x${string}`,
           destinationChain,
@@ -302,6 +424,7 @@ export function aptosHandler({
         ],
         typeArguments: [],
       });
+      const lock = await signer.signAndSubmitTransaction({ payload });
       return {
         hash() {
           return lock.hash;
