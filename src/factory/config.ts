@@ -46,6 +46,7 @@ export interface TChainParams {
   avaxParams: TEvmParams;
   casperParams: TCasperParams;
   vechainParams: TEvmParams;
+  bitgertParams: TEvmParams;
 }
 
 export interface IBridgeConfig {
@@ -391,6 +392,15 @@ export namespace ChainFactoryConfigs {
           bridge: ethers.getAddress(
             "0x4c14CF6Eb11978F0A90B369107Aa7F5A08994428",
           ),
+          royaltySalePrice: 10000,
+          storage,
+        },
+        bitgertParams: {
+          bridge: ethers.getAddress(
+            "0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83",
+          ),
+          identifier: "BITGERT",
+          provider: new JsonRpcProvider("https://rpc-bitgert.icecreamswap.com"),
           royaltySalePrice: 10000,
           storage,
         },

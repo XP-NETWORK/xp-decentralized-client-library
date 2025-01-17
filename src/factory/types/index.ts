@@ -42,6 +42,7 @@ export type MetaMap = {
   ETHEREUM: TEvmMeta;
   MATIC: TEvmMeta;
   MOONBEAM: TEvmMeta;
+  BITGERT: TEvmMeta;
   BASE: TEvmMeta;
   HEDERA: THederaMeta;
   TEZOS: TTezosMeta;
