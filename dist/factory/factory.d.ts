@@ -20,6 +20,7 @@ export declare namespace Chain {
     const AVALANCHE = "AVALANCHE";
     const CASPER = "CASPER";
     const VECHAIN = "VECHAIN";
+    const BITGERT = "BITGERT";
 }
 export declare function ChainFactory(bc: IBridgeConfig): TChainFactory;
 export declare const CHAIN_INFO: TChainInfo;

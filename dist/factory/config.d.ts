@@ -38,6 +38,7 @@ export interface TChainParams {
     avaxParams: TEvmParams;
     casperParams: TCasperParams;
     vechainParams: TEvmParams;
+    bitgertParams: TEvmParams;
 }
 export interface IBridgeConfig {
     bridgeChains: Partial<TChainParams>;
@@ -276,6 +277,13 @@ export declare namespace ChainFactoryConfigs {
                 identifier: string;
                 provider: BrowserProvider;
                 bridge: string;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            bitgertParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
                 royaltySalePrice: number;
                 storage: BridgeStorage;
             };
