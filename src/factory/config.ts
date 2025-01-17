@@ -225,7 +225,7 @@ export namespace ChainFactoryConfigs {
       bridgeChains: {
         bscParams: {
           identifier: Chain.BSC,
-          provider: new JsonRpcProvider("https://rpc.ankr.com/bsc"),
+          provider: new JsonRpcProvider("https://bsc-pokt.nodies.app"),
           bridge: ethers.getAddress(
             "0x289FDdDce5119C41B82C969135212061D5E7Dce5",
           ),
