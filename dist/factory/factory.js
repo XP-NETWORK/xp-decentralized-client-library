@@ -57,7 +57,7 @@ function mapNonceToParams(chainParams) {
     cToP.set(Chain.AVALANCHE, chainParams.avaxParams);
     cToP.set(Chain.CASPER, chainParams.casperParams);
     cToP.set(Chain.VECHAIN, chainParams.vechainParams);
-    cToP.set(Chain.BITGERT, chainParams.vechainParams);
+    cToP.set(Chain.BITGERT, chainParams.bitgertParams);
     return cToP;
 }
 function ChainFactory(bc) {
