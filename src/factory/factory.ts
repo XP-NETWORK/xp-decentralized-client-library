@@ -44,6 +44,9 @@ export namespace Chain {
   export const CASPER = "CASPER";
   export const VECHAIN = "VECHAIN";
   export const BITGERT = "BITGERT";
+  export const SKALE = "SKALE";
+  export const AURORA = "AURORA";
+  export const POLYGON = "POLYGON";
 }
 
 function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
@@ -68,6 +71,7 @@ function mapNonceToParams(chainParams: Partial<TChainParams>): TParamMap {
   cToP.set(Chain.CASPER, chainParams.casperParams);
   cToP.set(Chain.VECHAIN, chainParams.vechainParams);
   cToP.set(Chain.BITGERT, chainParams.bitgertParams);
+  cToP.set(Chain.SKALE, chainParams.skaleParams);
   return cToP;
 }
 
@@ -259,6 +263,9 @@ CHAIN_INFO.set(Chain.BLAST, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.FANTOM, {
+  constructor: evmHandler,
+});
+CHAIN_INFO.set(Chain.SKALE, {
   constructor: evmHandler,
 });
 CHAIN_INFO.set(Chain.AVALANCHE, {
