@@ -31,6 +31,9 @@ export interface TChainParams {
     terraParams: TCosmWasmParams;
     aptosParams: TAptosParams;
     moonbeamParams: TEvmParams;
+    skaleParams: TEvmParams;
+    auroraParams: TEvmParams;
+    polygonParams: TEvmParams;
     icpParams: TICPParams;
     nearParams: TNearParams;
     blastParams: TEvmParams;
@@ -54,6 +57,27 @@ export declare namespace ChainFactoryConfigs {
                 royaltySalePrice: number;
                 storage: BridgeStorage;
             };
+            skaleParams: {
+                identifier: string;
+                bridge: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            auroraParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            polygonParams: {
+                identifier: string;
+                bridge: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
             hederaParams: {
                 identifier: string;
                 bridge: string;
@@ -68,6 +92,20 @@ export declare namespace ChainFactoryConfigs {
                 identifier: string;
                 bridgeAddress: string;
                 client: TonClient;
+                storage: BridgeStorage;
+            };
+            avaxParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
+                storage: BridgeStorage;
+            };
+            ethParams: {
+                bridge: string;
+                identifier: string;
+                provider: JsonRpcProvider;
+                royaltySalePrice: number;
                 storage: BridgeStorage;
             };
             moonbeamParams: {

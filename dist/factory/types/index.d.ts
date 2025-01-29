@@ -38,8 +38,11 @@ export type MetaMap = {
     NEAR: TNearMeta;
     BLAST: TEvmMeta;
     FANTOM: TEvmMeta;
-    AVALANCHE: TEvmMeta;
     CASPER: TCasperMeta;
+    AVALANCHE: TEvmMeta;
     VECHAIN: TEvmMeta;
+    SKALE: TEvmMeta;
+    AURORA: TEvmMeta;
+    POLYGON: TEvmMeta;
 };
 //# sourceMappingURL=index.d.ts.map
