@@ -58,4 +58,5 @@ export type MetaMap = {
   AVALANCHE: TEvmMeta;
   CASPER: TCasperMeta;
   VECHAIN: TEvmMeta;
+  HARMONY: TEvmMeta;
 };

@@ -47,6 +47,7 @@ export interface TChainParams {
   casperParams: TCasperParams;
   vechainParams: TEvmParams;
   bitgertParams: TEvmParams;
+  harmonyParams: TEvmParams;
 }
 
 export interface IBridgeConfig {
@@ -401,6 +402,15 @@ export namespace ChainFactoryConfigs {
           ),
           identifier: "BITGERT",
           provider: new JsonRpcProvider("https://rpc-bitgert.icecreamswap.com"),
+          royaltySalePrice: 10000,
+          storage,
+        },
+        harmonyParams: {
+          bridge: ethers.getAddress(
+            "0x2Aa8Dbb7543754d70B5A40D52cB81c2a0bB08B83",
+          ),
+          identifier: "HARMONY",
+          provider: new JsonRpcProvider("https://api.s0.t.hmny.io"),
           royaltySalePrice: 10000,
           storage,
         },
