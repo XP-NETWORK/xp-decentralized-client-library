@@ -39,6 +39,9 @@ export interface TChainParams {
   terraParams: TCosmWasmParams;
   aptosParams: TAptosParams;
   moonbeamParams: TEvmParams;
+  skaleParams: TEvmParams;
+  auroraParams: TEvmParams;
+  polygonParams: TEvmParams;
   icpParams: TICPParams;
   nearParams: TNearParams;
   blastParams: TEvmParams;
@@ -83,6 +86,33 @@ export namespace ChainFactoryConfigs {
           royaltySalePrice: 10000,
           storage,
         },
+        skaleParams: {
+          identifier: Chain.SKALE,
+          bridge: ethers.getAddress(
+            "0x8Cd9d547a12FDd886266b102210B2BF123E993Ff",
+          ),
+          provider: skale,
+          royaltySalePrice: 10000,
+          storage,
+        },
+        auroraParams: {
+          bridge: ethers.getAddress(
+            "0x62858F82e6899ceA6c9e4A5dd647323691f7E2Bf",
+          ),
+          identifier: Chain.AURORA,
+          provider: new JsonRpcProvider("https://testnet.aurora.dev"),
+          royaltySalePrice: 10000,
+          storage,
+        },
+        polygonParams: {
+          identifier: Chain.POLYGON,
+          bridge: ethers.getAddress(
+            "0x04cAEd1763B2C121D92FcaEaB41BFfe3EAB57EFC",
+          ),
+          provider: new JsonRpcProvider("https://rpc-amoy.polygon.technology"),
+          royaltySalePrice: 10000,
+          storage,
+        },
         hederaParams: {
           identifier: Chain.HEDERA,
           bridge: ethers.getAddress(
@@ -102,6 +132,26 @@ export namespace ChainFactoryConfigs {
             endpoint:
               "https://testnet.toncenter.com/api/v2/jsonRPC?api_key=f3f6ef64352ac53cdfca18a3ba5372983e4037182c2b510fc52de5a259ecf292",
           }),
+          storage,
+        },
+        avaxParams: {
+          bridge: ethers.getAddress(
+            "0x04cAEd1763B2C121D92FcaEaB41BFfe3EAB57EFC",
+          ),
+          identifier: Chain.AVALANCHE,
+          provider: new JsonRpcProvider(
+            "https://api.avax-test.network/ext/bc/C/rpc",
+          ),
+          royaltySalePrice: 10000,
+          storage,
+        },
+        ethParams: {
+          bridge: ethers.getAddress(
+            "0x243f450ce9cD86b25401854F97b41E33523Da333",
+          ),
+          identifier: Chain.ETHEREUM,
+          provider: new JsonRpcProvider("https://1rpc.io/sepolia"),
+          royaltySalePrice: 10000,
           storage,
         },
         moonbeamParams: {
