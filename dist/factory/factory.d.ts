@@ -21,6 +21,7 @@ export declare namespace Chain {
     const CASPER = "CASPER";
     const VECHAIN = "VECHAIN";
     const BITGERT = "BITGERT";
+    const HARMONY = "HARMONY";
     const SKALE = "SKALE";
     const AURORA = "AURORA";
     const POLYGON = "POLYGON";
